@@ -1,22 +1,31 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { suggestCompromisedDevices } from '@/ai/flows/suggest-compromised-devices';
-import { SuggestCompromisedDevicesInput, SuggestCompomisedDevicesOutput } from '@/lib/types';
-import { mockDevices } from '@/lib/data';
+import { SuggestCompromisedDevicesInput, SuggestCompomisedDevicesOutput, Device } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShieldAlert, Loader2, ShieldCheck, ShieldQuestion } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getDevices } from '@/lib/services/network-service';
 
 export function ThreatAnalysis() {
   const [result, setResult] = useState<SuggestCompomisedDevicesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
   const [sensitivity, setSensitivity] = useState<SuggestCompromisedDevicesInput['sensitivity']>('normal');
+  const [devices, setDevices] = useState<Device[]>([]);
+
+  useEffect(() => {
+      async function fetchData() {
+          const data = await getDevices();
+          setDevices(data);
+      }
+      fetchData();
+  }, [])
 
   const threatIntelligenceFeeds = [
     "New IoT botnet 'Mirai-v2' actively scanning for open Telnet ports.",
@@ -28,7 +37,7 @@ export function ThreatAnalysis() {
     setIsLoading(true);
     setHasScanned(true);
     try {
-      const deviceData = mockDevices.map(d => ({
+      const deviceData = devices.map(d => ({
         ip: d.ip,
         mac: d.mac,
         deviceName: d.name,
@@ -121,12 +130,11 @@ export function ThreatAnalysis() {
             <div className="space-y-4">
               <h3 className="font-semibold">Analysis Complete: {result.compromisedDevices.length} Potential Threats Found</h3>
               {result.compromisedDevices.map((device, index) => {
-                 const fullDevice = mockDevices.find(d => d.ip === device.ip);
+                 const fullDevice = devices.find(d => d.ip === device.ip);
                  return (
                     <Alert variant="destructive" key={index}>
                       <ShieldAlert className="h-4 w-4" />
-                      <AlertTitle>{fullDevice?.name || 'Unknown Device'} ({device.ip})</AlertTitle>
-                      <AlertDescription>
+                      <AlertTitle>{fullDevice?.name || 'Unknown Device'} ({device.ip})</AlertTitle>                      <AlertDescription>
                         <strong>Reason:</strong> {device.reason}
                       </AlertDescription>
                     </Alert>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -13,21 +13,35 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Download, Search, X } from "lucide-react";
-import { mockLogs } from "@/lib/data";
 import { formatDistanceToNow } from 'date-fns';
+import { getLogs } from '@/lib/services/network-service';
+import { LogEntry } from '@/lib/types';
+import { Skeleton } from '../ui/skeleton';
 
 export function LogsView() {
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('');
 
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      const data = await getLogs();
+      setLogs(data);
+      setIsLoading(false);
+    }
+    fetchData();
+  }, []);
+
   const filteredLogs = useMemo(() => {
-    if (!filter) return mockLogs;
-    return mockLogs.filter(log =>
+    if (!filter) return logs;
+    return logs.filter(log =>
       log.action.toLowerCase().includes(filter.toLowerCase()) ||
       log.user.toLowerCase().includes(filter.toLowerCase()) ||
       log.target.toLowerCase().includes(filter.toLowerCase()) ||
       log.details.toLowerCase().includes(filter.toLowerCase())
     );
-  }, [filter]);
+  }, [filter, logs]);
 
   return (
     <Card>
@@ -74,26 +88,38 @@ export function LogsView() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredLogs.map((log) => (
-                <TableRow key={log.id}>
-                  <TableCell>
-                    <div className="flex flex-col">
-                        <span className="font-medium">{formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })}</span>
-                        <span className="text-xs text-muted-foreground">{new Date(log.timestamp).toLocaleString()}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{log.user}</TableCell>
-                  <TableCell>
-                    <span className="font-medium">{log.action}</span>
-                  </TableCell>
-                  <TableCell>{log.target}</TableCell>
-                  <TableCell className="hidden md:table-cell">{log.details}</TableCell>
-                </TableRow>
-              ))}
+              {isLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-6 w-28" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                    <TableCell className="hidden md:table-cell"><Skeleton className="h-6 w-full" /></TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                filteredLogs.map((log) => (
+                  <TableRow key={log.id}>
+                    <TableCell>
+                      <div className="flex flex-col">
+                          <span className="font-medium">{formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })}</span>
+                          <span className="text-xs text-muted-foreground">{new Date(log.timestamp).toLocaleString()}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{log.user}</TableCell>
+                    <TableCell>
+                      <span className="font-medium">{log.action}</span>
+                    </TableCell>
+                    <TableCell>{log.target}</TableCell>
+                    <TableCell className="hidden md:table-cell">{log.details}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
-        {filteredLogs.length === 0 && (
+        {!isLoading && filteredLogs.length === 0 && (
             <div className="text-center py-16 text-muted-foreground">
                 <p>No logs match your search.</p>
             </div>

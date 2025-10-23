@@ -24,7 +24,6 @@ import {
   SidebarMenuBadge,
 } from "@/components/ui/sidebar";
 import { Icons } from "@/components/icons";
-import { mockDevices } from "@/lib/data";
 
 const navItems = [
   { href: "/dashboard", icon: Home, label: "Dashboard" },
@@ -36,8 +35,6 @@ const navItems = [
 
 export function SidebarNav() {
   const pathname = usePathname();
-  const onlineDevices = mockDevices.filter(d => d.status === 'Online').length;
-  const blockedDevices = mockDevices.filter(d => d.status === 'Blocked').length;
 
   return (
     <Sidebar collapsible="icon" className="border-r">

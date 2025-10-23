@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -19,11 +19,12 @@ import {
   Laptop, Smartphone, Tablet, Tv, Camera, Router, HelpCircle, Server,
   Ban, Pause, Play, Clock, Filter
 } from "lucide-react";
-import { mockDevices as initialDevices } from "@/lib/data";
 import { Device } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { AccessScheduleDialog } from './access-schedule-dialog';
 import { ContentFilterDialog } from './content-filter-dialog';
+import { getDevices, updateDeviceStatus, updateDeviceBlockedCategories } from '@/lib/services/network-service';
+import { Skeleton } from '../ui/skeleton';
 
 const deviceIcons = {
   Laptop: <Laptop className="h-5 w-5" />,
@@ -44,18 +45,38 @@ const statusColors = {
 };
 
 export function ControlsView() {
-  const [devices, setDevices] = useState<Device[]>(initialDevices);
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleStatusChange = (deviceId: string, newStatus: Device['status']) => {
-    setDevices(devices.map(d => d.id === deviceId ? { ...d, status: newStatus } : d));
-    toast({
-      title: `Device ${newStatus}`,
-      description: `Device with ID ${deviceId} has been ${newStatus.toLowerCase()}.`,
-    });
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      const data = await getDevices();
+      setDevices(data);
+      setIsLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  const handleStatusChange = async (deviceId: string, newStatus: Device['status']) => {
+    try {
+      await updateDeviceStatus(deviceId, newStatus);
+      setDevices(devices.map(d => d.id === deviceId ? { ...d, status: newStatus } : d));
+      toast({
+        title: `Device ${newStatus}`,
+        description: `Device has been ${newStatus.toLowerCase()}.`,
+      });
+    } catch (error) {
+       toast({
+        title: "Error",
+        description: "Failed to update device status.",
+        variant: "destructive"
+      });
+    }
   };
 
   const openScheduleDialog = (device: Device) => {
@@ -76,9 +97,18 @@ export function ControlsView() {
     setIsFilterDialogOpen(true);
   };
 
-  const handleFilterSave = (deviceId: string, blockedCategories: string[]) => {
-    setDevices(devices.map(d => d.id === deviceId ? { ...d, blockedCategories } : d));
-    // Toast is handled in the dialog
+  const handleFilterSave = async (deviceId: string, blockedCategories: string[]) => {
+    try {
+      await updateDeviceBlockedCategories(deviceId, blockedCategories);
+      setDevices(devices.map(d => d.id === deviceId ? { ...d, blockedCategories } : d));
+      // Toast is handled in the dialog
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save content filters.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -96,56 +126,67 @@ export function ControlsView() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {devices.map((device) => (
-                <TableRow key={device.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="text-muted-foreground">{deviceIcons[device.type]}</div>
-                      <div>
-                        <p className="font-medium">{device.name}</p>
-                        <p className="text-sm text-muted-foreground hidden sm:block">{device.ip}</p>
+              {isLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-6 w-36" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-48" /></TableCell>
+                    <TableCell className="text-right"><Skeleton className="h-8 w-24" /></TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                devices.map((device) => (
+                  <TableRow key={device.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="text-muted-foreground">{deviceIcons[device.type]}</div>
+                        <div>
+                          <p className="font-medium">{device.name}</p>
+                          <p className="text-sm text-muted-foreground hidden sm:block">{device.ip}</p>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="flex items-center gap-2 w-24 justify-center">
-                       <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
-                       {device.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {device.blockedCategories?.map(cat => <Badge key={cat} variant="secondary">{cat}</Badge>)}
-                       {(!device.blockedCategories || device.blockedCategories.length === 0) && (
-                         <span className="text-xs text-muted-foreground">None</span>
-                       )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    {device.status === 'Online' && (
-                        <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Paused')}>
-                            <Pause className="mr-2 h-4 w-4" /> Pause
-                        </Button>
-                    )}
-                    {(device.status === 'Paused' || device.status === 'Blocked') && (
-                        <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Online')}>
-                            <Play className="mr-2 h-4 w-4" /> Resume
-                        </Button>
-                    )}
-                    {device.status !== 'Blocked' && (
-                        <Button variant="destructive" size="sm" onClick={() => handleStatusChange(device.id, 'Blocked')}>
-                            <Ban className="mr-2 h-4 w-4" /> Block
-                        </Button>
-                    )}
-                    <Button variant="outline" size="sm" onClick={() => openScheduleDialog(device)}>
-                        <Clock className="mr-2 h-4 w-4" /> Schedule
-                    </Button>
-                     <Button variant="outline" size="sm" onClick={() => openFilterDialog(device)}>
-                        <Filter className="mr-2 h-4 w-4" /> Filter
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="flex items-center gap-2 w-24 justify-center">
+                         <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
+                         {device.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {device.blockedCategories?.map(cat => <Badge key={cat} variant="secondary">{cat}</Badge>)}
+                         {(!device.blockedCategories || device.blockedCategories.length === 0) && (
+                           <span className="text-xs text-muted-foreground">None</span>
+                         )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right space-x-2">
+                      {device.status === 'Online' && (
+                          <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Paused')}>
+                              <Pause className="mr-2 h-4 w-4" /> Pause
+                          </Button>
+                      )}
+                      {(device.status === 'Paused' || device.status === 'Blocked') && (
+                          <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Online')}>
+                              <Play className="mr-2 h-4 w-4" /> Resume
+                          </Button>
+                      )}
+                      {device.status !== 'Blocked' && (
+                          <Button variant="destructive" size="sm" onClick={() => handleStatusChange(device.id, 'Blocked')}>
+                              <Ban className="mr-2 h-4 w-4" /> Block
+                          </Button>
+                      )}
+                      <Button variant="outline" size="sm" onClick={() => openScheduleDialog(device)}>
+                          <Clock className="mr-2 h-4 w-4" /> Schedule
+                      </Button>
+                       <Button variant="outline" size="sm" onClick={() => openFilterDialog(device)}>
+                          <Filter className="mr-2 h-4 w-4" /> Filter
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

@@ -1,20 +1,13 @@
 "use client"
 
+import React, { useState, useEffect } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts"
 import {
   ChartContainer,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { mockDevices } from "@/lib/data"
-
-const chartData = mockDevices
-  .filter(d => d.status === 'Online')
-  .map(device => ({
-    name: device.name.split(' ')[0], // Shorten name for chart label
-    usage: device.bandwidthUsage,
-  }))
-  .sort((a, b) => b.usage - a.usage)
-  .slice(0, 5);
+import { getDevices } from "@/lib/services/network-service";
+import { Skeleton } from '../ui/skeleton';
 
 const chartConfig = {
   usage: {
@@ -24,6 +17,30 @@ const chartConfig = {
 }
 
 export function BandwidthChart() {
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const devices = await getDevices();
+      const data = devices
+        .filter(d => d.status === 'Online')
+        .map(device => ({
+          name: device.name.split(' ')[0], // Shorten name for chart label
+          usage: device.bandwidthUsage,
+        }))
+        .sort((a, b) => b.usage - a.usage)
+        .slice(0, 5);
+      setChartData(data);
+      setIsLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <Skeleton className="h-48 w-full" />
+  }
+
   return (
     <div className="h-48 w-full">
       <ChartContainer config={chartConfig} className="h-full w-full">

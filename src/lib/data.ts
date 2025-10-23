@@ -7,19 +7,19 @@ export const mockUser: User = {
   role: 'Admin',
 };
 
+
 // =================================================================================
-// DONNÉES DE SIMULATION DYNAMIQUE
+// DONNÉES DE SIMULATION
 // =================================================================================
 // NOTE IMPORTANTE :
-// Pour revenir à l'esprit "intelligent" de l'application, nous utilisons une
-// liste pré-remplie d'appareils. L'application simulera l'activité de ce réseau
-// (changements de statut, variations de bande passante) pour que l'IA puisse
-// travailler sur des données dynamiques, comme dans un scénario réel.
+// Ce fichier contient les données de simulation pour l'application.
+// Dans une application réelle, ces données proviendraient d'un agent local
+// qui scanne le réseau et envoie les informations à une base de données
+// (comme Firebase Firestore). Notre application lirait ensuite ces données
+// depuis la base de données via une API.
 //
-// L'ajout manuel reste une fonctionnalité, mais le cœur de la démo repose
-// sur cette simulation.
+// Pour la simulation, nous utilisons cette liste pré-remplie.
 // =================================================================================
-
 export const mockDevices: Device[] = [
   {
     id: 'device-1',
@@ -134,7 +134,6 @@ export const mockDevices: Device[] = [
     blockedCategories: [],
   },
 ];
-// =================================================================================
 
 
 export const mockLogs: LogEntry[] = [
@@ -153,5 +152,13 @@ export const mockLogs: LogEntry[] = [
     action: 'Pause Device',
     target: 'Guest iPhone (192.168.1.103)',
     details: 'Paused internet access for guest device.',
+  },
+    {
+    id: 'log-3',
+    timestamp: new Date(Date.now() - 60000 * 2).toISOString(),
+    user: 'SYSTEM',
+    action: 'AI Anomaly Detected',
+    target: 'Workstation-Dev (192.168.1.105)',
+    details: 'High-Severity Anomaly: Unauthorized Port Access. Device attempted to access a blocked RDP port (3389).',
   },
 ];

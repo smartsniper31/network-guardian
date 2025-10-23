@@ -4,12 +4,12 @@
 import { useState } from 'react';
 import { generateWeeklyReport } from '@/ai/flows/generate-weekly-report';
 import { GenerateWeeklyReportOutput } from '@/lib/types';
-import { mockDevices, mockLogs } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { BarChart, Clock, FileText, Lightbulb, Loader2, ShieldAlert, Smartphone } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { getDevices, getLogs } from '@/lib/services/network-service';
 
 const severityConfig = {
   low: { color: "text-blue-500", icon: <Lightbulb className="h-4 w-4 text-blue-500" /> },
@@ -24,7 +24,9 @@ export function ReportView() {
   const handleGenerateReport = async () => {
     setIsLoading(true);
     try {
-      const result = await generateWeeklyReport({ devices: mockDevices, logs: mockLogs });
+      const devices = await getDevices();
+      const logs = await getLogs();
+      const result = await generateWeeklyReport({ devices, logs });
       
       // For demo: if AI returns empty, use mock data
       if (!result.recommendations || result.recommendations.length === 0) {

@@ -17,6 +17,7 @@ import { Device, FilterContentOutput } from '@/lib/types';
 import { Filter, Loader2 } from 'lucide-react';
 import { filterContent } from '@/ai/flows/filter-content';
 import { useToast } from '@/hooks/use-toast';
+import { updateDeviceBlockedCategories } from '@/lib/services/network-service';
 
 interface ContentFilterDialogProps {
   isOpen: boolean;
@@ -53,6 +54,7 @@ export function ContentFilterDialog({
     setIsLoading(true);
     try {
         const result: FilterContentOutput = await filterContent({ deviceId: device.id, categories: selectedCategories });
+        await updateDeviceBlockedCategories(device.id, selectedCategories);
         toast({
             title: 'Filters Updated',
             description: result.message,

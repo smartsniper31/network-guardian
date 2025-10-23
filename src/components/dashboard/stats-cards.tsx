@@ -1,17 +1,50 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Wifi, ShieldAlert, ArrowDownUp, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockDevices } from "@/lib/data";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { getDevices } from "@/lib/services/network-service";
+import type { Device } from "@/lib/types";
 
 export function StatsCards() {
-  const onlineDevices = mockDevices.filter(
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getDevices();
+      setDevices(data);
+      setIsLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <Skeleton className="h-4 w-2/3" />
+              <Skeleton className="h-5 w-5 rounded-full" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-8 w-1/3" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  const onlineDevices = devices.filter(
     (d) => d.status === "Online"
   ).length;
-  const totalDevices = mockDevices.length;
+  const totalDevices = devices.length;
   
-  const totalData = mockDevices.reduce(
+  const totalData = devices.reduce(
     (acc, dev) => acc + dev.dataUsage.download + dev.dataUsage.upload,
     0
   );

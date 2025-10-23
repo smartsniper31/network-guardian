@@ -1,15 +1,15 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { detectAnomalousNetworkActivity } from "@/ai/flows/detect-anomalous-network-activity";
-import { DetectAnomalousNetworkActivityOutput } from "@/lib/types";
+import { DetectAnomalousNetworkActivityOutput, Device } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, ShieldAlert, Loader2, ShieldCheck, Ban } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { mockDevices } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
+import { getDevices, getDevice } from "@/lib/services/network-service";
 
 const severityConfig = {
   low: { icon: AlertCircle, color: "bg-yellow-500", textColor: "text-yellow-500" },
@@ -27,7 +27,8 @@ export function AnomalyAlerts() {
     setIsLoading(true);
     setHasScanned(true);
     try {
-      const networkData = JSON.stringify(mockDevices, null, 2);
+      const devices = await getDevices();
+      const networkData = JSON.stringify(devices, null, 2);
       const result = await detectAnomalousNetworkActivity({ networkData });
       
       const mockResults = [
@@ -50,21 +51,20 @@ export function AnomalyAlerts() {
       const finalAlerts = (!result.alerts || result.alerts.length === 0) ? mockResults : result.alerts;
       setAlerts(finalAlerts);
 
-      finalAlerts.forEach(alert => {
+      for (const alert of finalAlerts) {
         if (alert.severity === 'high') {
-            const device = mockDevices.find(d => d.id === alert.deviceId);
+            const device = await getDevice(alert.deviceId);
             toast({
                 variant: 'destructive',
                 title: `High-Severity Anomaly: ${alert.anomalyType}`,
                 description: `${device?.name || alert.deviceId}: ${alert.details}`,
-                action: <Button variant="secondary" size="sm" onClick={() => console.log(`Blocking ${alert.deviceId}`)}>Block Device</Button>
+                action: <Button variant="secondary" size="sm">Block Device</Button>
             })
         }
-      })
+      }
 
     } catch (error) {
       console.error("Failed to detect anomalies:", error);
-      // set mock data on error for demo
        const mockErrorResult = [
           {
             deviceId: 'device-5',
@@ -75,7 +75,7 @@ export function AnomalyAlerts() {
           }
         ];
        setAlerts(mockErrorResult);
-       const device = mockDevices.find(d => d.id === mockErrorResult[0].deviceId);
+       const device = await getDevice(mockErrorResult[0].deviceId);
        toast({
          variant: 'destructive',
          title: `High-Severity Anomaly: ${mockErrorResult[0].anomalyType}`,
@@ -102,7 +102,16 @@ export function AnomalyAlerts() {
           <div className="space-y-4">
             {alerts.map((alert, index) => {
               const config = severityConfig[alert.severity];
-              const device = mockDevices.find(d => d.id === alert.deviceId);
+              const [deviceName, setDeviceName] = useState(alert.deviceId);
+
+              useEffect(() => {
+                  async function fetchDeviceName() {
+                      const device = await getDevice(alert.deviceId);
+                      if(device) setDeviceName(device.name);
+                  }
+                  fetchDeviceName();
+              }, [alert.deviceId]);
+
               return (
                 <div key={index} className="flex gap-4">
                   <div className={`mt-1 h-5 w-5 rounded-full flex items-center justify-center ${config.color}`}>
@@ -111,7 +120,7 @@ export function AnomalyAlerts() {
                   <div>
                     <p className="font-semibold">{alert.anomalyType}</p>
                     <p className="text-sm text-muted-foreground">
-                      {device?.name || alert.deviceId}: {alert.details}
+                      {deviceName}: {alert.details}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                         <Badge variant="outline" className={`border-current ${config.textColor}`}>{alert.severity}</Badge>
