@@ -13,6 +13,7 @@ import {
   AnalyzeDeviceVulnerabilitiesOutput,
   AnalyzeDeviceVulnerabilitiesOutputSchema,
 } from '@/lib/types';
+import { z } from 'zod';
 
 export async function analyzeDeviceVulnerabilities(
   input: AnalyzeDeviceVulnerabilitiesInput
@@ -23,10 +24,10 @@ export async function analyzeDeviceVulnerabilities(
 const analyzeDeviceVulnerabilitiesPrompt = ai.definePrompt(
     {
         name: 'analyzeDeviceVulnerabilitiesPrompt',
-        input: {schema: AnalyzeDeviceVulnerabilitiesInputSchema},
+        input: {schema: z.object({device: z.string()})},
         output: {schema: AnalyzeDeviceVulnerabilitiesOutputSchema},
         prompt: `You are a cybersecurity analyst. Analyze the following device data for potential security vulnerabilities.
-        Device: {{{jsonStringify device}}}
+        Device: {{{device}}}
         Provide a summary and a list of specific vulnerabilities with clear recommendations.
         `,
     },
@@ -39,7 +40,9 @@ const analyzeDeviceVulnerabilitiesFlow = ai.defineFlow(
     outputSchema: AnalyzeDeviceVulnerabilitiesOutputSchema,
   },
   async (device) => {
-    const {output} = await analyzeDeviceVulnerabilitiesPrompt(device);
+    const {output} = await analyzeDeviceVulnerabilitiesPrompt({
+      device: JSON.stringify(device),
+    });
     return output!;
   }
 );

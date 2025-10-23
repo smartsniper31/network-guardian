@@ -16,6 +16,7 @@ import {
   SuggestCompomisedDevicesOutput,
   SuggestCompromisedDevicesOutputSchema,
 } from '@/lib/types';
+import { z } from 'zod';
 
 export async function suggestCompromisedDevices(
   input: SuggestCompromisedDevicesInput
@@ -26,12 +27,16 @@ export async function suggestCompromisedDevices(
 const suggestCompromisedDevicesPrompt = ai.definePrompt(
   {
     name: 'suggestCompromisedDevicesPrompt',
-    input: {schema: SuggestCompromisedDevicesInputSchema},
+    input: {schema: z.object({
+      deviceData: z.string(),
+      threatIntelligenceFeeds: z.string(),
+      sensitivity: z.enum(['normal', 'high', 'paranoid']),
+    })},
     output: {schema: SuggestCompromisedDevicesOutputSchema},
     prompt: `You are a network security expert. Analyze the provided device data and threat intelligence feeds to identify potentially compromised devices.
     Your sensitivity level is '{{sensitivity}}'.
-    Device Data: {{{jsonStringify deviceData}}}
-    Threat Feeds: {{{jsonStringify threatIntelligenceFeeds}}}
+    Device Data: {{{deviceData}}}
+    Threat Feeds: {{{threatIntelligenceFeeds}}}
     Based on your analysis, list devices that show signs of compromise and provide a clear, concise reason for each suspicion.
     `,
   },
@@ -44,7 +49,11 @@ const suggestCompromisedDevicesFlow = ai.defineFlow(
     outputSchema: SuggestCompromisedDevicesOutputSchema,
   },
   async input => {
-    const {output} = await suggestCompromisedDevicesPrompt(input);
+    const {output} = await suggestCompromisedDevicesPrompt({
+      deviceData: JSON.stringify(input.deviceData),
+      threatIntelligenceFeeds: JSON.stringify(input.threatIntelligenceFeeds),
+      sensitivity: input.sensitivity,
+    });
     return output!;
   }
 );

@@ -13,6 +13,7 @@ import {
   FilterContentOutput,
   FilterContentOutputSchema,
 } from '@/lib/types';
+import { z } from 'zod';
 
 export async function filterContent(
   input: FilterContentInput
@@ -23,11 +24,11 @@ export async function filterContent(
 const filterContentPrompt = ai.definePrompt(
     {
         name: 'filterContentPrompt',
-        input: {schema: FilterContentInputSchema},
+        input: {schema: z.object({ deviceId: z.string(), categories: z.string()}) },
         output: {schema: FilterContentOutputSchema},
         prompt: `You are a network administrator AI. You have been asked to block certain content categories for a device.
         Device ID: {{deviceId}}
-        Categories to Block: {{{jsonStringify categories}}}
+        Categories to Block: {{{categories}}}
         Acknowledge the request and confirm that the filtering rules will be applied. Respond with a success message.
         `,
     },
@@ -42,7 +43,10 @@ const filterContentFlow = ai.defineFlow(
   async (input) => {
     // In a real-world scenario, this would interact with a router/firewall API.
     // Here, we'll just use the AI to generate a confirmation.
-    const {output} = await filterContentPrompt(input);
+    const {output} = await filterContentPrompt({
+      deviceId: input.deviceId,
+      categories: JSON.stringify(input.categories),
+    });
     return output!;
   }
 );

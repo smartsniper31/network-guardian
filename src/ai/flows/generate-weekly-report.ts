@@ -13,6 +13,7 @@ import {
   GenerateWeeklyReportOutput,
   GenerateWeeklyReportOutputSchema,
 } from '@/lib/types';
+import { z } from 'zod';
 
 export async function generateWeeklyReport(
   input: GenerateWeeklyReportInput
@@ -23,11 +24,11 @@ export async function generateWeeklyReport(
 const generateWeeklyReportPrompt = ai.definePrompt(
     {
         name: 'generateWeeklyReportPrompt',
-        input: {schema: GenerateWeeklyReportInputSchema},
+        input: {schema: z.object({ devices: z.string(), logs: z.string() })},
         output: {schema: GenerateWeeklyReportOutputSchema},
         prompt: `You are a network analyst AI. Generate a comprehensive weekly report based on the provided device and log data.
-        Devices: {{{jsonStringify devices}}}
-        Logs: {{{jsonStringify logs}}}
+        Devices: {{{devices}}}
+        Logs: {{{logs}}}
         Provide an overall summary, screen time analysis, threat summary, and actionable recommendations.
         `,
     },
@@ -40,7 +41,10 @@ const generateWeeklyReportFlow = ai.defineFlow(
     outputSchema: GenerateWeeklyReportOutputSchema,
   },
   async (input) => {
-    const {output} = await generateWeeklyReportPrompt(input);
+    const {output} = await generateWeeklyReportPrompt({
+      devices: JSON.stringify(input.devices),
+      logs: JSON.stringify(input.logs),
+    });
     return output!;
   }
 );
