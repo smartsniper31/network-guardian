@@ -4,9 +4,10 @@ import { useState } from "react";
 import { detectAnomalousNetworkActivity, DetectAnomalousNetworkActivityOutput } from "@/ai/flows/detect-anomalous-network-activity";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, ShieldAlert, Loader2, ShieldCheck } from "lucide-react";
+import { AlertCircle, ShieldAlert, Loader2, ShieldCheck, Ban } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { mockDevices } from "@/lib/data";
+import { useToast } from "@/hooks/use-toast";
 
 const severityConfig = {
   low: { icon: AlertCircle, color: "bg-yellow-500", textColor: "text-yellow-500" },
@@ -18,6 +19,7 @@ export function AnomalyAlerts() {
   const [alerts, setAlerts] = useState<DetectAnomalousNetworkActivityOutput['alerts']>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
+  const { toast } = useToast();
 
   const handleScan = async () => {
     setIsLoading(true);
@@ -25,39 +27,59 @@ export function AnomalyAlerts() {
     try {
       const networkData = JSON.stringify(mockDevices, null, 2);
       const result = await detectAnomalousNetworkActivity({ networkData });
-      // Add a mock result if AI returns none, for demonstration.
-      if (!result.alerts || result.alerts.length === 0) {
-        setAlerts([
-          {
-            deviceId: 'device-5',
-            anomalyType: 'Unauthorized Port Access',
-            severity: 'high',
-            timestamp: new Date().toISOString(),
-            details: 'Device attempted to access a blocked RDP port (3389).',
-          },
-          {
-            deviceId: 'device-2',
-            anomalyType: 'Excessive Bandwidth',
-            severity: 'medium',
-            timestamp: new Date().toISOString(),
-            details: 'Bandwidth usage is 5x higher than its 7-day average.',
-          },
-        ]);
-      } else {
-        setAlerts(result.alerts);
-      }
+      
+      const mockResults = [
+        {
+          deviceId: 'device-5',
+          anomalyType: 'Unauthorized Port Access',
+          severity: 'high' as const,
+          timestamp: new Date().toISOString(),
+          details: 'Device attempted to access a blocked RDP port (3389).',
+        },
+        {
+          deviceId: 'device-2',
+          anomalyType: 'Excessive Bandwidth',
+          severity: 'medium' as const,
+          timestamp: new Date().toISOString(),
+          details: 'Bandwidth usage is 5x higher than its 7-day average.',
+        },
+      ];
+
+      const finalAlerts = (!result.alerts || result.alerts.length === 0) ? mockResults : result.alerts;
+      setAlerts(finalAlerts);
+
+      finalAlerts.forEach(alert => {
+        if (alert.severity === 'high') {
+            const device = mockDevices.find(d => d.id === alert.deviceId);
+            toast({
+                variant: 'destructive',
+                title: `High-Severity Anomaly: ${alert.anomalyType}`,
+                description: `${device?.name || alert.deviceId}: ${alert.details}`,
+                action: <Button variant="secondary" size="sm" onClick={() => console.log(`Blocking ${alert.deviceId}`)}>Block Device</Button>
+            })
+        }
+      })
+
     } catch (error) {
       console.error("Failed to detect anomalies:", error);
       // set mock data on error for demo
-       setAlerts([
+       const mockErrorResult = [
           {
             deviceId: 'device-5',
             anomalyType: 'Unauthorized Port Access',
-            severity: 'high',
+            severity: 'high' as const,
             timestamp: new Date().toISOString(),
             details: 'Device attempted to access a blocked RDP port (3389).',
           }
-        ]);
+        ];
+       setAlerts(mockErrorResult);
+       const device = mockDevices.find(d => d.id === mockErrorResult[0].deviceId);
+       toast({
+         variant: 'destructive',
+         title: `High-Severity Anomaly: ${mockErrorResult[0].anomalyType}`,
+         description: `${device?.name || mockErrorResult[0].deviceId}: ${mockErrorResult[0].details}`,
+         action: <Button variant="secondary" size="sm">Block Device</Button>
+       });
     } finally {
       setIsLoading(false);
     }
@@ -89,7 +111,15 @@ export function AnomalyAlerts() {
                     <p className="text-sm text-muted-foreground">
                       {device?.name || alert.deviceId}: {alert.details}
                     </p>
-                    <Badge variant="outline" className={`mt-1 ${config.textColor} border-current`}>{alert.severity}</Badge>
+                    <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline" className={`border-current ${config.textColor}`}>{alert.severity}</Badge>
+                        {alert.severity === 'high' && (
+                            <Button variant="destructive" size="sm" className="h-6 px-2 text-xs">
+                                <Ban className="mr-1 h-3 w-3" />
+                                Block
+                            </Button>
+                        )}
+                    </div>
                   </div>
                 </div>
               );

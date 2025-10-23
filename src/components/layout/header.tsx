@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Bell,
   PanelLeftClose,
   PanelLeftOpen,
+  ShieldAlert,
+  User,
 } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
@@ -28,6 +30,21 @@ const getPageTitle = (pathname: string) => {
   if (pathname.startsWith("/dashboard/parental-controls")) return "Parental Controls";
   return "Dashboard";
 };
+
+const notifications = [
+    {
+        icon: <ShieldAlert className="h-4 w-4 text-red-500" />,
+        title: "Critical Threat Detected",
+        description: "Unknown device blocked on port 3389.",
+        time: "2m ago"
+    },
+    {
+        icon: <User className="h-4 w-4 text-blue-500" />,
+        title: "New Device Joined",
+        description: "A new smartphone connected to guest network.",
+        time: "1h ago"
+    }
+]
 
 export function Header() {
   const { toggleSidebar, state } = useSidebar();
@@ -51,10 +68,36 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon">
-          <Bell />
-          <span className="sr-only">Notifications</span>
-        </Button>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                    <Bell />
+                    <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                    <span className="sr-only">Notifications</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-80" align="end">
+                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                    {notifications.map((item, index) => (
+                        <DropdownMenuItem key={index} className="gap-3">
+                            {item.icon}
+                            <div className="flex-1">
+                                <p className="font-semibold">{item.title}</p>
+                                <p className="text-xs text-muted-foreground">{item.description}</p>
+                            </div>
+                            <span className="text-xs text-muted-foreground">{item.time}</span>
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="justify-center text-sm text-muted-foreground">
+                    View all notifications
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
