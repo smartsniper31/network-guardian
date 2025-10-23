@@ -70,6 +70,7 @@ export const AnomalyAlertSchema = z.object({
   timestamp: z.string().describe('The timestamp of when the anomaly was detected.'),
   details: z.string().describe('Additional details about the anomaly.'),
 });
+export type AnomalyAlert = z.infer<typeof AnomalyAlertSchema>;
 
 export const DetectAnomalousNetworkActivityOutputSchema = z.object({
   alerts: z.array(AnomalyAlertSchema).describe('A list of anomaly alerts.'),
