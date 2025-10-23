@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -12,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Device } from '@/lib/types';
+import { Device, FilterContentOutput } from '@/lib/types';
 import { Filter, Loader2 } from 'lucide-react';
 import { filterContent } from '@/ai/flows/filter-content';
 import { useToast } from '@/hooks/use-toast';
@@ -51,7 +52,7 @@ export function ContentFilterDialog({
   const handleSave = async () => {
     setIsLoading(true);
     try {
-        const result = await filterContent({ deviceId: device.id, categories: selectedCategories });
+        const result: FilterContentOutput = await filterContent({ deviceId: device.id, categories: selectedCategories });
         toast({
             title: 'Filters Updated',
             description: result.message,

@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useState } from 'react';
-import { suggestCompromisedDevices, SuggestCompromisedDevicesInput, SuggestCompromisedDevicesOutput } from '@/ai/flows/suggest-compromised-devices';
+import { suggestCompromisedDevices } from '@/ai/flows/suggest-compromised-devices';
+import { SuggestCompromisedDevicesInput, SuggestCompomisedDevicesOutput } from '@/lib/types';
 import { mockDevices } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function ThreatAnalysis() {
-  const [result, setResult] = useState<SuggestCompromisedDevicesOutput | null>(null);
+  const [result, setResult] = useState<SuggestCompomisedDevicesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
   const [sensitivity, setSensitivity] = useState<SuggestCompromisedDevicesInput['sensitivity']>('normal');

@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react";
@@ -18,10 +19,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  analyzeDeviceVulnerabilities,
-  AnalyzeDeviceVulnerabilitiesOutput,
-} from "@/ai/flows/analyze-device-vulnerabilities";
+import { analyzeDeviceVulnerabilities } from "@/ai/flows/analyze-device-vulnerabilities";
+import { AnalyzeDeviceVulnerabilitiesOutput } from "@/lib/types";
 import {
   Laptop,
   Smartphone,

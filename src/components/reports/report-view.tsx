@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useState } from 'react';
-import { generateWeeklyReport, GenerateWeeklyReportOutput } from '@/ai/flows/generate-weekly-report';
+import { generateWeeklyReport } from '@/ai/flows/generate-weekly-report';
+import { GenerateWeeklyReportOutput } from '@/lib/types';
 import { mockDevices, mockLogs } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
