@@ -9,130 +9,36 @@ export const mockUser: User = {
 
 
 // =================================================================================
-// DONNÉES DE SIMULATION
+// DONNÉES DE SIMULATION - VOTRE POINT D'ENTRÉE POUR LES TESTS RÉELS
 // =================================================================================
 // NOTE IMPORTANTE :
-// Ce fichier contient les données de simulation pour l'application.
-// Dans une application réelle, ces données proviendraient d'un agent local
-// qui scanne le réseau et envoie les informations à une base de données
-// (comme Firebase Firestore). Notre application lirait ensuite ces données
-// depuis la base de données via une API.
+// Pour tester l'application avec les appareils de VOTRE réseau WiFi,
+// modifiez la liste `mockDevices` ci-dessous avec les informations réelles
+// que vous avez trouvées dans l'interface de votre routeur.
 //
-// Pour la simulation, nous utilisons cette liste pré-remplie.
+// C'est l'étape qui simule le scan automatique du réseau.
 // =================================================================================
 export const mockDevices: Device[] = [
+  // === EXEMPLE D'APPAREIL ===
+  // Remplacez cet exemple par vos propres appareils. Copiez et collez ce bloc
+  // pour chaque appareil que vous voulez ajouter.
   {
-    id: 'device-1',
-    ip: '192.168.1.25',
-    mac: 'A8:DB:03:CE:9B:A1',
-    name: "Admin's MacBook Pro",
-    type: 'Laptop',
-    status: 'Online',
-    bandwidthUsage: 5.2,
-    dataUsage: { download: 1204, upload: 345 },
-    lastSeen: new Date(Date.now() - 60000 * 2).toISOString(),
-    openPorts: [80, 443],
-    dns: '8.8.8.8',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: [],
+    id: 'device-1', // Gardez un id unique pour chaque appareil
+    ip: '192.168.1.25', // Mettez l'adresse IP de votre appareil ici
+    mac: 'A8:DB:03:CE:9B:A1', // Mettez l'adresse MAC ici
+    name: "MacBook Pro de l'Admin", // Donnez-lui un nom facile à reconnaître
+    type: 'Laptop', // Choisissez parmi : 'Laptop', 'Smartphone', 'Tablet', 'IoT', 'Camera', 'TV', 'Router', 'Unknown'
+    status: 'Online', // Laissez 'Online' pour les appareils connectés
+    bandwidthUsage: 5.2, // Vous pouvez laisser une valeur approximative
+    dataUsage: { download: 1204, upload: 345 }, // Vous pouvez laisser une valeur approximative
+    lastSeen: new Date().toISOString(), // Laissez cette ligne telle quelle
+    openPorts: [80, 443], // Vous pouvez laisser ce champ vide : []
+    dns: '8.8.8.8', // Laissez cette valeur par défaut
+    dhcp: true, // Laissez cette valeur par défaut
+    firewallRules: [], // Laissez ce champ vide
+    blockedCategories: [], // Laissez ce champ vide
   },
-  {
-    id: 'device-2',
-    ip: '192.168.1.30',
-    mac: 'B1:A2:C3:D4:E5:F6',
-    name: "Living Room TV",
-    type: 'TV',
-    status: 'Online',
-    bandwidthUsage: 15.8,
-    dataUsage: { download: 8201, upload: 102 },
-    lastSeen: new Date(Date.now() - 60000 * 5).toISOString(),
-    openPorts: [443, 8080],
-    dns: '8.8.8.8',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: ['Gaming'],
-  },
-  {
-    id: 'device-3',
-    ip: '192.168.1.103',
-    mac: 'C3:D4:E5:F6:A1:B2',
-    name: "Guest iPhone",
-    type: 'Smartphone',
-    status: 'Paused',
-    bandwidthUsage: 0,
-    dataUsage: { download: 50, upload: 12 },
-    lastSeen: new Date(Date.now() - 60000 * 60 * 2).toISOString(),
-    openPorts: [],
-    dns: '8.8.8.8',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: [],
-  },
-   {
-    id: 'device-4',
-    ip: '192.168.1.104',
-    mac: 'D4:E5:F6:A1:B2:C3',
-    name: "Security Camera 1",
-    type: 'Camera',
-    status: 'Online',
-    bandwidthUsage: 2.1,
-    dataUsage: { download: 450, upload: 450 },
-    lastSeen: new Date(Date.now() - 60000 * 10).toISOString(),
-    openPorts: [554],
-    dns: '1.1.1.1',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: [],
-  },
-  {
-    id: 'device-5',
-    ip: '192.168.1.105',
-    mac: 'E5:F6:A1:B2:C3:D4',
-    name: "Workstation-Dev",
-    type: 'Laptop',
-    status: 'Blocked',
-    bandwidthUsage: 0,
-    dataUsage: { download: 2300, upload: 800 },
-    lastSeen: new Date(Date.now() - 60000 * 30).toISOString(),
-    openPorts: [22, 3389],
-    dns: '8.8.8.8',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: [],
-  },
-  {
-    id: 'device-6',
-    ip: '192.168.1.106',
-    mac: 'F6:A1:B2:C3:D4:E5',
-    name: "Kitchen Tablet",
-    type: 'Tablet',
-    status: 'Offline',
-    bandwidthUsage: 0,
-    dataUsage: { download: 600, upload: 50 },
-    lastSeen: new Date(Date.now() - 60000 * 60 * 24 * 2).toISOString(),
-    openPorts: [],
-    dns: '8.8.8.8',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: ['Social Media', 'Gaming'],
-  },
-  {
-    id: 'device-7',
-    ip: '192.168.1.107',
-    mac: 'A1:B2:C3:D4:E5:F6',
-    name: "Smart Thermostat",
-    type: 'IoT',
-    status: 'Online',
-    bandwidthUsage: 0.1,
-    dataUsage: { download: 5, upload: 5 },
-    lastSeen: new Date(Date.now() - 60000 * 1).toISOString(),
-    openPorts: [8883],
-    dns: '1.1.1.1',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: [],
-  },
+  // Ajoutez d'autres appareils ici en copiant le bloc ci-dessus...
 ];
 
 
