@@ -23,6 +23,20 @@ export async function suggestCompromisedDevices(
   return suggestCompromisedDevicesFlow(input);
 }
 
+const suggestCompromisedDevicesPrompt = ai.definePrompt(
+  {
+    name: 'suggestCompromisedDevicesPrompt',
+    input: {schema: SuggestCompromisedDevicesInputSchema},
+    output: {schema: SuggestCompromisedDevicesOutputSchema},
+    prompt: `You are a network security expert. Analyze the provided device data and threat intelligence feeds to identify potentially compromised devices.
+    Your sensitivity level is '{{sensitivity}}'.
+    Device Data: {{{jsonStringify deviceData}}}
+    Threat Feeds: {{{jsonStringify threatIntelligenceFeeds}}}
+    Based on your analysis, list devices that show signs of compromise and provide a clear, concise reason for each suspicion.
+    `,
+  },
+);
+
 const suggestCompromisedDevicesFlow = ai.defineFlow(
   {
     name: 'suggestCompromisedDevicesFlow',
@@ -30,8 +44,7 @@ const suggestCompromisedDevicesFlow = ai.defineFlow(
     outputSchema: SuggestCompromisedDevicesOutputSchema,
   },
   async input => {
-    const prompt = await ai.prompt('suggestCompromisedDevicesPrompt');
-    const {output} = await prompt(input);
+    const {output} = await suggestCompromisedDevicesPrompt(input);
     return output!;
   }
 );

@@ -20,6 +20,18 @@ export async function detectAnomalousNetworkActivity(
   return detectAnomalousNetworkActivityFlow(input);
 }
 
+const detectAnomalousNetworkActivityPrompt = ai.definePrompt(
+    {
+        name: 'detectAnomalousNetworkActivityPrompt',
+        input: {schema: DetectAnomalousNetworkActivityInputSchema},
+        output: {schema: DetectAnomalousNetworkActivityOutputSchema},
+        prompt: `You are a network security analyst. Analyze the following network data for anomalies.
+        Network Data: {{{networkData}}}
+        Identify any unusual patterns, such as excessive bandwidth usage, unauthorized connections, or port scanning. Generate alerts for any detected anomalies.
+        `,
+    },
+);
+
 const detectAnomalousNetworkActivityFlow = ai.defineFlow(
   {
     name: 'detectAnomalousNetworkActivityFlow',
@@ -27,8 +39,7 @@ const detectAnomalousNetworkActivityFlow = ai.defineFlow(
     outputSchema: DetectAnomalousNetworkActivityOutputSchema,
   },
   async input => {
-    const prompt = await ai.prompt('detectAnomalousNetworkActivityPrompt');
-    const {output} = await prompt(input);
+    const {output} = await detectAnomalousNetworkActivityPrompt(input);
     return output!;
   }
 );
