@@ -31,9 +31,9 @@ import {
 import { Device } from "@/lib/types";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Device name is required"),
-  ip: z.string().ip({ message: "Invalid IP address" }),
-  mac: z.string().regex(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/, "Invalid MAC address"),
+  name: z.string().min(1, "Le nom de l'appareil est requis"),
+  ip: z.string().ip({ message: "Adresse IP invalide" }),
+  mac: z.string().regex(/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/, "Adresse MAC invalide"),
   type: z.enum(['Laptop', 'Smartphone', 'Tablet', 'IoT', 'Camera', 'TV', 'Router', 'Unknown']),
 });
 
@@ -78,9 +78,9 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a New Device</DialogTitle>
+          <DialogTitle>Ajouter un nouvel appareil</DialogTitle>
           <DialogDescription>
-            Manually add a device to your network for monitoring and management.
+            Ajoutez manuellement un appareil à votre réseau pour le surveiller et le gérer.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -90,9 +90,9 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Device Name</FormLabel>
+                  <FormLabel>Nom de l'appareil</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Living Room TV" {...field} />
+                    <Input placeholder="ex: TV du salon" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -104,7 +104,7 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
                 name="ip"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>IP Address</FormLabel>
+                    <FormLabel>Adresse IP</FormLabel>
                     <FormControl>
                       <Input placeholder="192.168.1.100" {...field} />
                     </FormControl>
@@ -117,7 +117,7 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
                 name="mac"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>MAC Address</FormLabel>
+                    <FormLabel>Adresse MAC</FormLabel>
                     <FormControl>
                       <Input placeholder="A8:DB:03:CE:9B:A1" {...field} />
                     </FormControl>
@@ -131,11 +131,11 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Device Type</FormLabel>
+                  <FormLabel>Type d'appareil</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a device type" />
+                        <SelectValue placeholder="Sélectionnez un type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -150,9 +150,9 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
             />
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-                Cancel
+                Annuler
               </Button>
-              <Button type="submit">Add Device</Button>
+              <Button type="submit">Ajouter l'appareil</Button>
             </DialogFooter>
           </form>
         </Form>

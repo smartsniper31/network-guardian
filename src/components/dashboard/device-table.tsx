@@ -54,8 +54,8 @@ export function DeviceTable() {
   const handleStatusChange = (deviceId: string, newStatus: Device['status']) => {
     setDevices(devices.map(d => d.id === deviceId ? { ...d, status: newStatus } : d));
     toast({
-      title: `Device ${newStatus}`,
-      description: `Device with ID ${deviceId} has been ${newStatus.toLowerCase()}.`,
+      title: `Appareil ${newStatus}`,
+      description: `L'appareil avec l'ID ${deviceId} a été mis à jour.`,
     });
   };
 
@@ -66,8 +66,8 @@ export function DeviceTable() {
     };
     setDevices(prev => [...prev, deviceWithId]);
     toast({
-        title: "Device Added",
-        description: `${newDevice.name} has been added to your network.`,
+        title: "Appareil Ajouté",
+        description: `${newDevice.name} a été ajouté à votre réseau.`,
     })
   }
 
@@ -76,12 +76,12 @@ export function DeviceTable() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-            <CardTitle>Connected Devices</CardTitle>
-            <CardDescription>Manage all devices currently on your network.</CardDescription>
+            <CardTitle>Appareils Connectés</CardTitle>
+            <CardDescription>Gérez tous les appareils actuellement sur votre réseau.</CardDescription>
         </div>
         <Button onClick={() => setIsAddDeviceOpen(true)}>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Add Device
+            Ajouter un appareil
         </Button>
       </CardHeader>
       <CardContent>
@@ -89,10 +89,10 @@ export function DeviceTable() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Device</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="hidden md:table-cell">IP Address</TableHead>
-                <TableHead className="hidden lg:table-cell">Bandwidth</TableHead>
+                <TableHead>Appareil</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead className="hidden md:table-cell">Adresse IP</TableHead>
+                <TableHead className="hidden lg:table-cell">Bande passante</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -126,27 +126,27 @@ export function DeviceTable() {
                       <DropdownMenuContent align="end">
                         {device.status !== 'Blocked' && device.status !== 'Paused' &&
                           <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Paused')}>
-                            <Pause className="mr-2 h-4 w-4" /> Pause
+                            <Pause className="mr-2 h-4 w-4" /> Mettre en pause
                           </DropdownMenuItem>
                         }
                         {(device.status === 'Paused' || device.status === 'Blocked') &&
                           <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Online')}>
-                            <Play className="mr-2 h-4 w-4" /> Unpause/Unblock
+                            <Play className="mr-2 h-4 w-4" /> Réactiver
                           </DropdownMenuItem>
                         }
                          {device.status !== 'Blocked' &&
                           <DropdownMenuItem className="text-red-500" onClick={() => handleStatusChange(device.id, 'Blocked')}>
-                            <Ban className="mr-2 h-4 w-4" /> Block
+                            <Ban className="mr-2 h-4 w-4" /> Bloquer
                           </DropdownMenuItem>
                          }
                         <DropdownMenuItem>
-                           <Settings2 className="mr-2 h-4 w-4" /> Device Settings
+                           <Settings2 className="mr-2 h-4 w-4" /> Paramètres
                         </DropdownMenuItem>
                          <DropdownMenuItem>
-                           <Clock className="mr-2 h-4 w-4" /> Access Schedule
+                           <Clock className="mr-2 h-4 w-4" /> Planifier l'accès
                         </DropdownMenuItem>
                          <DropdownMenuItem>
-                           <ShieldCheck className="mr-2 h-4 w-4" /> Firewall Rules
+                           <ShieldCheck className="mr-2 h-4 w-4" /> Règles de pare-feu
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -158,7 +158,7 @@ export function DeviceTable() {
         </div>
           {devices.length === 0 && (
             <div className="text-center py-16 text-muted-foreground">
-                <p>No devices found. Click "Add Device" to get started.</p>
+                <p>Aucun appareil trouvé. Cliquez sur "Ajouter un appareil" pour commencer.</p>
             </div>
         )}
       </CardContent>
