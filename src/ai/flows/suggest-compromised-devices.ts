@@ -29,6 +29,7 @@ const SuggestCompromisedDevicesInputSchema = z.object({
   threatIntelligenceFeeds: z
     .array(z.string())
     .describe('Real-time threat intelligence feeds.'),
+  sensitivity: z.enum(['normal', 'high', 'paranoid']).describe('The sensitivity level for the analysis. "Paranoid" will flag even minor deviations.'),
 });
 export type SuggestCompromisedDevicesInput = z.infer<
   typeof SuggestCompromisedDevicesInputSchema
@@ -42,13 +43,13 @@ const SuggestCompromisedDevicesOutputSchema = z.object({
     }))
     .describe('A list of potentially compromised devices and the reasons for suspicion.'),
 });
-export type SuggestCompromisedDevicesOutput = z.infer<
+export type SuggestCompomisedDevicesOutput = z.infer<
   typeof SuggestCompromisedDevicesOutputSchema
 >;
 
 export async function suggestCompromisedDevices(
   input: SuggestCompromisedDevicesInput
-): Promise<SuggestCompromisedDevicesOutput> {
+): Promise<SuggestCompomisedDevicesOutput> {
   return suggestCompromisedDevicesFlow(input);
 }
 
@@ -58,7 +59,12 @@ const prompt = ai.definePrompt({
   output: {schema: SuggestCompromisedDevicesOutputSchema},
   prompt: `You are a network security expert analyzing network device data and threat intelligence feeds to identify potentially compromised or misconfigured devices.
 
-Analyze the following device data and threat intelligence feeds to identify any devices that may be compromised or misconfigured. Provide the IP address of any such devices and the reason for suspicion.
+Your analysis sensitivity level is set to: {{sensitivity}}.
+- 'normal': Only report clear, high-confidence threats.
+- 'high': Report high-confidence threats and medium-risk anomalies.
+- 'paranoid': Report all potential threats, anomalies, and even minor configuration deviations that could represent a future risk.
+
+Analyze the following device data and threat intelligence feeds to identify any devices that may be compromised or misconfigured based on the selected sensitivity. Provide the IP address of any such devices and the reason for suspicion.
 
 Device Data:
 {{#each deviceData}}
@@ -70,7 +76,7 @@ Threat Intelligence Feeds:
 - {{this}}
 {{/each}}
 
-Output should be formatted as a JSON object with a "compromisedDevices" field. Each object in the compromisedDevices array should have an "ip" field and a "reason" field. Only include devices in the array if there is a clear reason to suspect compromise or misconfiguration.
+Output should be formatted as a JSON object with a "compromisedDevices" field. Each object in the compromisedDevices array should have an "ip" field and a "reason" field. Only include devices in the array if there is a clear reason to suspect compromise or misconfiguration according to the sensitivity level.
 `,
 });
 

@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from 'react';
-import { suggestCompromisedDevices, SuggestCompromisedDevicesOutput } from '@/ai/flows/suggest-compromised-devices';
+import { suggestCompromisedDevices, SuggestCompromisedDevicesInput, SuggestCompromisedDevicesOutput } from '@/ai/flows/suggest-compromised-devices';
 import { mockDevices } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShieldAlert, Loader2, ShieldCheck, ShieldQuestion } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function ThreatAnalysis() {
   const [result, setResult] = useState<SuggestCompromisedDevicesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
+  const [sensitivity, setSensitivity] = useState<SuggestCompromisedDevicesInput['sensitivity']>('normal');
 
   const threatIntelligenceFeeds = [
     "New IoT botnet 'Mirai-v2' actively scanning for open Telnet ports.",
@@ -35,22 +38,31 @@ export function ThreatAnalysis() {
       const response = await suggestCompromisedDevices({
         deviceData,
         threatIntelligenceFeeds,
+        sensitivity,
       });
 
       // Add a mock result if AI returns none, for demonstration.
        if (!response.compromisedDevices || response.compromisedDevices.length === 0) {
-        setResult({
-          compromisedDevices: [
+        let mockResults = [
             {
               ip: '192.168.1.105',
-              reason: 'Device has RDP port 3389 open, which is a high-value target for ransomware attacks.',
-            },
-            {
-              ip: '192.168.1.107',
-              reason: 'Device with open port 8080 matches signatures for the "FakeAV" malware command and control servers.',
-            },
-          ]
-        });
+              reason: 'Device has RDP port 3389 open, which is a high-value target for ransomware attacks (threat level: high).',
+            }
+        ];
+        if (sensitivity === 'high' || sensitivity === 'paranoid') {
+            mockResults.push({
+                ip: '192.168.1.107',
+                reason: 'Slightly unusual outbound traffic pattern detected, could be a sign of a minor misconfiguration (threat level: low).',
+            });
+        }
+        if (sensitivity === 'paranoid') {
+            mockResults.push({
+                ip: '192.168.1.104',
+                reason: 'Port 554 (RTSP) is open. While common for cameras, it can be a vector if not secured. Consider placing it on a separate VLAN (threat level: informational).',
+            });
+        }
+
+        setResult({ compromisedDevices: mockResults });
       } else {
         setResult(response);
       }
@@ -80,10 +92,25 @@ export function ThreatAnalysis() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Label htmlFor="sensitivity">AI Sensitivity Level</Label>
+          <Select value={sensitivity} onValueChange={(value) => setSensitivity(value as any)}>
+            <SelectTrigger id="sensitivity" className="w-[180px]">
+              <SelectValue placeholder="Select sensitivity" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="normal">Normal</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="paranoid">Paranoid</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">"Paranoid" level will flag even minor deviations.</p>
+        </div>
+
         {isLoading && (
           <div className="flex justify-center items-center h-60">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            <p className="ml-4 text-muted-foreground">Analyzing devices...</p>
+            <p className="ml-4 text-muted-foreground">Analyzing devices with {sensitivity} sensitivity...</p>
           </div>
         )}
 
@@ -108,7 +135,7 @@ export function ThreatAnalysis() {
              <div className="flex flex-col items-center justify-center h-60 text-center bg-muted/50 rounded-lg">
               <ShieldCheck className="h-12 w-12 text-green-500 mb-4" />
               <h3 className="text-xl font-semibold">No Threats Detected</h3>
-              <p className="text-muted-foreground">Your network devices appear to be secure.</p>
+              <p className="text-muted-foreground">Your network devices appear to be secure at the '{sensitivity}' sensitivity level.</p>
             </div>
           )
         )}
@@ -117,7 +144,7 @@ export function ThreatAnalysis() {
            <div className="flex flex-col items-center justify-center h-60 text-center bg-muted/50 rounded-lg">
             <ShieldQuestion className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold">Ready to Scan</h3>
-            <p className="text-muted-foreground">Click the button below to start the security analysis.</p>
+            <p className="text-muted-foreground">Select a sensitivity level and click the button below.</p>
           </div>
         )}
       </CardContent>
