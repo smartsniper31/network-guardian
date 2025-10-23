@@ -7,120 +7,47 @@ export const mockUser: User = {
   role: 'Admin',
 };
 
+// =================================================================================
+// MODIFIEZ CETTE LISTE POUR TESTER AVEC VOS PROPRES APPAREILS
+// =================================G================================================
+// Vous pouvez trouver l'adresse IP et MAC de vos appareils dans
+// l'interface d'administration de votre routeur WiFi.
+// =================================================================================
 export const mockDevices: Device[] = [
   {
-    id: 'device-1',
-    ip: '192.168.1.101',
-    mac: 'A8:DB:03:CE:9B:A1',
-    name: "Admin's MacBook Pro",
-    type: 'Laptop',
-    status: 'Online',
-    bandwidthUsage: 5.2,
-    dataUsage: { download: 1204, upload: 345 },
-    lastSeen: new Date(Date.now() - 60000 * 5).toISOString(),
-    openPorts: [80, 443],
+    id: 'device-1', // ID unique, vous pouvez laisser tel quel
+    ip: '192.168.1.25', // Remplacez par l'adresse IP de votre appareil
+    mac: 'A8:DB:03:CE:9B:A1', // Remplacez par l'adresse MAC
+    name: "Mon Ordinateur", // Remplacez par le nom de votre appareil
+    type: 'Laptop', // Le type: 'Laptop', 'Smartphone', 'Tablet', 'TV', 'Camera', 'IoT', 'Router', 'Unknown'
+    status: 'Online', // Statut actuel
+    bandwidthUsage: 5.2, // Vous pouvez mettre une valeur arbitraire
+    dataUsage: { download: 1204, upload: 345 }, // Vous pouvez mettre une valeur arbitraire
+    lastSeen: new Date().toISOString(),
+    openPorts: [80, 443], // Laissez vide si vous ne savez pas: []
     dns: '8.8.8.8',
     dhcp: true,
-    firewallRules: ['Allow all from 192.168.1.0/24'],
+    firewallRules: [],
     blockedCategories: [],
   },
   {
     id: 'device-2',
-    ip: '192.168.1.102',
+    ip: '192.168.1.30', // Remplacez par l'adresse IP d'un autre appareil (ex: votre téléphone)
     mac: 'B8:27:EB:C3:5B:E2',
-    name: 'Living Room TV',
-    type: 'TV',
-    status: 'Online',
-    bandwidthUsage: 15.8,
-    dataUsage: { download: 8234, upload: 102 },
-    lastSeen: new Date(Date.now() - 60000 * 2).toISOString(),
-    openPorts: [8008, 8009],
-    dns: '1.1.1.1',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: ['Gaming'],
-  },
-  {
-    id: 'device-3',
-    ip: '192.168.1.103',
-    mac: '40:9C:28:B0:1A:3D',
-    name: 'Guest iPhone',
+    name: 'Mon Téléphone',
     type: 'Smartphone',
-    status: 'Paused',
-    bandwidthUsage: 0,
-    dataUsage: { download: 512, upload: 210 },
-    lastSeen: new Date(Date.now() - 60000 * 60).toISOString(),
+    status: 'Online',
+    bandwidthUsage: 2.1,
+    dataUsage: { download: 823, upload: 102 },
+    lastSeen: new Date().toISOString(),
     openPorts: [],
     dns: '8.8.8.8',
     dhcp: true,
     firewallRules: [],
-    blockedCategories: [],
-  },
-  {
-    id: 'device-4',
-    ip: '192.168.1.104',
-    mac: 'D4:F5:13:B7:A6:C9',
-    name: 'Security Camera 1',
-    type: 'Camera',
-    status: 'Online',
-    bandwidthUsage: 1.5,
-    dataUsage: { download: 300, upload: 950 },
-    lastSeen: new Date(Date.now() - 60000 * 1).toISOString(),
-    openPorts: [554],
-    dns: '8.8.8.8',
-    dhcp: true,
-    firewallRules: ['Allow traffic to port 554'],
-    blockedCategories: [],
-  },
-  {
-    id: 'device-5',
-    ip: '192.168.1.105',
-    mac: 'F0:18:98:C4:B3:A2',
-    name: 'Unknown Device',
-    type: 'Unknown',
-    status: 'Blocked',
-    bandwidthUsage: 0,
-    dataUsage: { download: 10, upload: 2 },
-    lastSeen: new Date(Date.now() - 60000 * 120).toISOString(),
-    openPorts: [3389],
-    dns: '8.8.8.8',
-    dhcp: false,
-    firewallRules: ['Block all'],
-    blockedCategories: [],
-  },
-  {
-    id: 'device-6',
-    ip: '192.168.1.106',
-    mac: 'E4:5F:01:D3:A8:B7',
-    name: 'Kitchen Tablet',
-    type: 'Tablet',
-    status: 'Offline',
-    bandwidthUsage: 0,
-    dataUsage: { download: 1800, upload: 400 },
-    lastSeen: new Date(Date.now() - 60000 * 1440).toISOString(),
-    openPorts: [],
-    dns: '1.1.1.1',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: ['Social Media', 'Gaming'],
-  },
-    {
-    id: 'device-7',
-    ip: '192.168.1.107',
-    mac: '00:1A:2B:3C:4D:5E',
-    name: 'Smart Thermostat',
-    type: 'IoT',
-    status: 'Online',
-    bandwidthUsage: 0.1,
-    dataUsage: { download: 25, upload: 50 },
-    lastSeen: new Date(Date.now() - 60000 * 10).toISOString(),
-    openPorts: [8080, 2048],
-    dns: '8.8.8.8',
-    dhcp: true,
-    firewallRules: [],
-    blockedCategories: [],
+    blockedCategories: ['Gaming'], // Exemple de catégorie bloquée
   },
 ];
+// =================================================================================
 
 export const mockLogs: LogEntry[] = [
   {
@@ -138,37 +65,5 @@ export const mockLogs: LogEntry[] = [
     action: 'Pause Device',
     target: 'Guest iPhone (192.168.1.103)',
     details: 'Paused internet access for guest device.',
-  },
-  {
-    id: 'log-3',
-    timestamp: new Date(Date.now() - 60000 * 90).toISOString(),
-    user: 'System',
-    action: 'Threat Detected',
-    target: 'Security Camera 1 (192.168.1.104)',
-    details: 'Unusual outbound traffic pattern detected.',
-  },
-  {
-    id: 'log-4',
-    timestamp: new Date(Date.now() - 60000 * 180).toISOString(),
-    user: 'Admin User',
-    action: 'Create Schedule',
-    target: "Admin's MacBook Pro (192.168.1.101)",
-    details: 'Set "Work Hours" schedule to limit access during evenings.',
-  },
-  {
-    id: 'log-5',
-    timestamp: new Date(Date.now() - 60000 * 240).toISOString(),
-    user: 'System',
-    action: 'Device Joined',
-    target: 'Guest iPhone (192.168.1.103)',
-    details: 'Device connected to the guest network.',
-  },
-    {
-    id: 'log-6',
-    timestamp: new Date(Date.now() - 60000 * 300).toISOString(),
-    user: 'Admin User',
-    action: 'Update Firewall',
-    target: 'Living Room TV (192.168.1.102)',
-    details: 'Added a rule to block access to *.example.com.',
   },
 ];
