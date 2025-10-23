@@ -23,6 +23,7 @@ import { mockDevices as initialDevices } from "@/lib/data";
 import { Device } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { AccessScheduleDialog } from './access-schedule-dialog';
+import { ContentFilterDialog } from './content-filter-dialog';
 
 const deviceIcons = {
   Laptop: <Laptop className="h-5 w-5" />,
@@ -46,6 +47,7 @@ export function ControlsView() {
   const [devices, setDevices] = useState<Device[]>(initialDevices);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleStatusChange = (deviceId: string, newStatus: Device['status']) => {
@@ -69,6 +71,16 @@ export function ControlsView() {
     });
   };
 
+  const openFilterDialog = (device: Device) => {
+    setSelectedDevice(device);
+    setIsFilterDialogOpen(true);
+  };
+
+  const handleFilterSave = (deviceId: string, blockedCategories: string[]) => {
+    setDevices(devices.map(d => d.id === deviceId ? { ...d, blockedCategories } : d));
+    // Toast is handled in the dialog
+  };
+
   return (
     <>
     <Card>
@@ -79,6 +91,7 @@ export function ControlsView() {
               <TableRow>
                 <TableHead>Device</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Active Filters</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -100,6 +113,14 @@ export function ControlsView() {
                        {device.status}
                     </Badge>
                   </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {device.blockedCategories?.map(cat => <Badge key={cat} variant="secondary">{cat}</Badge>)}
+                       {(!device.blockedCategories || device.blockedCategories.length === 0) && (
+                         <span className="text-xs text-muted-foreground">None</span>
+                       )}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     {device.status === 'Online' && (
                         <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Paused')}>
@@ -119,7 +140,7 @@ export function ControlsView() {
                     <Button variant="outline" size="sm" onClick={() => openScheduleDialog(device)}>
                         <Clock className="mr-2 h-4 w-4" /> Schedule
                     </Button>
-                     <Button variant="outline" size="sm" disabled>
+                     <Button variant="outline" size="sm" onClick={() => openFilterDialog(device)}>
                         <Filter className="mr-2 h-4 w-4" /> Filter
                     </Button>
                   </TableCell>
@@ -138,6 +159,15 @@ export function ControlsView() {
             device={selectedDevice}
             onSave={handleScheduleSave}
         />
+    )}
+
+    {selectedDevice && (
+      <ContentFilterDialog
+        isOpen={isFilterDialogOpen}
+        onOpenChange={setIsFilterDialogOpen}
+        device={selectedDevice}
+        onSave={handleFilterSave}
+      />
     )}
     </>
   );

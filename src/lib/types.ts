@@ -17,6 +17,7 @@ export const DeviceSchema = z.object({
   dns: z.string(),
   dhcp: z.boolean(),
   firewallRules: z.array(z.string()),
+  blockedCategories: z.array(z.string()).optional(),
 });
 export type Device = z.infer<typeof DeviceSchema>;
 

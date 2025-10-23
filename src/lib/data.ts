@@ -22,6 +22,7 @@ export const mockDevices: Device[] = [
     dns: '8.8.8.8',
     dhcp: true,
     firewallRules: ['Allow all from 192.168.1.0/24'],
+    blockedCategories: [],
   },
   {
     id: 'device-2',
@@ -37,6 +38,7 @@ export const mockDevices: Device[] = [
     dns: '1.1.1.1',
     dhcp: true,
     firewallRules: [],
+    blockedCategories: ['Gaming'],
   },
   {
     id: 'device-3',
@@ -52,6 +54,7 @@ export const mockDevices: Device[] = [
     dns: '8.8.8.8',
     dhcp: true,
     firewallRules: [],
+    blockedCategories: [],
   },
   {
     id: 'device-4',
@@ -67,6 +70,7 @@ export const mockDevices: Device[] = [
     dns: '8.8.8.8',
     dhcp: true,
     firewallRules: ['Allow traffic to port 554'],
+    blockedCategories: [],
   },
   {
     id: 'device-5',
@@ -82,6 +86,7 @@ export const mockDevices: Device[] = [
     dns: '8.8.8.8',
     dhcp: false,
     firewallRules: ['Block all'],
+    blockedCategories: [],
   },
   {
     id: 'device-6',
@@ -97,6 +102,7 @@ export const mockDevices: Device[] = [
     dns: '1.1.1.1',
     dhcp: true,
     firewallRules: [],
+    blockedCategories: ['Social Media', 'Gaming'],
   },
     {
     id: 'device-7',
@@ -112,6 +118,7 @@ export const mockDevices: Device[] = [
     dns: '8.8.8.8',
     dhcp: true,
     firewallRules: [],
+    blockedCategories: [],
   },
 ];
 
