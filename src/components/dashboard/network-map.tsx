@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { mockDevices } from "@/lib/data"
 import { Laptop, Smartphone, Tablet, Tv, Camera, Router, HelpCircle, Server } from "lucide-react"
