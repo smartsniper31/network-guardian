@@ -20,12 +20,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Laptop, Smartphone, Tablet, Tv, Camera, Router, HelpCircle, Server,
-  MoreHorizontal, Ban, Pause, Play, Settings2, ShieldCheck, Clock
+  MoreHorizontal, Ban, Pause, Play, Settings2, ShieldCheck, Clock, PlusCircle
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { mockDevices as initialDevices } from "@/lib/data";
 import { Device } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
+import { AddDeviceDialog } from './add-device-dialog';
 
 const deviceIcons = {
   Laptop: <Laptop className="h-5 w-5" />,
@@ -47,6 +48,7 @@ const statusColors = {
 
 export function DeviceTable() {
   const [devices, setDevices] = useState<Device[]>(initialDevices);
+  const [isAddDeviceOpen, setIsAddDeviceOpen] = useState(false);
   const { toast } = useToast();
 
   const handleStatusChange = (deviceId: string, newStatus: Device['status']) => {
@@ -57,11 +59,30 @@ export function DeviceTable() {
     });
   };
 
+  const addDevice = (newDevice: Omit<Device, 'id'>) => {
+    const deviceWithId: Device = {
+        ...newDevice,
+        id: `device-${Math.random().toString(36).substr(2, 9)}`,
+    };
+    setDevices(prev => [...prev, deviceWithId]);
+    toast({
+        title: "Device Added",
+        description: `${newDevice.name} has been added to your network.`,
+    })
+  }
+
   return (
+    <>
     <Card>
-      <CardHeader>
-        <CardTitle>Connected Devices</CardTitle>
-        <CardDescription>Manage all devices currently on your network.</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+            <CardTitle>Connected Devices</CardTitle>
+            <CardDescription>Manage all devices currently on your network.</CardDescription>
+        </div>
+        <Button onClick={() => setIsAddDeviceOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Device
+        </Button>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
@@ -135,7 +156,18 @@ export function DeviceTable() {
             </TableBody>
           </Table>
         </div>
+          {devices.length === 0 && (
+            <div className="text-center py-16 text-muted-foreground">
+                <p>No devices found. Click "Add Device" to get started.</p>
+            </div>
+        )}
       </CardContent>
     </Card>
+    <AddDeviceDialog 
+        isOpen={isAddDeviceOpen}
+        onOpenChange={setIsAddDeviceOpen}
+        onSave={addDevice}
+    />
+    </>
   );
 }
