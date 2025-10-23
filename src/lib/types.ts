@@ -1,21 +1,24 @@
-export type Device = {
-  id: string;
-  ip: string;
-  mac: string;
-  name: string;
-  type: 'Laptop' | 'Smartphone' | 'Tablet' | 'IoT' | 'Camera' | 'TV' | 'Router' | 'Unknown';
-  status: 'Online' | 'Offline' | 'Blocked' | 'Paused';
-  bandwidthUsage: number;
-  dataUsage: {
-    download: number;
-    upload: number;
-  };
-  lastSeen: string;
-  openPorts: number[];
-  dns: string;
-  dhcp: boolean;
-  firewallRules: string[];
-};
+import { z } from 'zod';
+
+export const DeviceSchema = z.object({
+  id: z.string(),
+  ip: z.string(),
+  mac: z.string(),
+  name: z.string(),
+  type: z.enum(['Laptop', 'Smartphone', 'Tablet', 'IoT', 'Camera', 'TV', 'Router', 'Unknown']),
+  status: z.enum(['Online', 'Offline', 'Blocked', 'Paused']),
+  bandwidthUsage: z.number(),
+  dataUsage: z.object({
+    download: z.number(),
+    upload: z.number(),
+  }),
+  lastSeen: z.string(),
+  openPorts: z.array(z.number()),
+  dns: z.string(),
+  dhcp: z.boolean(),
+  firewallRules: z.array(z.string()),
+});
+export type Device = z.infer<typeof DeviceSchema>;
 
 export type LogEntry = {
   id: string;
