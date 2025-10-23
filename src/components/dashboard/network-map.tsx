@@ -249,9 +249,11 @@ export function NetworkMap() {
           {selectedDevice && (
             <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                {(deviceIcons[selectedDevice.type] || <HelpCircle />)}
-                {selectedDevice.name}
+              <DialogTitle>
+                <div className="flex items-center gap-2">
+                  {React.createElement(deviceIcons[selectedDevice.type] || HelpCircle)}
+                  {selectedDevice.name}
+                </div>
               </DialogTitle>
               <DialogDescription>
                 {selectedDevice.ip} &bull; {selectedDevice.mac}

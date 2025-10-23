@@ -3,6 +3,7 @@
 import { Wifi, ShieldAlert, ArrowDownUp, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockDevices } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
 export function StatsCards() {
   const onlineDevices = mockDevices.filter(
@@ -61,9 +62,4 @@ export function StatsCards() {
       ))}
     </div>
   );
-}
-
-// Helper function to combine class names
-function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(' ');
 }
