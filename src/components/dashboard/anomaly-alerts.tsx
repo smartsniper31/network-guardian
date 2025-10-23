@@ -4,7 +4,7 @@ import { useState } from "react";
 import { detectAnomalousNetworkActivity, DetectAnomalousNetworkActivityOutput } from "@/ai/flows/detect-anomalous-network-activity";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, ShieldAlert, Loader2 } from "lucide-react";
+import { AlertCircle, ShieldAlert, Loader2, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { mockDevices } from "@/lib/data";
 
