@@ -28,6 +28,7 @@ const getPageTitle = (pathname: string) => {
   if (pathname.startsWith("/dashboard/security")) return "Security";
   if (pathname.startsWith("/dashboard/logs")) return "Logs & History";
   if (pathname.startsWith("/dashboard/parental-controls")) return "Parental Controls";
+  if (pathname.startsWith("/dashboard/reports")) return "Reports";
   return "Dashboard";
 };
 

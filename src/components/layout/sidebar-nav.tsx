@@ -9,6 +9,7 @@ import {
   Settings,
   CircleHelp,
   Users,
+  ClipboardList,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const navItems = [
   { href: "/dashboard", icon: Home, label: "Dashboard" },
   { href: "/dashboard/security", icon: Shield, label: "Security" },
   { href: "/dashboard/parental-controls", icon: Users, label: "Parental Controls" },
+  { href: "/dashboard/reports", icon: ClipboardList, label: "Reports" },
   { href: "/dashboard/logs", icon: FileClock, label: "Logs" },
 ];
 
