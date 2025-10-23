@@ -9,36 +9,39 @@ export const mockUser: User = {
 
 
 // =================================================================================
-// DONNÉES DE SIMULATION - VOTRE POINT D'ENTRÉE POUR LES TESTS RÉELS
+// DONNÉES DE SIMULATION - POINT D'ENTRÉE POUR LES TESTS
 // =================================================================================
 // NOTE IMPORTANTE :
-// Pour tester l'application avec les appareils de VOTRE réseau WiFi,
-// modifiez la liste `mockDevices` ci-dessous avec les informations réelles
-// que vous avez trouvées dans l'interface de votre routeur.
+// Dans un environnement de développement, ce fichier agit comme une base de données
+// simulée. Pour tester l'application avec des appareils réels, vous pouvez
+// remplir cette liste manuellement avec les informations trouvées sur votre routeur.
 //
-// C'est l'étape qui simule le scan automatique du réseau.
+// Dans une application de production réelle, ce fichier ne serait pas utilisé.
+// À la place, les données proviendraient d'un "agent de scan local" qui
+// enverrait les informations à une base de données cloud (ex: Firestore),
+// et le service `network-service.ts` lirait ces données depuis le cloud.
 // =================================================================================
 export const mockDevices: Device[] = [
-  // === EXEMPLE D'APPAREIL ===
-  // Remplacez cet exemple par vos propres appareils. Copiez et collez ce bloc
-  // pour chaque appareil que vous voulez ajouter.
+  // L'application commence avec une liste vide pour une meilleure expérience.
+  // Décommentez cet appareil pour voir un exemple ou ajoutez les vôtres.
+  /*
   {
-    id: 'device-1', // Gardez un id unique pour chaque appareil
-    ip: '192.168.1.25', // Mettez l'adresse IP de votre appareil ici
-    mac: 'A8:DB:03:CE:9B:A1', // Mettez l'adresse MAC ici
-    name: "MacBook Pro de l'Admin", // Donnez-lui un nom facile à reconnaître
-    type: 'Laptop', // Choisissez parmi : 'Laptop', 'Smartphone', 'Tablet', 'IoT', 'Camera', 'TV', 'Router', 'Unknown'
-    status: 'Online', // Laissez 'Online' pour les appareils connectés
-    bandwidthUsage: 5.2, // Vous pouvez laisser une valeur approximative
-    dataUsage: { download: 1204, upload: 345 }, // Vous pouvez laisser une valeur approximative
-    lastSeen: new Date().toISOString(), // Laissez cette ligne telle quelle
-    openPorts: [80, 443], // Vous pouvez laisser ce champ vide : []
-    dns: '8.8.8.8', // Laissez cette valeur par défaut
-    dhcp: true, // Laissez cette valeur par défaut
-    firewallRules: [], // Laissez ce champ vide
-    blockedCategories: [], // Laissez ce champ vide
+    id: 'device-1',
+    ip: '192.168.1.25',
+    mac: 'A8:DB:03:CE:9B:A1',
+    name: "MacBook Pro de l'Admin",
+    type: 'Laptop',
+    status: 'Online',
+    bandwidthUsage: 5.2,
+    dataUsage: { download: 1204, upload: 345 },
+    lastSeen: new Date().toISOString(),
+    openPorts: [80, 443],
+    dns: '8.8.8.8',
+    dhcp: true,
+    firewallRules: [],
+    blockedCategories: [],
   },
-  // Ajoutez d'autres appareils ici en copiant le bloc ci-dessus...
+  */
 ];
 
 
