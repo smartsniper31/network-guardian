@@ -8,23 +8,32 @@ export const mockUser: User = {
 };
 
 // =================================================================================
-// MODIFIEZ CETTE LISTE POUR TESTER AVEC VOS PROPRES APPAREILS
-// =================================G================================================
-// Vous pouvez trouver l'adresse IP et MAC de vos appareils dans
-// l'interface d'administration de votre routeur WiFi.
+// DONNÉES DE SIMULATION - GUIDE POUR LE TEST EN CONDITIONS "RÉELLES"
 // =================================================================================
+// NOTE IMPORTANTE :
+// Ce fichier simule les données qui, dans une application de production, proviendraient
+// d'un "agent local" scannant votre réseau. L'application web elle-même NE PEUT PAS
+// scanner votre WiFi directement pour des raisons de sécurité.
+//
+// POUR TESTER AVEC VOS APPAREILS :
+// 1. Connectez-vous à l'interface d'administration de votre routeur (ex: 192.168.1.1).
+// 2. Trouvez la section "Appareils connectés" ou "Clients DHCP".
+// 3. Récupérez l'adresse IP et l'adresse MAC de vos appareils.
+// 4. Remplacez les informations ci-dessous par celles de vos appareils.
+// =================================================================================
+
 export const mockDevices: Device[] = [
   {
-    id: 'device-1', // ID unique, vous pouvez laisser tel quel
+    id: 'device-1', // ID unique, laissez-le tel quel
     ip: '192.168.1.25', // Remplacez par l'adresse IP de votre appareil
     mac: 'A8:DB:03:CE:9B:A1', // Remplacez par l'adresse MAC
     name: "Mon Ordinateur", // Remplacez par le nom de votre appareil
-    type: 'Laptop', // Le type: 'Laptop', 'Smartphone', 'Tablet', 'TV', 'Camera', 'IoT', 'Router', 'Unknown'
+    type: 'Laptop', // Type : 'Laptop', 'Smartphone', 'Tablet', 'TV', 'Camera', 'IoT', 'Router', 'Unknown'
     status: 'Online', // Statut actuel
-    bandwidthUsage: 5.2, // Vous pouvez mettre une valeur arbitraire
-    dataUsage: { download: 1204, upload: 345 }, // Vous pouvez mettre une valeur arbitraire
+    bandwidthUsage: 5.2, // Valeur arbitraire
+    dataUsage: { download: 1204, upload: 345 }, // Valeur arbitraire
     lastSeen: new Date().toISOString(),
-    openPorts: [80, 443], // Laissez vide si vous ne savez pas: []
+    openPorts: [80, 443], // Ports ouverts, laissez vide si inconnu : []
     dns: '8.8.8.8',
     dhcp: true,
     firewallRules: [],
@@ -32,7 +41,7 @@ export const mockDevices: Device[] = [
   },
   {
     id: 'device-2',
-    ip: '192.168.1.30', // Remplacez par l'adresse IP d'un autre appareil (ex: votre téléphone)
+    ip: '192.168.1.30', // Remplacez par l'IP d'un autre appareil (ex: votre téléphone)
     mac: 'B8:27:EB:C3:5B:E2',
     name: 'Mon Téléphone',
     type: 'Smartphone',
