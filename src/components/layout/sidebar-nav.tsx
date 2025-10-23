@@ -8,6 +8,7 @@ import {
   FileClock,
   Settings,
   CircleHelp,
+  Users,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ import { mockDevices } from "@/lib/data";
 const navItems = [
   { href: "/dashboard", icon: Home, label: "Dashboard" },
   { href: "/dashboard/security", icon: Shield, label: "Security" },
+  { href: "/dashboard/parental-controls", icon: Users, label: "Parental Controls" },
   { href: "/dashboard/logs", icon: FileClock, label: "Logs" },
 ];
 
