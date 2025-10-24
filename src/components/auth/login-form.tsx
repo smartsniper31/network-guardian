@@ -38,6 +38,7 @@ export function LoginForm() {
           id="password"
           name="password"
           type="password"
+          placeholder="••••••••"
           defaultValue="password"
           required
         />
