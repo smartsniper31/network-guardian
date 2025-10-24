@@ -12,12 +12,25 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Download, Search, X } from "lucide-react";
+import { Download, Search, X, User, Edit, ShieldAlert } from "lucide-react";
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { getLogs } from '@/lib/services/network-service';
 import { LogEntry } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
+import { Badge } from '../ui/badge';
+
+const logIcons: { [key: string]: React.ReactElement } = {
+    'Block Device': <Ban className="h-4 w-4 text-red-500" />,
+    'Pause Device': <Pause className="h-4 w-4 text-yellow-500" />,
+    'AI Anomaly Detected': <ShieldAlert className="h-4 w-4 text-orange-500" />,
+    'User Login': <User className="h-4 w-4 text-blue-500" />,
+    'Updated Settings': <Edit className="h-4 w-4 text-gray-500" />,
+};
+
+const getIconForAction = (action: string) => {
+    return logIcons[action] || <Edit className="h-4 w-4 text-gray-500" />;
+}
 
 export function LogsView() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -49,13 +62,13 @@ export function LogsView() {
       <CardHeader>
         <CardTitle>Journal d'activité</CardTitle>
         <CardDescription>Un enregistrement détaillé de toutes les actions effectuées dans l'application.</CardDescription>
-        <div className="flex items-center justify-between pt-4">
-          <div className="relative w-full max-w-sm">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+          <div className="relative w-full sm:max-w-sm">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Rechercher dans les journaux..."
-              className="pl-9"
+              className="pl-9 w-full"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             />
@@ -70,14 +83,38 @@ export function LogsView() {
               </Button>
             )}
           </div>
-          <Button variant="outline">
+          <Button variant="outline" className="w-full sm:w-auto">
             <Download className="mr-2 h-4 w-4" />
             Exporter en CSV
           </Button>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
+        {/* Mobile View: Card List */}
+        <div className="space-y-4 md:hidden">
+          {isLoading ? (
+            [...Array(3)].map((_, i) => <Skeleton key={i} className="h-28 w-full" />)
+          ) : (
+            filteredLogs.map((log) => (
+              <div key={log.id} className="flex items-start gap-4 rounded-lg border p-3">
+                 <div className="text-muted-foreground mt-1">{getIconForAction(log.action)}</div>
+                 <div className="flex-1 space-y-1">
+                    <div className="flex justify-between items-start">
+                        <p className="font-semibold">{log.action}</p>
+                        <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(log.timestamp), { addSuffix: true, locale: fr })}</p>
+                    </div>
+                    <p className="text-sm"><span className="font-medium">Cible:</span> {log.target}</p>
+                    <p className="text-sm text-muted-foreground">{log.details}</p>
+                    <Badge variant="outline">{log.user}</Badge>
+                 </div>
+              </div>
+            ))
+          )}
+        </div>
+
+
+        {/* Desktop View: Table */}
+        <div className="hidden overflow-x-auto md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -110,7 +147,10 @@ export function LogsView() {
                     </TableCell>
                     <TableCell>{log.user}</TableCell>
                     <TableCell>
-                      <span className="font-medium">{log.action}</span>
+                      <span className="font-medium flex items-center gap-2">
+                        {getIconForAction(log.action)}
+                        {log.action}
+                      </span>
                     </TableCell>
                     <TableCell>{log.target}</TableCell>
                     <TableCell className="hidden md:table-cell">{log.details}</TableCell>
