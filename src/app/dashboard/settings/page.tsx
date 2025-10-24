@@ -1,10 +1,11 @@
 "use client";
 
 import { useAtom } from "jotai";
+import { useTheme } from "next-themes";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BrainCircuit, Languages, SunMoon, Bell, UserCog, Scan, AlertCircle } from "lucide-react";
+import { BrainCircuit, Languages, Sun, Moon, Laptop, Bell, UserCog, Scan, AlertCircle } from "lucide-react";
 import { aiSensitivityAtom } from "@/lib/state/settings";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -14,9 +15,7 @@ import { Button } from "@/components/ui/button";
 
 export default function SettingsPage() {
   const [sensitivity, setSensitivity] = useAtom(aiSensitivityAtom);
-  // State for other settings would be added here
-  // const [theme, setTheme] = useAtom(themeAtom);
-  // const [language, setLanguage] = useAtom(languageAtom);
+  const { setTheme, theme } = useTheme();
 
   return (
     <div className="space-y-8">
@@ -33,7 +32,8 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <SunMoon />
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 Paramètres généraux et apparence
               </CardTitle>
               <CardDescription>
@@ -43,22 +43,25 @@ export default function SettingsPage() {
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
                <div className="grid w-full items-center gap-4">
                   <Label>Thème</Label>
-                  <RadioGroup defaultValue="system" className="flex space-x-2 md:space-x-4">
+                  <RadioGroup defaultValue={theme} onValueChange={setTheme} className="flex space-x-2 md:space-x-4">
                     <div>
                       <RadioGroupItem value="light" id="light" className="peer sr-only" />
                       <Label htmlFor="light" className="flex h-16 w-16 flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                        <Sun className="h-6 w-6" />
                         Clair
                       </Label>
                     </div>
                      <div>
                       <RadioGroupItem value="dark" id="dark" className="peer sr-only" />
                       <Label htmlFor="dark" className="flex h-16 w-16 flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                        <Moon className="h-6 w-6" />
                         Sombre
                       </Label>
                     </div>
                      <div>
                       <RadioGroupItem value="system" id="system" className="peer sr-only" />
                       <Label htmlFor="system" className="flex h-16 w-16 flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                        <Laptop className="h-6 w-6" />
                         Système
                       </Label>
                     </div>
