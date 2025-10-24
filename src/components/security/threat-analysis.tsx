@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { suggestCompromisedDevices } from '@/ai/flows/suggest-compromised-devices';
-import { SuggestCompromisedDevicesInput, SuggestCompomisedDevicesOutput, Device } from '@/lib/types';
+import { SuggestCompomisedDevicesOutput, Device } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShieldAlert, Loader2, ShieldCheck, ShieldQuestion } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getDevices } from '@/lib/services/network-service';
 import { useAtom } from 'jotai';
-import { aiSensitivityAtom } from '@/app/dashboard/settings/page';
+import { aiSensitivityAtom } from '@/lib/state/settings';
 
 
 export function ThreatAnalysis() {
