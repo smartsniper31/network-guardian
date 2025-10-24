@@ -113,7 +113,9 @@ function VulnerabilityAnalysis({ device }: { device: Device }) {
             <div className="space-y-3 rounded-md border p-3">
               {analysis.vulnerabilities.map((vuln, index) => (
                 <div key={index} className="flex gap-3">
-                  {severityIcons[vuln.severity]}
+                  <div className="flex-shrink-0">
+                    {severityIcons[vuln.severity]}
+                  </div>
                   <div>
                     <p className="font-semibold capitalize">
                       Risque {vuln.severity === 'low' ? 'faible' : vuln.severity === 'medium' ? 'moyen' : vuln.severity}
@@ -149,7 +151,7 @@ export function NetworkMapDialog({ device, isOpen, onOpenChange }: NetworkMapDia
     
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent>
+            <DialogContent className="grid-rows-[auto_1fr] overflow-hidden max-h-[90vh]">
             <DialogHeader>
                 <DialogTitle>
                 <div className="flex items-center gap-2">
@@ -161,22 +163,24 @@ export function NetworkMapDialog({ device, isOpen, onOpenChange }: NetworkMapDia
                 {device.ip} &bull; {device.mac}
                 </DialogDescription>
             </DialogHeader>
-            <div>
-                <h4 className="font-semibold text-sm mb-2">Détails de l'appareil</h4>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>Statut</div>
+            <div className="overflow-y-auto pr-6 -mr-6 space-y-4">
                 <div>
-                    <Badge variant="outline">{device.status}</Badge>
+                    <h4 className="font-semibold text-sm mb-2">Détails de l'appareil</h4>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>Statut</div>
+                    <div>
+                        <Badge variant="outline">{device.status}</Badge>
+                    </div>
+                    <div>Type</div>
+                    <div>{device.type}</div>
+                    <div>Bande passante</div>
+                    <div>{device.bandwidthUsage} Mbps</div>
+                    <div>Ports ouverts</div>
+                    <div>{device.openPorts.join(", ") || "Aucun"}</div>
+                    </div>
                 </div>
-                <div>Type</div>
-                <div>{device.type}</div>
-                <div>Bande passante</div>
-                <div>{device.bandwidthUsage} Mbps</div>
-                <div>Ports ouverts</div>
-                <div>{device.openPorts.join(", ") || "Aucun"}</div>
-                </div>
+                <VulnerabilityAnalysis device={device} />
             </div>
-            <VulnerabilityAnalysis device={device} />
             </DialogContent>
       </Dialog>
     )
