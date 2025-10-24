@@ -16,7 +16,7 @@ export default function DashboardPage() {
         </div>
         <div className="space-y-8">
           <AnomalyAlerts />
-          <Card>
+          <Card id="bandwidth-card">
             <CardHeader>
               <CardTitle>Utilisation de la bande passante</CardTitle>
               <CardDescription>Top 5 des appareils les plus gourmands en bande passante.</CardDescription>

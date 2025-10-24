@@ -71,12 +71,14 @@ export function StatsCards() {
       value: `${formattedData} GB`,
       icon: ArrowDownUp,
       color: "text-blue-500",
+      href: "/dashboard#bandwidth-card"
     },
      {
       title: "Utilisateurs connectés",
       value: "4",
       icon: Users,
       color: "text-purple-500",
+      href: "/dashboard/parental-controls"
     },
   ];
 
@@ -92,27 +94,15 @@ export function StatsCards() {
 
         return (
           <Card key={stat.title} className="transition-all hover:shadow-md">
-            {stat.href ? (
-                <NextLink href={stat.href} className="block">
-                    {cardContent}
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stat.value}</div>
-                        <p className="text-xs text-muted-foreground">
-                        {stat.title === "Menaces détectées" && "dans les dernières 24h"}
-                        </p>
-                    </CardContent>
-                </NextLink>
-            ) : (
-                <>
-                    {cardContent}
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stat.value}</div>
-                        <p className="text-xs text-muted-foreground">
-                        {stat.title === "Menaces détectées" && "dans les dernières 24h"}
-                        </p>
-                    </CardContent>
-                </>
-            )}
+            <NextLink href={stat.href} className="block">
+              {cardContent}
+              <CardContent>
+                  <div className="text-2xl font-bold">{stat.value}</div>
+                  <p className="text-xs text-muted-foreground">
+                  {stat.title === "Menaces détectées" && "dans les dernières 24h"}
+                  </p>
+              </CardContent>
+            </NextLink>
           </Card>
         );
       })}
