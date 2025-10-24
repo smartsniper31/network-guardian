@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarMenuBadge,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Icons } from "@/components/icons";
 
@@ -35,11 +36,18 @@ const navItems = [
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const { setOpenMobile, isMobile } = useSidebar();
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }
 
   return (
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="p-4">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2" onClick={handleLinkClick}>
           <Icons.logo className="h-8 w-8 text-primary" />
           <span className="font-headline text-2xl font-bold tracking-tight">
             Guardian
@@ -55,6 +63,7 @@ export function SidebarNav() {
                 asChild
                 isActive={pathname === item.href}
                 tooltip={{ children: item.label }}
+                onClick={handleLinkClick}
               >
                 <Link href={item.href}>
                   <item.icon />
@@ -69,7 +78,7 @@ export function SidebarNav() {
       <SidebarFooter className="p-2">
         <SidebarMenu>
            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={{ children: "Paramètres" }}>
+              <SidebarMenuButton asChild tooltip={{ children: "Paramètres" }} onClick={handleLinkClick}>
                 <Link href="#">
                   <Settings />
                   <span>Paramètres</span>
@@ -77,7 +86,7 @@ export function SidebarNav() {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={{ children: "Aide" }}>
+              <SidebarMenuButton asChild tooltip={{ children: "Aide" }} onClick={handleLinkClick}>
                 <Link href="#">
                   <CircleHelp />
                   <span>Aide & Support</span>
