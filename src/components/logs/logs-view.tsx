@@ -12,7 +12,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Download, Search, X, User, Edit, ShieldAlert } from "lucide-react";
+import { Download, Search, X, User, Edit, ShieldAlert, Ban, Pause } from "lucide-react";
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { getLogs } from '@/lib/services/network-service';
@@ -60,33 +60,37 @@ export function LogsView() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Journal d'activité</CardTitle>
-        <CardDescription>Un enregistrement détaillé de toutes les actions effectuées dans l'application.</CardDescription>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-          <div className="relative w-full sm:max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Rechercher dans les journaux..."
-              className="pl-9 w-full"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            />
-            {filter && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-0.5 h-8 w-8"
-                onClick={() => setFilter('')}
-              >
-                <X className="h-4 w-4" />
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start">
+            <div>
+                <CardTitle>Journal d'activité</CardTitle>
+                <CardDescription>Un enregistrement détaillé de toutes les actions effectuées dans l'application.</CardDescription>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 w-full sm:w-auto">
+              <div className="relative w-full sm:max-w-sm">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Rechercher dans les journaux..."
+                  className="pl-9 w-full"
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                />
+                {filter && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-0.5 h-8 w-8"
+                    onClick={() => setFilter('')}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+              <Button variant="outline" className="w-full sm:w-auto">
+                <Download className="mr-2 h-4 w-4" />
+                Exporter en CSV
               </Button>
-            )}
-          </div>
-          <Button variant="outline" className="w-full sm:w-auto">
-            <Download className="mr-2 h-4 w-4" />
-            Exporter en CSV
-          </Button>
+            </div>
         </div>
       </CardHeader>
       <CardContent>
