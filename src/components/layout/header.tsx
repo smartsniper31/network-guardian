@@ -25,26 +25,26 @@ import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { mockUser } from "@/lib/data";
 
 const getPageTitle = (pathname: string) => {
-  if (pathname.startsWith("/dashboard/analyst")) return "Analyste IA";
-  if (pathname.startsWith("/dashboard/security")) return "Sécurité";
-  if (pathname.startsWith("/dashboard/logs")) return "Journaux et Historique";
-  if (pathname.startsWith("/dashboard/parental-controls")) return "Contrôle parental";
-  if (pathname.startsWith("/dashboard/reports")) return "Rapports";
-  return "Tableau de bord";
+  if (pathname.startsWith("/dashboard/analyst")) return "محلل الذكاء الاصطناعي";
+  if (pathname.startsWith("/dashboard/security")) return "الأمان";
+  if (pathname.startsWith("/dashboard/logs")) return "السجلات والتاريخ";
+  if (pathname.startsWith("/dashboard/parental-controls")) return "الرقابة الأبوية";
+  if (pathname.startsWith("/dashboard/reports")) return "التقارير";
+  return "لوحة التحكم";
 };
 
 const notifications = [
     {
         icon: <ShieldAlert className="h-4 w-4 text-red-500" />,
-        title: "Menace critique détectée",
-        description: "Appareil inconnu bloqué sur le port 3389.",
-        time: "2m"
+        title: "تم اكتشاف تهديد حرج",
+        description: "تم حظر جهاز غير معروف على المنفذ 3389.",
+        time: "2 د"
     },
     {
         icon: <User className="h-4 w-4 text-blue-500" />,
-        title: "Nouvel appareil connecté",
-        description: "Un nouveau smartphone s'est connecté au réseau invité.",
-        time: "1h"
+        title: "اتصال جهاز جديد",
+        description: "اتصل هاتف ذكي جديد بشبكة الضيوف.",
+        time: "1 س"
     }
 ]
 
@@ -79,7 +79,7 @@ export function Header() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-80" align="end">
-                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuLabel>الإشعارات</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     {notifications.map((item, index) => (
@@ -95,7 +95,7 @@ export function Header() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="justify-center text-sm text-muted-foreground">
-                    Voir toutes les notifications
+                    عرض جميع الإشعارات
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
@@ -130,11 +130,11 @@ export function Header() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profil</DropdownMenuItem>
-            <DropdownMenuItem>Paramètres</DropdownMenuItem>
+            <DropdownMenuItem>الملف الشخصي</DropdownMenuItem>
+            <DropdownMenuItem>الإعدادات</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/">Se déconnecter</Link>
+              <Link href="/">تسجيل الخروج</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

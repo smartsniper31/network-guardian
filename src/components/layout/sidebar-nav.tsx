@@ -28,13 +28,13 @@ import {
 import { Icons } from "@/components/icons";
 
 const navItems = [
-  { href: "/dashboard", icon: Home, label: "Tableau de bord" },
-  { href: "/dashboard/analyst", icon: Bot, label: "Analyste IA" },
-  { href: "/dashboard/security", icon: Shield, label: "Sécurité" },
-  { href: "/dashboard/parental-controls", icon: Users, label: "Contrôle parental" },
-  { href: "/dashboard/reports", icon: ClipboardList, label: "Rapports" },
-  { href: "/dashboard/logs", icon: FileClock, label: "Journaux" },
-  { href: "/dashboard/settings", icon: Settings, label: "Paramètres" },
+  { href: "/dashboard", icon: Home, label: "لوحة التحكم" },
+  { href: "/dashboard/analyst", icon: Bot, label: "محلل الذكاء الاصطناعي" },
+  { href: "/dashboard/security", icon: Shield, label: "الأمان" },
+  { href: "/dashboard/parental-controls", icon: Users, label: "الرقابة الأبوية" },
+  { href: "/dashboard/reports", icon: ClipboardList, label: "التقارير" },
+  { href: "/dashboard/logs", icon: FileClock, label: "السجلات" },
+  { href: "/dashboard/settings", icon: Settings, label: "الإعدادات" },
 ];
 
 export function SidebarNav() {
@@ -81,10 +81,10 @@ export function SidebarNav() {
       <SidebarFooter className="p-2">
         <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={{ children: "Aide" }} onClick={handleLinkClick}>
+              <SidebarMenuButton asChild tooltip={{ children: "المساعدة" }} onClick={handleLinkClick}>
                 <Link href="#">
                   <CircleHelp />
-                  <span>Aide & Support</span>
+                  <span>المساعدة والدعم</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

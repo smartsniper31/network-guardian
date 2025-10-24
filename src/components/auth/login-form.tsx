@@ -13,7 +13,7 @@ function SubmitButton() {
   return (
     <Button type="submit" className="w-full" pending={pending}>
       <LogIn />
-      Se connecter
+      تسجيل الدخول
     </Button>
   );
 }
@@ -22,7 +22,7 @@ export function LoginForm() {
   return (
     <form action={loginAction} className="w-full space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">البريد الإلكتروني</Label>
         <Input
           id="email"
           name="email"
@@ -33,7 +33,7 @@ export function LoginForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Mot de passe</Label>        
+        <Label htmlFor="password">كلمة المرور</Label>        
         <Input
           id="password"
           name="password"

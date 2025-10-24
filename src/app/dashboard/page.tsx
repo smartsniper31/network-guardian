@@ -17,8 +17,8 @@ export default function DashboardPage() {
           <NetworkMap />
           <Card id="bandwidth-card">
             <CardHeader>
-              <CardTitle>Utilisation de la bande passante</CardTitle>
-              <CardDescription>Top 5 des appareils les plus gourmands en bande passante.</CardDescription>
+              <CardTitle>استخدام عرض النطاق الترددي</CardTitle>
+              <CardDescription>أفضل 5 أجهزة تستهلك عرض النطاق الترددي.</CardDescription>
             </CardHeader>
             <CardContent>
               <BandwidthChart />

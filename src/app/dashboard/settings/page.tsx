@@ -20,9 +20,9 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight font-headline">Paramètres</h1>
+        <h1 className="text-3xl font-bold tracking-tight font-headline">الإعدادات</h1>
         <p className="text-muted-foreground">
-          Gérez les paramètres globaux, les préférences et la configuration du compte.
+          إدارة الإعدادات العامة والتفضيلات وتكوين الحساب.
         </p>
       </div>
 
@@ -34,44 +34,44 @@ export default function SettingsPage() {
               <CardTitle className="flex items-center gap-2">
                 <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                 <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                Paramètres généraux et apparence
+                الإعدادات العامة والمظهر
               </CardTitle>
               <CardDescription>
-                Personnalisez l'apparence et la langue de l'application.
+                تخصيص مظهر التطبيق ولغته.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
                <div className="grid w-full items-center gap-4">
-                  <Label>Thème</Label>
+                  <Label>المظهر</Label>
                   <RadioGroup defaultValue={theme} onValueChange={setTheme} className="flex space-x-2 md:space-x-4">
                     <div>
                       <RadioGroupItem value="light" id="light" className="peer sr-only" />
                       <Label htmlFor="light" className="flex h-16 w-16 flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                         <Sun className="h-6 w-6" />
-                        Clair
+                        فاتح
                       </Label>
                     </div>
                      <div>
                       <RadioGroupItem value="dark" id="dark" className="peer sr-only" />
                       <Label htmlFor="dark" className="flex h-16 w-16 flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                         <Moon className="h-6 w-6" />
-                        Sombre
+                        داكن
                       </Label>
                     </div>
                      <div>
                       <RadioGroupItem value="system" id="system" className="peer sr-only" />
                       <Label htmlFor="system" className="flex h-16 w-16 flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                         <Laptop className="h-6 w-6" />
-                        Système
+                        النظام
                       </Label>
                     </div>
                   </RadioGroup>
                </div>
                <div className="grid w-full items-center gap-4">
-                  <Label htmlFor="language">Langue</Label>
-                  <Select defaultValue="fr">
+                  <Label htmlFor="language">اللغة</Label>
+                  <Select defaultValue="ar">
                       <SelectTrigger id="language" className="w-full md:w-[180px]">
-                          <SelectValue placeholder="Sélectionnez la langue" />
+                          <SelectValue placeholder="Select language" />
                       </SelectTrigger>
                       <SelectContent>
                           <SelectItem value="fr">Français</SelectItem>
@@ -88,30 +88,30 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <UserCog />
-                Gestion du compte
+                إدارة الحساب
               </CardTitle>
               <CardDescription>
-                Mettez à jour vos informations de profil et votre mot de passe.
+                تحديث معلومات ملفك الشخصي وكلمة المرور.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                      <Label htmlFor="name">Nom</Label>
+                      <Label htmlFor="name">الاسم</Label>
                       <Input id="name" defaultValue="Admin User" />
                   </div>
                   <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email">البريد الإلكتروني</Label>
                       <Input id="email" type="email" defaultValue="admin@networkguardian.com" disabled />
                   </div>
                </div>
                <div className="space-y-2">
-                    <Label htmlFor="password">Nouveau mot de passe</Label>
-                    <Input id="password" type="password" placeholder="Laissez vide pour ne pas changer" />
+                    <Label htmlFor="password">كلمة المرور الجديدة</Label>
+                    <Input id="password" type="password" placeholder="اتركه فارغًا لعدم التغيير" />
                 </div>
             </CardContent>
             <CardFooter className="border-t px-6 py-4">
-                <Button>Sauvegarder les modifications</Button>
+                <Button>حفظ التغييرات</Button>
             </CardFooter>
           </Card>
         </div>
@@ -122,37 +122,37 @@ export default function SettingsPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                 <BrainCircuit />
-                IA & Automatisation
+                الذكاء الاصطناعي والأتمتة
                 </CardTitle>
                 <CardDescription>
-                Ajustez le comportement des fonctionnalités intelligentes et des tâches automatisées.
+                ضبط سلوك الميزات الذكية والمهام الآلية.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="sensitivity">Niveau de sensibilité de l'IA pour la détection</Label>
+                <Label htmlFor="sensitivity">مستوى حساسية الذكاء الاصطناعي للكشف</Label>
                 <Select value={sensitivity} onValueChange={(value) => setSensitivity(value as any)}>
                     <SelectTrigger id="sensitivity">
-                    <SelectValue placeholder="Sélectionnez la sensibilité" />
+                    <SelectValue placeholder="Select sensitivity" />
                     </SelectTrigger>
                     <SelectContent>
-                    <SelectItem value="normal">Normale</SelectItem>
-                    <SelectItem value="high">Élevée</SelectItem>
-                    <SelectItem value="paranoid">Paranoïaque</SelectItem>
+                    <SelectItem value="normal">عادي</SelectItem>
+                    <SelectItem value="high">مرتفع</SelectItem>
+                    <SelectItem value="paranoid">مذعور</SelectItem>
                     </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">"Paranoïaque" signalera même les écarts mineurs.</p>
+                <p className="text-xs text-muted-foreground">"مذعور" سيبلغ عن أدنى الانحرافات.</p>
                 </div>
                  <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="auto-scan">Analyses de sécurité automatiques</Label>
+                <Label htmlFor="auto-scan">عمليات الفحص الأمني التلقائية</Label>
                 <Select defaultValue="weekly">
                     <SelectTrigger id="auto-scan">
-                        <SelectValue placeholder="Sélectionnez la fréquence" />
+                        <SelectValue placeholder="Select frequency" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="daily">Journalière</SelectItem>
-                        <SelectItem value="weekly">Hebdomadaire</SelectItem>
-                        <SelectItem value="never">Jamais</SelectItem>
+                        <SelectItem value="daily">يوميًا</SelectItem>
+                        <SelectItem value="weekly">أسبوعيًا</SelectItem>
+                        <SelectItem value="never">أبدًا</SelectItem>
                     </SelectContent>
                 </Select>
                 </div>
@@ -164,38 +164,38 @@ export default function SettingsPage() {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                     <Bell />
-                    Notifications
+                    الإشعارات
                     </CardTitle>
                     <CardDescription>
-                    Choisissez comment et quand vous souhaitez être notifié.
+                    اختر كيف ومتى تريد أن يتم إعلامك.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="flex items-center justify-between rounded-lg border p-4">
                         <div className="space-y-0.5">
                             <Label htmlFor="email-notifications" className="text-base">
-                                Alertes par e-mail
+                                تنبيهات البريد الإلكتروني
                             </Label>
                             <p className="text-xs text-muted-foreground">
-                                Recevez les alertes importantes par e-mail.
+                                تلقي التنبيهات الهامة عبر البريد الإلكتروني.
                             </p>
                         </div>
                         <Switch id="email-notifications" />
                     </div>
                     <div>
-                        <Label>Notifier pour :</Label>
+                        <Label>إعلام لـ :</Label>
                         <div className="space-y-3 mt-2">
                             <div className="flex items-center gap-2">
                                 <Checkbox id="notify-threat" defaultChecked />
-                                <Label htmlFor="notify-threat" className="font-normal">Menace de sécurité détectée</Label>
+                                <Label htmlFor="notify-threat" className="font-normal">تم الكشف عن تهديد أمني</Label>
                             </div>
                              <div className="flex items-center gap-2">
                                 <Checkbox id="notify-new-device" defaultChecked />
-                                <Label htmlFor="notify-new-device" className="font-normal">Nouvel appareil connecté</Label>
+                                <Label htmlFor="notify-new-device" className="font-normal">جهاز جديد متصل</Label>
                             </div>
                              <div className="flex items-center gap-2">
                                 <Checkbox id="notify-offline" />
-                                <Label htmlFor="notify-offline" className="font-normal">Appareil important hors ligne</Label>
+                                <Label htmlFor="notify-offline" className="font-normal">جهاز مهم غير متصل</Label>
                             </div>
                         </div>
                     </div>
