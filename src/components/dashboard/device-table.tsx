@@ -28,6 +28,9 @@ import { useToast } from "@/hooks/use-toast";
 import { AddDeviceDialog } from './add-device-dialog';
 import { getDevices, addDevice as addDeviceService, updateDeviceStatus } from '@/lib/services/network-service';
 import { Skeleton } from '../ui/skeleton';
+import { AccessScheduleDialog } from '../parental-controls/access-schedule-dialog';
+import { NetworkMapDialog } from './network-map-dialog';
+
 
 const deviceIcons = {
   Laptop: <Laptop className="h-5 w-5" />,
@@ -52,6 +55,11 @@ export function DeviceTable() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAddDeviceOpen, setIsAddDeviceOpen] = useState(false);
   const { toast } = useToast();
+
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -95,6 +103,24 @@ export function DeviceTable() {
             variant: "destructive",
         });
     }
+  }
+
+  const openScheduleDialog = (device: Device) => {
+    setSelectedDevice(device);
+    setIsScheduleDialogOpen(true);
+  };
+  
+  const handleScheduleSave = (schedule: any) => {
+    console.log("Saving schedule for", selectedDevice?.id, schedule);
+    toast({
+      title: 'Planning enregistré',
+      description: `Le planning d'accès a été mis à jour pour ${selectedDevice?.name}.`
+    });
+  };
+
+  const openSettingsDialog = (device: Device) => {
+    setSelectedDevice(device);
+    setIsSettingsDialogOpen(true);
   }
 
   return (
@@ -176,13 +202,13 @@ export function DeviceTable() {
                               <Ban className="mr-2 h-4 w-4" /> Bloquer
                             </DropdownMenuItem>
                            }
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openSettingsDialog(device)}>
                              <Settings2 className="mr-2 h-4 w-4" /> Paramètres
                           </DropdownMenuItem>
-                           <DropdownMenuItem>
+                           <DropdownMenuItem onClick={() => openScheduleDialog(device)}>
                              <Clock className="mr-2 h-4 w-4" /> Planifier l'accès
                           </DropdownMenuItem>
-                           <DropdownMenuItem>
+                           <DropdownMenuItem disabled>
                              <ShieldCheck className="mr-2 h-4 w-4" /> Règles de pare-feu
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -206,6 +232,21 @@ export function DeviceTable() {
         onOpenChange={setIsAddDeviceOpen}
         onSave={handleAddDevice}
     />
+     {selectedDevice && (
+        <AccessScheduleDialog 
+            isOpen={isScheduleDialogOpen}
+            onOpenChange={setIsScheduleDialogOpen}
+            device={selectedDevice}
+            onSave={handleScheduleSave}
+        />
+    )}
+    {selectedDevice && (
+        <NetworkMapDialog
+            device={selectedDevice}
+            isOpen={isSettingsDialogOpen}
+            onOpenChange={setIsSettingsDialogOpen}
+        />
+    )}
     </>
   );
 }
