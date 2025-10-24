@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Laptop, Smartphone, Tablet, Tv, Camera, Router, HelpCircle, Server,
-  Ban, Pause, Play, Clock, Filter
+  Ban, Pause, Play, Clock, Filter, MoreHorizontal
 } from "lucide-react";
 import { Device } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +25,7 @@ import { AccessScheduleDialog } from './access-schedule-dialog';
 import { ContentFilterDialog } from './content-filter-dialog';
 import { getDevices, updateDeviceStatus } from '@/lib/services/network-service';
 import { Skeleton } from '../ui/skeleton';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../ui/dropdown-menu';
 
 const deviceIcons = {
   Laptop: <Laptop className="h-5 w-5" />,
@@ -104,11 +105,102 @@ export function ControlsView() {
     // Toast is handled in the dialog
   };
 
+  const renderDesktopActions = (device: Device) => (
+    <div className="text-right space-x-2">
+        {device.status === 'Online' && (
+            <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Paused')}>
+                <Pause className="mr-2 h-4 w-4" /> Pause
+            </Button>
+        )}
+        {(device.status === 'Paused' || device.status === 'Blocked') && (
+            <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Online')}>
+                <Play className="mr-2 h-4 w-4" /> Activer
+            </Button>
+        )}
+        {device.status !== 'Blocked' && (
+            <Button variant="destructive" size="sm" onClick={() => handleStatusChange(device.id, 'Blocked')}>
+                <Ban className="mr-2 h-4 w-4" /> Bloquer
+            </Button>
+        )}
+        <Button variant="outline" size="sm" onClick={() => openScheduleDialog(device)}>
+            <Clock className="mr-2 h-4 w-4" /> Planning
+        </Button>
+         <Button variant="outline" size="sm" onClick={() => openFilterDialog(device)}>
+            <Filter className="mr-2 h-4 w-4" /> Filtrer
+        </Button>
+    </div>
+  );
+
+  const renderMobileActions = (device: Device) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {device.status === 'Online' && (
+            <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Paused')}>
+                <Pause className="mr-2 h-4 w-4" /> Mettre en pause
+            </DropdownMenuItem>
+        )}
+        {(device.status === 'Paused' || device.status === 'Blocked') && (
+            <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Online')}>
+                <Play className="mr-2 h-4 w-4" /> Réactiver
+            </DropdownMenuItem>
+        )}
+        {device.status !== 'Blocked' && (
+            <DropdownMenuItem className="text-red-500" onClick={() => handleStatusChange(device.id, 'Blocked')}>
+                <Ban className="mr-2 h-4 w-4" /> Bloquer
+            </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={() => openScheduleDialog(device)}>
+            <Clock className="mr-2 h-4 w-4" /> Planning d'accès
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => openFilterDialog(device)}>
+            <Filter className="mr-2 h-4 w-4" /> Filtrage de contenu
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
     <>
     <Card>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
+      <CardContent className="p-0 md:p-6">
+        {/* Mobile View */}
+        <div className="space-y-4 md:hidden p-4">
+          {isLoading ? (
+            [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
+          ) : (
+            devices.map((device) => (
+              <div key={device.id} className="flex items-start gap-4 rounded-lg border p-3">
+                <div className="text-muted-foreground mt-1">{deviceIcons[device.type]}</div>
+                <div className="flex-1 space-y-2">
+                  <p className="font-medium truncate">{device.name}</p>
+                  <div className="flex items-center gap-4 text-sm">
+                      <Badge variant="outline" className="flex items-center gap-2">
+                         <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
+                         {device.status}
+                      </Badge>
+                      <div className="flex flex-wrap gap-1">
+                          {device.blockedCategories?.map(cat => <Badge key={cat} variant="secondary">{cat}</Badge>)}
+                          {(!device.blockedCategories || device.blockedCategories.length === 0) && (
+                            <span className="text-xs text-muted-foreground">Aucun filtre</span>
+                          )}
+                      </div>
+                  </div>
+                </div>
+                <div className="ml-auto">
+                  {renderMobileActions(device)}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop View */}
+        <div className="hidden overflow-x-auto md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -154,28 +246,8 @@ export function ControlsView() {
                          )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      {device.status === 'Online' && (
-                          <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Paused')}>
-                              <Pause className="mr-2 h-4 w-4" /> Pause
-                          </Button>
-                      )}
-                      {(device.status === 'Paused' || device.status === 'Blocked') && (
-                          <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Online')}>
-                              <Play className="mr-2 h-4 w-4" /> Activer
-                          </Button>
-                      )}
-                      {device.status !== 'Blocked' && (
-                          <Button variant="destructive" size="sm" onClick={() => handleStatusChange(device.id, 'Blocked')}>
-                              <Ban className="mr-2 h-4 w-4" /> Bloquer
-                          </Button>
-                      )}
-                      <Button variant="outline" size="sm" onClick={() => openScheduleDialog(device)}>
-                          <Clock className="mr-2 h-4 w-4" /> Planning
-                      </Button>
-                       <Button variant="outline" size="sm" onClick={() => openFilterDialog(device)}>
-                          <Filter className="mr-2 h-4 w-4" /> Filtrer
-                      </Button>
+                    <TableCell>
+                      {renderDesktopActions(device)}
                     </TableCell>
                   </TableRow>
                 ))
