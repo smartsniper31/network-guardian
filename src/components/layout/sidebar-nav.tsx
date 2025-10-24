@@ -32,6 +32,7 @@ const navItems = [
   { href: "/dashboard/parental-controls", icon: Users, label: "Contrôle parental" },
   { href: "/dashboard/reports", icon: ClipboardList, label: "Rapports" },
   { href: "/dashboard/logs", icon: FileClock, label: "Journaux" },
+  { href: "/dashboard/settings", icon: Settings, label: "Paramètres" },
 ];
 
 export function SidebarNav() {
@@ -77,14 +78,6 @@ export function SidebarNav() {
 
       <SidebarFooter className="p-2">
         <SidebarMenu>
-           <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={{ children: "Paramètres" }} onClick={handleLinkClick}>
-                <Link href="#">
-                  <Settings />
-                  <span>Paramètres</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={{ children: "Aide" }} onClick={handleLinkClick}>
                 <Link href="#">

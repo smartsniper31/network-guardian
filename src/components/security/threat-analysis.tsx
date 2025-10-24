@@ -7,15 +7,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { ShieldAlert, Loader2, ShieldCheck, ShieldQuestion } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getDevices } from '@/lib/services/network-service';
+import { useAtom } from 'jotai';
+import { aiSensitivityAtom } from '@/app/dashboard/settings/page';
+
 
 export function ThreatAnalysis() {
   const [result, setResult] = useState<SuggestCompomisedDevicesOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
-  const [sensitivity, setSensitivity] = useState<SuggestCompromisedDevicesInput['sensitivity']>('normal');
+  const [sensitivity] = useAtom(aiSensitivityAtom);
   const [devices, setDevices] = useState<Device[]>([]);
 
   useEffect(() => {
@@ -98,25 +99,10 @@ export function ThreatAnalysis() {
       <CardHeader>
         <CardTitle>Scanner de menaces IA</CardTitle>
         <CardDescription>
-          Utilisez la GenAI pour analyser les appareils du réseau en les comparant aux flux d'informations sur les menaces en temps réel.
+          Utilisez la GenAI pour analyser les appareils du réseau en les comparant aux flux d'informations sur les menaces en temps réel. La sensibilité est configurée dans les <a href="/dashboard/settings" className="underline">paramètres</a>.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="sensitivity">Niveau de sensibilité de l'IA</Label>
-          <Select value={sensitivity} onValueChange={(value) => setSensitivity(value as any)}>
-            <SelectTrigger id="sensitivity" className="w-[180px]">
-              <SelectValue placeholder="Sélectionnez la sensibilité" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="normal">Normale</SelectItem>
-              <SelectItem value="high">Élevée</SelectItem>
-              <SelectItem value="paranoid">Paranoïaque</SelectItem>
-            </SelectContent>
-          </Select>
-          <p className="text-xs text-muted-foreground">Le niveau "Paranoïaque" signalera même les écarts mineurs.</p>
-        </div>
-
         {isLoading && (
           <div className="flex justify-center items-center h-60">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -153,7 +139,7 @@ export function ThreatAnalysis() {
            <div className="flex flex-col items-center justify-center h-60 text-center bg-muted/50 rounded-lg">
             <ShieldQuestion className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold">Prêt à scanner</h3>
-            <p className="text-muted-foreground">Sélectionnez un niveau de sensibilité et cliquez sur le bouton ci-dessous.</p>
+            <p className="text-muted-foreground">Cliquez sur le bouton ci-dessous pour lancer l'analyse.</p>
           </div>
         )}
       </CardContent>
