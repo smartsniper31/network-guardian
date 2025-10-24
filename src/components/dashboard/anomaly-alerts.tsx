@@ -1,9 +1,8 @@
-
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { detectAnomalousNetworkActivity } from "@/ai/flows/detect-anomalous-network-activity";
-import { AnomalyAlertSchema, DetectAnomalousNetworkActivityOutput, Device } from "@/lib/types";
+import { AnomalyAlertSchema, Device } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, ShieldAlert, Loader2, ShieldCheck, Ban, History } from "lucide-react";

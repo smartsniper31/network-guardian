@@ -11,7 +11,7 @@ import { Skeleton } from '../ui/skeleton';
 
 const chartConfig = {
   usage: {
-    label: "Usage (Mbps)",
+    label: "Utilisation (Mbps)",
     color: "hsl(var(--primary))",
   },
 }

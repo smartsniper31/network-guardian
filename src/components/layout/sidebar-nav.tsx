@@ -26,11 +26,11 @@ import {
 import { Icons } from "@/components/icons";
 
 const navItems = [
-  { href: "/dashboard", icon: Home, label: "Dashboard" },
-  { href: "/dashboard/security", icon: Shield, label: "Security" },
-  { href: "/dashboard/parental-controls", icon: Users, label: "Parental Controls" },
-  { href: "/dashboard/reports", icon: ClipboardList, label: "Reports" },
-  { href: "/dashboard/logs", icon: FileClock, label: "Logs" },
+  { href: "/dashboard", icon: Home, label: "Tableau de bord" },
+  { href: "/dashboard/security", icon: Shield, label: "Sécurité" },
+  { href: "/dashboard/parental-controls", icon: Users, label: "Contrôle parental" },
+  { href: "/dashboard/reports", icon: ClipboardList, label: "Rapports" },
+  { href: "/dashboard/logs", icon: FileClock, label: "Journaux" },
 ];
 
 export function SidebarNav() {
@@ -69,18 +69,18 @@ export function SidebarNav() {
       <SidebarFooter className="p-2">
         <SidebarMenu>
            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={{ children: "Settings" }}>
+              <SidebarMenuButton asChild tooltip={{ children: "Paramètres" }}>
                 <Link href="#">
                   <Settings />
-                  <span>Settings</span>
+                  <span>Paramètres</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={{ children: "Help" }}>
+              <SidebarMenuButton asChild tooltip={{ children: "Aide" }}>
                 <Link href="#">
                   <CircleHelp />
-                  <span>Help & Support</span>
+                  <span>Aide & Support</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

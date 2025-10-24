@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -28,9 +27,9 @@ export function ThreatAnalysis() {
   }, [])
 
   const threatIntelligenceFeeds = [
-    "New IoT botnet 'Mirai-v2' actively scanning for open Telnet ports.",
-    "RDP port 3389 is a common target for ransomware attacks.",
-    "Malware 'FakeAV' known to communicate over ports 8080-8090.",
+    "Nouveau botnet IoT 'Mirai-v2' scanne activement les ports Telnet ouverts.",
+    "Le port RDP 3389 est une cible courante pour les attaques de ransomware.",
+    "Le malware 'FakeAV' est connu pour communiquer sur les ports 8080-8090.",
   ];
 
   const handleAnalysis = async () => {
@@ -56,20 +55,20 @@ export function ThreatAnalysis() {
        if (!response.compromisedDevices || response.compromisedDevices.length === 0) {
         let mockResults = [
             {
-              ip: '192.168.1.105',
-              reason: 'Device has RDP port 3389 open, which is a high-value target for ransomware attacks (threat level: high).',
+              ip: '192.168.1.104',
+              reason: 'L\'appareil a le port RDP 3389 ouvert, ce qui est une cible de grande valeur pour les attaques de ransomware (niveau de menace : élevé).',
             }
         ];
         if (sensitivity === 'high' || sensitivity === 'paranoid') {
             mockResults.push({
-                ip: '192.168.1.107',
-                reason: 'Slightly unusual outbound traffic pattern detected, could be a sign of a minor misconfiguration (threat level: low).',
+                ip: '192.168.1.106',
+                reason: 'Modèle de trafic sortant légèrement inhabituel détecté, pourrait être le signe d\'une mauvaise configuration mineure (niveau de menace : faible).',
             });
         }
         if (sensitivity === 'paranoid') {
             mockResults.push({
-                ip: '192.168.1.104',
-                reason: 'Port 554 (RTSP) is open. While common for cameras, it can be a vector if not secured. Consider placing it on a separate VLAN (threat level: informational).',
+                ip: '192.168.1.103',
+                reason: 'Le port 554 (RTSP) est ouvert. Bien que courant pour les caméras, il peut être un vecteur s\'il n\'est pas sécurisé. Envisagez de le placer sur un VLAN séparé (niveau de menace : informationnel).',
             });
         }
 
@@ -84,8 +83,8 @@ export function ThreatAnalysis() {
       setResult({
           compromisedDevices: [
             {
-              ip: '192.168.1.105',
-              reason: 'Device has RDP port 3389 open, which is a high-value target for ransomware attacks.',
+              ip: '192.168.1.104',
+              reason: 'L\'appareil a le port RDP 3389 ouvert, ce qui est une cible de grande valeur pour les attaques de ransomware.',
             },
           ]
         });
@@ -97,45 +96,45 @@ export function ThreatAnalysis() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>AI Threat Scanner</CardTitle>
+        <CardTitle>Scanner de menaces IA</CardTitle>
         <CardDescription>
-          Leverage GenAI to analyze network devices against real-time threat intelligence feeds.
+          Utilisez la GenAI pour analyser les appareils du réseau en les comparant aux flux d'informations sur les menaces en temps réel.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor="sensitivity">AI Sensitivity Level</Label>
+          <Label htmlFor="sensitivity">Niveau de sensibilité de l'IA</Label>
           <Select value={sensitivity} onValueChange={(value) => setSensitivity(value as any)}>
             <SelectTrigger id="sensitivity" className="w-[180px]">
-              <SelectValue placeholder="Select sensitivity" />
+              <SelectValue placeholder="Sélectionnez la sensibilité" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="normal">Normal</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="paranoid">Paranoid</SelectItem>
+              <SelectItem value="normal">Normale</SelectItem>
+              <SelectItem value="high">Élevée</SelectItem>
+              <SelectItem value="paranoid">Paranoïaque</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-xs text-muted-foreground">"Paranoid" level will flag even minor deviations.</p>
+          <p className="text-xs text-muted-foreground">Le niveau "Paranoïaque" signalera même les écarts mineurs.</p>
         </div>
 
         {isLoading && (
           <div className="flex justify-center items-center h-60">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            <p className="ml-4 text-muted-foreground">Analyzing devices with {sensitivity} sensitivity...</p>
+            <p className="ml-4 text-muted-foreground">Analyse des appareils avec une sensibilité {sensitivity}...</p>
           </div>
         )}
 
         {!isLoading && hasScanned && (
           result?.compromisedDevices && result.compromisedDevices.length > 0 ? (
             <div className="space-y-4">
-              <h3 className="font-semibold">Analysis Complete: {result.compromisedDevices.length} Potential Threats Found</h3>
+              <h3 className="font-semibold">Analyse terminée : {result.compromisedDevices.length} menaces potentielles trouvées</h3>
               {result.compromisedDevices.map((device, index) => {
                  const fullDevice = devices.find(d => d.ip === device.ip);
                  return (
                     <Alert variant="destructive" key={index}>
                       <ShieldAlert className="h-4 w-4" />
-                      <AlertTitle>{fullDevice?.name || 'Unknown Device'} ({device.ip})</AlertTitle>                      <AlertDescription>
-                        <strong>Reason:</strong> {device.reason}
+                      <AlertTitle>{fullDevice?.name || 'Appareil inconnu'} ({device.ip})</AlertTitle>                      <AlertDescription>
+                        <strong>Raison :</strong> {device.reason}
                       </AlertDescription>
                     </Alert>
                  );
@@ -144,8 +143,8 @@ export function ThreatAnalysis() {
           ) : (
              <div className="flex flex-col items-center justify-center h-60 text-center bg-muted/50 rounded-lg">
               <ShieldCheck className="h-12 w-12 text-green-500 mb-4" />
-              <h3 className="text-xl font-semibold">No Threats Detected</h3>
-              <p className="text-muted-foreground">Your network devices appear to be secure at the '{sensitivity}' sensitivity level.</p>
+              <h3 className="text-xl font-semibold">Aucune menace détectée</h3>
+              <p className="text-muted-foreground">Vos appareils réseau semblent être sécurisés au niveau de sensibilité '{sensitivity}'.</p>
             </div>
           )
         )}
@@ -153,14 +152,14 @@ export function ThreatAnalysis() {
         {!isLoading && !hasScanned && (
            <div className="flex flex-col items-center justify-center h-60 text-center bg-muted/50 rounded-lg">
             <ShieldQuestion className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold">Ready to Scan</h3>
-            <p className="text-muted-foreground">Select a sensitivity level and click the button below.</p>
+            <h3 className="text-xl font-semibold">Prêt à scanner</h3>
+            <p className="text-muted-foreground">Sélectionnez un niveau de sensibilité et cliquez sur le bouton ci-dessous.</p>
           </div>
         )}
       </CardContent>
       <CardFooter>
         <Button onClick={handleAnalysis} disabled={isLoading} className="w-full sm:w-auto">
-          {isLoading ? "Analyzing..." : "Start Threat Analysis"}
+          {isLoading ? "Analyse en cours..." : "Démarrer l'analyse des menaces"}
         </Button>
       </CardFooter>
     </Card>

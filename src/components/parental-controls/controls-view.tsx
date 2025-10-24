@@ -67,13 +67,13 @@ export function ControlsView() {
       await updateDeviceStatus(deviceId, newStatus);
       setDevices(devices.map(d => d.id === deviceId ? { ...d, status: newStatus } : d));
       toast({
-        title: `Device ${newStatus}`,
-        description: `Device has been ${newStatus.toLowerCase()}.`,
+        title: `Appareil mis à jour`,
+        description: `Le statut de l'appareil est maintenant '${newStatus}'.`,
       });
     } catch (error) {
        toast({
-        title: "Error",
-        description: "Failed to update device status.",
+        title: "Erreur",
+        description: "Échec de la mise à jour du statut de l'appareil.",
         variant: "destructive"
       });
     }
@@ -87,8 +87,8 @@ export function ControlsView() {
   const handleScheduleSave = (schedule: any) => {
     console.log("Saving schedule for", selectedDevice?.id, schedule);
     toast({
-      title: 'Schedule Saved',
-      description: `Access schedule updated for ${selectedDevice?.name}.`
+      title: 'Planning enregistré',
+      description: `Le planning d'accès a été mis à jour pour ${selectedDevice?.name}.`
     });
   };
 
@@ -104,8 +104,8 @@ export function ControlsView() {
       // Toast is handled in the dialog
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to save content filters.",
+        title: "Erreur",
+        description: "Impossible d'enregistrer les filtres de contenu.",
         variant: "destructive"
       });
     }
@@ -119,9 +119,9 @@ export function ControlsView() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Device</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Active Filters</TableHead>
+                <TableHead>Appareil</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead>Filtres actifs</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -157,7 +157,7 @@ export function ControlsView() {
                       <div className="flex flex-wrap gap-1">
                         {device.blockedCategories?.map(cat => <Badge key={cat} variant="secondary">{cat}</Badge>)}
                          {(!device.blockedCategories || device.blockedCategories.length === 0) && (
-                           <span className="text-xs text-muted-foreground">None</span>
+                           <span className="text-xs text-muted-foreground">Aucun</span>
                          )}
                       </div>
                     </TableCell>
@@ -169,19 +169,19 @@ export function ControlsView() {
                       )}
                       {(device.status === 'Paused' || device.status === 'Blocked') && (
                           <Button variant="outline" size="sm" onClick={() => handleStatusChange(device.id, 'Online')}>
-                              <Play className="mr-2 h-4 w-4" /> Resume
+                              <Play className="mr-2 h-4 w-4" /> Activer
                           </Button>
                       )}
                       {device.status !== 'Blocked' && (
                           <Button variant="destructive" size="sm" onClick={() => handleStatusChange(device.id, 'Blocked')}>
-                              <Ban className="mr-2 h-4 w-4" /> Block
+                              <Ban className="mr-2 h-4 w-4" /> Bloquer
                           </Button>
                       )}
                       <Button variant="outline" size="sm" onClick={() => openScheduleDialog(device)}>
-                          <Clock className="mr-2 h-4 w-4" /> Schedule
+                          <Clock className="mr-2 h-4 w-4" /> Planning
                       </Button>
                        <Button variant="outline" size="sm" onClick={() => openFilterDialog(device)}>
-                          <Filter className="mr-2 h-4 w-4" /> Filter
+                          <Filter className="mr-2 h-4 w-4" /> Filtrer
                       </Button>
                     </TableCell>
                   </TableRow>

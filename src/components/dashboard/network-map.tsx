@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react";
@@ -89,17 +88,17 @@ function VulnerabilityAnalysis({
       console.error("Failed to analyze device:", error);
       // Mock data for demo purposes
       setAnalysis({
-        analysisSummary: "This device has multiple critical vulnerabilities.",
+        analysisSummary: "Cet appareil présente de multiples vulnérabilités critiques.",
         vulnerabilities: [
           {
             severity: "critical",
-            description: "Default credentials for the admin panel are being used.",
-            recommendation: "Change the default password immediately.",
+            description: "Les identifiants par défaut du panneau d'administration sont utilisés.",
+            recommendation: "Changez immédiatement le mot de passe par défaut.",
           },
           {
             severity: "medium",
-            description: "The firmware is outdated and missing security patches.",
-            recommendation: "Update the device firmware to the latest version.",
+            description: "Le micrologiciel est obsolète et des correctifs de sécurité sont manquants.",
+            recommendation: "Mettez à jour le micrologiciel de l'appareil vers la dernière version.",
           },
         ],
       });
@@ -118,19 +117,19 @@ function VulnerabilityAnalysis({
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Analyzing...
+            Analyse en cours...
           </>
         ) : (
           <>
             <ShieldQuestion className="mr-2 h-4 w-4" />
-            Analyze Vulnerabilities
+            Analyser les vulnérabilités
           </>
         )}
       </Button>
 
       {analysis && (
         <div className="space-y-4 pt-4">
-          <h4 className="font-semibold">Analysis Results</h4>
+          <h4 className="font-semibold">Résultats de l'analyse</h4>
           <p className="text-sm text-muted-foreground">{analysis.analysisSummary}</p>
           {analysis.vulnerabilities.length > 0 ? (
             <div className="space-y-3 rounded-md border p-3">
@@ -138,10 +137,10 @@ function VulnerabilityAnalysis({
                 <div key={index} className="flex gap-3">
                   {severityIcons[vuln.severity]}
                   <div>
-                    <p className="font-semibold capitalize">{vuln.severity} Risk</p>
+                    <p className="font-semibold capitalize">Risque {vuln.severity}</p>
                     <p className="text-sm">{vuln.description}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      <strong>Recommendation:</strong> {vuln.recommendation}
+                      <strong>Recommandation :</strong> {vuln.recommendation}
                     </p>
                   </div>
                 </div>
@@ -150,7 +149,7 @@ function VulnerabilityAnalysis({
           ) : (
              <div className="text-center text-muted-foreground py-8">
                 <ShieldCheck className="h-10 w-10 mx-auto text-green-500 mb-2"/>
-                <p>No vulnerabilities detected.</p>
+                <p>Aucune vulnérabilité détectée.</p>
              </div>
           )}
         </div>
@@ -180,8 +179,8 @@ export function NetworkMap() {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Interactive Network Topology</CardTitle>
-          <CardDescription>Click on a device to view details and perform a security scan.</CardDescription>
+          <CardTitle>Topologie interactive du réseau</CardTitle>
+          <CardDescription>Cliquez sur un appareil pour voir les détails et effectuer une analyse de sécurité.</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -199,7 +198,7 @@ export function NetworkMap() {
                       <div className="h-16 w-16 rounded-full bg-primary/10 border-2 border-dashed border-primary flex items-center justify-center">
                         <Router className="h-8 w-8 text-primary" />
                       </div>
-                      <p className="text-xs font-semibold mt-1">Main Router</p>
+                      <p className="text-xs font-semibold mt-1">Routeur Principal</p>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -249,7 +248,7 @@ export function NetworkMap() {
                         <TooltipContent>
                           <p className="font-semibold">{device.name}</p>
                           <p>{device.ip}</p>
-                          <p>Status: {device.status}</p>
+                          <p>Statut: {device.status}</p>
                         </TooltipContent>
                       </Tooltip>
                     </React.Fragment>
@@ -277,16 +276,16 @@ export function NetworkMap() {
               </DialogDescription>
             </DialogHeader>
             <div>
-              <h4 className="font-semibold text-sm mb-2">Device Details</h4>
+              <h4 className="font-semibold text-sm mb-2">Détails de l'appareil</h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>Status</div>
+                <div>Statut</div>
                 <div><Badge variant="outline">{selectedDevice.status}</Badge></div>
                 <div>Type</div>
                 <div>{selectedDevice.type}</div>
-                <div>Bandwidth</div>
+                <div>Bande passante</div>
                 <div>{selectedDevice.bandwidthUsage} Mbps</div>
-                 <div>Open Ports</div>
-                <div>{selectedDevice.openPorts.join(', ') || 'None'}</div>
+                 <div>Ports ouverts</div>
+                <div>{selectedDevice.openPorts.join(', ') || 'Aucun'}</div>
               </div>
             </div>
             <VulnerabilityAnalysis device={selectedDevice} />

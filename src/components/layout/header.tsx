@@ -25,25 +25,25 @@ import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { mockUser } from "@/lib/data";
 
 const getPageTitle = (pathname: string) => {
-  if (pathname.startsWith("/dashboard/security")) return "Security";
-  if (pathname.startsWith("/dashboard/logs")) return "Logs & History";
-  if (pathname.startsWith("/dashboard/parental-controls")) return "Parental Controls";
-  if (pathname.startsWith("/dashboard/reports")) return "Reports";
-  return "Dashboard";
+  if (pathname.startsWith("/dashboard/security")) return "Sécurité";
+  if (pathname.startsWith("/dashboard/logs")) return "Journaux et Historique";
+  if (pathname.startsWith("/dashboard/parental-controls")) return "Contrôle parental";
+  if (pathname.startsWith("/dashboard/reports")) return "Rapports";
+  return "Tableau de bord";
 };
 
 const notifications = [
     {
         icon: <ShieldAlert className="h-4 w-4 text-red-500" />,
-        title: "Critical Threat Detected",
-        description: "Unknown device blocked on port 3389.",
-        time: "2m ago"
+        title: "Menace critique détectée",
+        description: "Appareil inconnu bloqué sur le port 3389.",
+        time: "2m"
     },
     {
         icon: <User className="h-4 w-4 text-blue-500" />,
-        title: "New Device Joined",
-        description: "A new smartphone connected to guest network.",
-        time: "1h ago"
+        title: "Nouvel appareil connecté",
+        description: "Un nouveau smartphone s'est connecté au réseau invité.",
+        time: "1h"
     }
 ]
 
@@ -94,7 +94,7 @@ export function Header() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="justify-center text-sm text-muted-foreground">
-                    View all notifications
+                    Voir toutes les notifications
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
@@ -129,11 +129,11 @@ export function Header() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem>Profil</DropdownMenuItem>
+            <DropdownMenuItem>Paramètres</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/">Sign Out</Link>
+              <Link href="/">Se déconnecter</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

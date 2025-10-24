@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -27,11 +26,11 @@ interface ContentFilterDialogProps {
 }
 
 const contentCategories = [
-    { id: 'social-media', label: 'Social Media' },
-    { id: 'gaming', label: 'Gaming' },
-    { id: 'adult-content', label: 'Adult Content' },
-    { id: 'streaming-video', label: 'Streaming Video' },
-    { id: 'gambling', label: 'Gambling' },
+    { id: 'social-media', label: 'Réseaux sociaux' },
+    { id: 'gaming', label: 'Jeux' },
+    { id: 'adult-content', label: 'Contenu pour adultes' },
+    { id: 'streaming-video', label: 'Streaming Vidéo' },
+    { id: 'gambling', label: 'Jeux d\'argent' },
 ];
 
 export function ContentFilterDialog({
@@ -56,7 +55,7 @@ export function ContentFilterDialog({
         const result: FilterContentOutput = await filterContent({ deviceId: device.id, categories: selectedCategories });
         await updateDeviceBlockedCategories(device.id, selectedCategories);
         toast({
-            title: 'Filters Updated',
+            title: 'Filtres mis à jour',
             description: result.message,
         });
         onSave(device.id, selectedCategories);
@@ -65,8 +64,8 @@ export function ContentFilterDialog({
         console.error("Failed to update content filters:", e);
         toast({
             variant: "destructive",
-            title: "Update Failed",
-            description: "Could not save the new filter settings.",
+            title: "La mise à jour a échoué",
+            description: "Impossible d'enregistrer les nouveaux paramètres de filtre.",
         });
     } finally {
         setIsLoading(false);
@@ -78,16 +77,16 @@ export function ContentFilterDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Filter /> Content Filtering for {device.name}
+            <Filter /> Filtrage de contenu pour {device.name}
           </DialogTitle>
           <DialogDescription>
-            Select content categories to block on this device. The AI will manage the necessary network rules.
+            Sélectionnez les catégories de contenu à bloquer sur cet appareil. L'IA gérera les règles de réseau nécessaires.
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
             <div className="space-y-3">
-                <Label>Blocked Categories</Label>
+                <Label>Catégories bloquées</Label>
                 <div className="grid grid-cols-2 gap-4 rounded-md border p-4">
                     {contentCategories.map(({ id, label }) => (
                         <div key={id} className="flex items-center gap-2">
@@ -104,10 +103,10 @@ export function ContentFilterDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={isLoading}>Cancel</Button>
+          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={isLoading}>Annuler</Button>
           <Button onClick={handleSave} disabled={isLoading}>
             {isLoading && <Loader2 className="animate-spin" />}
-            Save Filters
+            Enregistrer les filtres
           </Button>
         </DialogFooter>
       </DialogContent>

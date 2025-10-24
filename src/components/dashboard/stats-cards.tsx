@@ -52,25 +52,25 @@ export function StatsCards() {
 
   const stats = [
     {
-      title: "Devices Online",
+      title: "Appareils en ligne",
       value: `${onlineDevices} / ${totalDevices}`,
       icon: Wifi,
       color: "text-green-500",
     },
     {
-      title: "Threats Detected",
+      title: "Menaces détectées",
       value: "2",
       icon: ShieldAlert,
       color: "text-red-500",
     },
     {
-      title: "Total Data Usage",
+      title: "Données utilisées",
       value: `${formattedData} GB`,
       icon: ArrowDownUp,
       color: "text-blue-500",
     },
      {
-      title: "Connected Users",
+      title: "Utilisateurs connectés",
       value: "4",
       icon: Users,
       color: "text-purple-500",
@@ -88,7 +88,7 @@ export function StatsCards() {
           <CardContent>
             <div className="text-2xl font-bold">{stat.value}</div>
             <p className="text-xs text-muted-foreground">
-              {stat.title === "Threats Detected" && "in last 24h"}
+              {stat.title === "Menaces détectées" && "dans les dernières 24h"}
             </p>
           </CardContent>
         </Card>

@@ -68,8 +68,8 @@ export function DeviceTable() {
       await updateDeviceStatus(deviceId, newStatus);
       setDevices(devices.map(d => d.id === deviceId ? { ...d, status: newStatus } : d));
       toast({
-        title: `Appareil ${newStatus}`,
-        description: `L'appareil a été mis à jour.`,
+        title: `Appareil mis à jour`,
+        description: `Le statut de l'appareil est maintenant '${newStatus}'.`,
       });
     } catch (error) {
        toast({

@@ -13,13 +13,12 @@ export default function LoginPage() {
           </h1>
         </div>
         <p className="text-center text-muted-foreground">
-          Sign in to access your network dashboard and take control of your
-          digital environment.
+          Connectez-vous pour accéder à votre tableau de bord réseau et prendre le contrôle de votre environnement numérique.
         </p>
         <LoginForm />
       </div>
        <div className="absolute bottom-4 z-10 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Network Guardian. All rights reserved.
+        © {new Date().getFullYear()} Network Guardian. Tous droits réservés.
       </div>
     </div>
   );

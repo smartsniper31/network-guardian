@@ -3,7 +3,7 @@ import { DeviceTable } from '@/components/dashboard/device-table';
 import { AnomalyAlerts } from '@/components/dashboard/anomaly-alerts';
 import { NetworkMap } from '@/components/dashboard/network-map';
 import { BandwidthChart } from '@/components/dashboard/bandwidth-chart';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 
 export default function DashboardPage() {
   return (
@@ -18,7 +18,8 @@ export default function DashboardPage() {
           <AnomalyAlerts />
           <Card>
             <CardHeader>
-              <CardTitle>Bandwidth Usage</CardTitle>
+              <CardTitle>Utilisation de la bande passante</CardTitle>
+              <CardDescription>Top 5 des appareils les plus gourmands en bande passante.</CardDescription>
             </CardHeader>
             <CardContent>
               <BandwidthChart />

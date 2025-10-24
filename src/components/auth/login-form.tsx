@@ -13,7 +13,7 @@ function SubmitButton() {
   return (
     <Button type="submit" className="w-full" pending={pending}>
       <LogIn />
-      Sign In
+      Se connecter
     </Button>
   );
 }
@@ -33,7 +33,7 @@ export function LoginForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">Mot de passe</Label>
         <Input
           id="password"
           name="password"

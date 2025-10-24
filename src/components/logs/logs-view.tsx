@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Download, Search, X } from "lucide-react";
 import { formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import { getLogs } from '@/lib/services/network-service';
 import { LogEntry } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
@@ -46,14 +47,14 @@ export function LogsView() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Activity Log</CardTitle>
-        <CardDescription>A detailed record of all actions performed in the application.</CardDescription>
+        <CardTitle>Journal d'activité</CardTitle>
+        <CardDescription>Un enregistrement détaillé de toutes les actions effectuées dans l'application.</CardDescription>
         <div className="flex items-center justify-between pt-4">
           <div className="relative w-full max-w-sm">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search logs..."
+              placeholder="Rechercher dans les journaux..."
               className="pl-9"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
@@ -71,7 +72,7 @@ export function LogsView() {
           </div>
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
-            Export CSV
+            Exporter en CSV
           </Button>
         </div>
       </CardHeader>
@@ -80,11 +81,11 @@ export function LogsView() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Timestamp</TableHead>
-                <TableHead>User</TableHead>
+                <TableHead>Horodatage</TableHead>
+                <TableHead>Utilisateur</TableHead>
                 <TableHead>Action</TableHead>
-                <TableHead>Target</TableHead>
-                <TableHead className="hidden md:table-cell">Details</TableHead>
+                <TableHead>Cible</TableHead>
+                <TableHead className="hidden md:table-cell">Détails</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -103,8 +104,8 @@ export function LogsView() {
                   <TableRow key={log.id}>
                     <TableCell>
                       <div className="flex flex-col">
-                          <span className="font-medium">{formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })}</span>
-                          <span className="text-xs text-muted-foreground">{new Date(log.timestamp).toLocaleString()}</span>
+                          <span className="font-medium">{formatDistanceToNow(new Date(log.timestamp), { addSuffix: true, locale: fr })}</span>
+                          <span className="text-xs text-muted-foreground">{new Date(log.timestamp).toLocaleString('fr-FR')}</span>
                       </div>
                     </TableCell>
                     <TableCell>{log.user}</TableCell>
@@ -121,7 +122,7 @@ export function LogsView() {
         </div>
         {!isLoading && filteredLogs.length === 0 && (
             <div className="text-center py-16 text-muted-foreground">
-                <p>No logs match your search.</p>
+                <p>Aucun journal ne correspond à votre recherche.</p>
             </div>
         )}
       </CardContent>
