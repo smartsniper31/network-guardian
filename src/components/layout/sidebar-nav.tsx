@@ -10,6 +10,7 @@ import {
   CircleHelp,
   Users,
   ClipboardList,
+  Bot,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ import { Icons } from "@/components/icons";
 
 const navItems = [
   { href: "/dashboard", icon: Home, label: "Tableau de bord" },
+  { href: "/dashboard/analyst", icon: Bot, label: "Analyste IA" },
   { href: "/dashboard/security", icon: Shield, label: "Sécurité" },
   { href: "/dashboard/parental-controls", icon: Users, label: "Contrôle parental" },
   { href: "/dashboard/reports", icon: ClipboardList, label: "Rapports" },

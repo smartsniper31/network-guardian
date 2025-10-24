@@ -25,6 +25,7 @@ import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { mockUser } from "@/lib/data";
 
 const getPageTitle = (pathname: string) => {
+  if (pathname.startsWith("/dashboard/analyst")) return "Analyste IA";
   if (pathname.startsWith("/dashboard/security")) return "Sécurité";
   if (pathname.startsWith("/dashboard/logs")) return "Journaux et Historique";
   if (pathname.startsWith("/dashboard/parental-controls")) return "Contrôle parental";

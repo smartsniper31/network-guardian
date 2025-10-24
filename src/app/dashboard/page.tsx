@@ -5,7 +5,6 @@ import { AnomalyAlerts } from '@/components/dashboard/anomaly-alerts';
 import { NetworkMap } from '@/components/dashboard/network-map';
 import { BandwidthChart } from '@/components/dashboard/bandwidth-chart';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { AiAnalyst } from '@/components/dashboard/ai-analyst';
 
 export default function DashboardPage() {
   return (
@@ -27,7 +26,6 @@ export default function DashboardPage() {
           </Card>
         </div>
         <div className="space-y-8 flex flex-col">
-          <AiAnalyst />
           <AnomalyAlerts />
         </div>
       </div>

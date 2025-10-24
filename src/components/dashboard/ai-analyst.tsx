@@ -75,14 +75,14 @@ export function AiAnalyst() {
   };
 
   return (
-    <Card className="flex flex-col h-full max-h-[80vh]">
+    <Card className="flex flex-col h-full flex-1">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Bot />
           Analyste de Sécurité IA
         </CardTitle>
         <CardDescription>
-          Posez des questions en langage naturel sur votre réseau.
+          Posez des questions en langage naturel sur votre réseau. Je peux analyser, expliquer et même agir sur vos appareils.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
