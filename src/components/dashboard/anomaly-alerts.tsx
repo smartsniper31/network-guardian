@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -5,7 +6,7 @@ import { detectAnomalousNetworkActivity } from "@/ai/flows/detect-anomalous-netw
 import { AnomalyAlertSchema, Device } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, ShieldAlert, Loader2, ShieldCheck, Ban, History } from "lucide-react";
+import { AlertCircle, ShieldAlert, Loader2, ShieldCheck, Ban, History, BrainCircuit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { getDevices, getDevice, updateDeviceStatus } from "@/lib/services/network-service";
@@ -125,8 +126,8 @@ export function AnomalyAlerts() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Détection d'anomalies</CardTitle>
-        <CardDescription>Détection par IA de l'activité réseau inhabituelle.</CardDescription>
+        <CardTitle className="flex items-center gap-2"><BrainCircuit /> Alertes de Sécurité IA</CardTitle>
+        <CardDescription>Analyse en temps réel de l'activité réseau pour détecter les comportements inhabituels.</CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -173,14 +174,14 @@ export function AnomalyAlerts() {
         )}
         
         <Button onClick={handleScan} disabled={isLoading} className="w-full mt-6">
-          {isLoading ? "Analyse en cours..." : "Scanner les anomalies"}
+          {isLoading ? "Analyse en cours..." : "Lancer le scan IA"}
         </Button>
 
         {scanHistory.length > 0 && (
             <div className="mt-6">
                 <h4 className="text-sm font-semibold flex items-center gap-2 mb-2">
                     <History className="h-4 w-4"/>
-                    Historique des analyses
+                    Historique des scans
                 </h4>
                 <div className="text-xs text-muted-foreground space-y-1">
                     {scanHistory.slice(0, 3).map((entry, index) => (
