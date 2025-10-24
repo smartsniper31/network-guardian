@@ -7,3 +7,4 @@ import '@/ai/flows/detect-anomalous-network-activity.ts';
 import '@/ai/flows/analyze-device-vulnerabilities.ts';
 import '@/ai/flows/filter-content.ts';
 import '@/ai/flows/generate-weekly-report.ts';
+import '@/ai/flows/network-chat-flow.ts';

@@ -13,13 +13,9 @@ export default function DashboardPage() {
       <StatsCards />
       
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2 grid gap-8">
+        <div className="lg:col-span-2 grid gap-8 auto-rows-min">
           <DeviceTable />
           <NetworkMap />
-        </div>
-        <div className="space-y-8 flex flex-col">
-          <AiAnalyst />
-          <AnomalyAlerts />
           <Card id="bandwidth-card">
             <CardHeader>
               <CardTitle>Utilisation de la bande passante</CardTitle>
@@ -29,6 +25,10 @@ export default function DashboardPage() {
               <BandwidthChart />
             </CardContent>
           </Card>
+        </div>
+        <div className="space-y-8 flex flex-col">
+          <AiAnalyst />
+          <AnomalyAlerts />
         </div>
       </div>
       
