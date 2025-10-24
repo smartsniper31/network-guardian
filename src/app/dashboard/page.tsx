@@ -1,9 +1,11 @@
+
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { DeviceTable } from '@/components/dashboard/device-table';
 import { AnomalyAlerts } from '@/components/dashboard/anomaly-alerts';
 import { NetworkMap } from '@/components/dashboard/network-map';
 import { BandwidthChart } from '@/components/dashboard/bandwidth-chart';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { AiAnalyst } from '@/components/dashboard/ai-analyst';
 
 export default function DashboardPage() {
   return (
@@ -11,10 +13,12 @@ export default function DashboardPage() {
       <StatsCards />
       
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 grid gap-8">
           <DeviceTable />
+          <NetworkMap />
         </div>
-        <div className="space-y-8">
+        <div className="space-y-8 flex flex-col">
+          <AiAnalyst />
           <AnomalyAlerts />
           <Card id="bandwidth-card">
             <CardHeader>
@@ -28,7 +32,6 @@ export default function DashboardPage() {
         </div>
       </div>
       
-      <NetworkMap />
     </div>
   );
 }
