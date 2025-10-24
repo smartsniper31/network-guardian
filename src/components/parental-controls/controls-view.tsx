@@ -23,7 +23,7 @@ import { Device } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { AccessScheduleDialog } from './access-schedule-dialog';
 import { ContentFilterDialog } from './content-filter-dialog';
-import { getDevices, updateDeviceStatus, updateDeviceBlockedCategories } from '@/lib/services/network-service';
+import { getDevices, updateDeviceStatus } from '@/lib/services/network-service';
 import { Skeleton } from '../ui/skeleton';
 
 const deviceIcons = {
@@ -85,6 +85,8 @@ export function ControlsView() {
   };
   
   const handleScheduleSave = (schedule: any) => {
+    // In a real app, this would be an API call to the backend/router.
+    // For now, we just show a success toast.
     console.log("Saving schedule for", selectedDevice?.id, schedule);
     toast({
       title: 'Planning enregistré',
@@ -97,18 +99,9 @@ export function ControlsView() {
     setIsFilterDialogOpen(true);
   };
 
-  const handleFilterSave = async (deviceId: string, blockedCategories: string[]) => {
-    try {
-      await updateDeviceBlockedCategories(deviceId, blockedCategories);
-      setDevices(devices.map(d => d.id === deviceId ? { ...d, blockedCategories } : d));
-      // Toast is handled in the dialog
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'enregistrer les filtres de contenu.",
-        variant: "destructive"
-      });
-    }
+  const handleFilterSave = (deviceId: string, blockedCategories: string[]) => {
+    setDevices(devices.map(d => d.id === deviceId ? { ...d, blockedCategories } : d));
+    // Toast is handled in the dialog
   };
 
   return (
