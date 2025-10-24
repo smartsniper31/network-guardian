@@ -27,6 +27,7 @@ const generateWeeklyReportPrompt = ai.definePrompt(
         input: {schema: z.object({ devices: z.string(), logs: z.string() })},
         output: {schema: GenerateWeeklyReportOutputSchema},
         prompt: `You are a network analyst AI. Generate a comprehensive weekly report based on the provided device and log data.
+        Your response MUST be entirely in French.
         Devices: {{{devices}}}
         Logs: {{{logs}}}
         Provide an overall summary, screen time analysis, threat summary, and actionable recommendations.

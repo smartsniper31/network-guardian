@@ -79,12 +79,12 @@ export function ReportView() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start">
             <div>
                 <CardTitle>Rapport d'analyse hebdomadaire</CardTitle>
                 <CardDescription>Un résumé généré par IA de la santé et de l'activité de votre réseau.</CardDescription>
             </div>
-            <Button onClick={handleGenerateReport} disabled={isLoading}>
+            <Button onClick={handleGenerateReport} disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
                 {isLoading ? 'Génération...' : (report ? 'Régénérer le rapport' : 'Générer le rapport')}
             </Button>
