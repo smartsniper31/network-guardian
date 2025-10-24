@@ -33,7 +33,7 @@ export function LoginForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Mot de passe</Label>
+        <Label htmlFor="password">Mot de passe</Label>        
         <Input
           id="password"
           name="password"
