@@ -26,7 +26,7 @@ export function AiAnalyst() {
   const [isLoading, setIsLoading] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
   const { toast } = useToast();
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollAreaViewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchDevices() {
@@ -38,8 +38,8 @@ export function AiAnalyst() {
 
   useEffect(() => {
     // Auto-scroll to bottom when new messages are added
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+    if (scrollAreaViewportRef.current) {
+      scrollAreaViewportRef.current.scrollTo({ top: scrollAreaViewportRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
 
@@ -86,7 +86,7 @@ export function AiAnalyst() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
-        <ScrollArea className="flex-1 pr-4 -mr-4" viewportRef={scrollAreaRef}>
+        <ScrollArea className="flex-1 pr-4 -mr-4" viewportRef={scrollAreaViewportRef}>
             <div className="space-y-4">
                 {messages.map((msg, index) => (
                     <div key={index} className={`flex items-start gap-3 ${msg.from === 'user' ? 'justify-end' : ''}`}>
