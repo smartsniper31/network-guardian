@@ -4,9 +4,9 @@ export default function LogsPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight font-headline">السجلات والتاريخ</h1>
+                <h1 className="text-3xl font-bold tracking-tight font-headline">Journaux et Historique</h1>
                 <p className="text-muted-foreground">
-                    مراجعة سجل كامل لجميع إجراءات وأحداث النظام.
+                    Consultez un journal complet de toutes les actions et événements du système.
                 </p>
             </div>
             <LogsView />
