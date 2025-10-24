@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -123,21 +124,84 @@ export function DeviceTable() {
     setIsSettingsDialogOpen(true);
   }
 
+  const renderDeviceActions = (device: Device) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {device.status !== 'Blocked' && device.status !== 'Paused' &&
+          <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Paused')}>
+            <Pause className="mr-2 h-4 w-4" /> Mettre en pause
+          </DropdownMenuItem>
+        }
+        {(device.status === 'Paused' || device.status === 'Blocked') &&
+          <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Online')}>
+            <Play className="mr-2 h-4 w-4" /> Réactiver
+          </DropdownMenuItem>
+        }
+         {device.status !== 'Blocked' &&
+          <DropdownMenuItem className="text-red-500" onClick={() => handleStatusChange(device.id, 'Blocked')}>
+            <Ban className="mr-2 h-4 w-4" /> Bloquer
+          </DropdownMenuItem>
+         }
+        <DropdownMenuItem onClick={() => openSettingsDialog(device)}>
+           <Settings2 className="mr-2 h-4 w-4" /> Paramètres
+        </DropdownMenuItem>
+         <DropdownMenuItem onClick={() => openScheduleDialog(device)}>
+           <Clock className="mr-2 h-4 w-4" /> Planifier l'accès
+        </DropdownMenuItem>
+         <DropdownMenuItem disabled>
+           <ShieldCheck className="mr-2 h-4 w-4" /> Règles de pare-feu
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
     <>
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <CardTitle>Appareils Connectés</CardTitle>
             <CardDescription>Gérez tous les appareils sur votre réseau.</CardDescription>
         </div>
-        <Button onClick={() => setIsAddDeviceOpen(true)}>
+        <Button onClick={() => setIsAddDeviceOpen(true)} className="w-full sm:w-auto">
             <PlusCircle className="mr-2 h-4 w-4" />
             Ajouter un appareil
         </Button>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
+        {/* Mobile View: Card List */}
+        <div className="space-y-4 md:hidden">
+          {isLoading ? (
+            [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
+          ) : (
+            devices.map((device) => (
+              <div key={device.id} className="flex items-center gap-4 rounded-lg border p-3">
+                 <div className="text-muted-foreground">{deviceIcons[device.type]}</div>
+                 <div className="flex-1 space-y-1">
+                    <p className="font-medium truncate">{device.name}</p>
+                    <div className="flex items-center gap-2">
+                       <Badge variant="outline" className="flex items-center gap-2">
+                         <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
+                         {device.status}
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">{device.ip}</p>
+                    </div>
+                 </div>
+                 <div className="ml-auto">
+                    {renderDeviceActions(device)}
+                 </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop View: Table */}
+        <div className="hidden overflow-x-auto md:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -167,7 +231,7 @@ export function DeviceTable() {
                         <div className="text-muted-foreground">{deviceIcons[device.type]}</div>
                         <div>
                           <p className="font-medium">{device.name}</p>
-                          <p className="text-sm text-muted-foreground hidden sm:block">{device.mac}</p>
+                          <p className="text-sm text-muted-foreground">{device.mac}</p>
                         </div>
                       </div>
                     </TableCell>
@@ -180,39 +244,7 @@ export function DeviceTable() {
                     <TableCell className="hidden md:table-cell">{device.ip}</TableCell>
                     <TableCell className="hidden lg:table-cell">{device.bandwidthUsage} Mbps</TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          {device.status !== 'Blocked' && device.status !== 'Paused' &&
-                            <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Paused')}>
-                              <Pause className="mr-2 h-4 w-4" /> Mettre en pause
-                            </DropdownMenuItem>
-                          }
-                          {(device.status === 'Paused' || device.status === 'Blocked') &&
-                            <DropdownMenuItem onClick={() => handleStatusChange(device.id, 'Online')}>
-                              <Play className="mr-2 h-4 w-4" /> Réactiver
-                            </DropdownMenuItem>
-                          }
-                           {device.status !== 'Blocked' &&
-                            <DropdownMenuItem className="text-red-500" onClick={() => handleStatusChange(device.id, 'Blocked')}>
-                              <Ban className="mr-2 h-4 w-4" /> Bloquer
-                            </DropdownMenuItem>
-                           }
-                          <DropdownMenuItem onClick={() => openSettingsDialog(device)}>
-                             <Settings2 className="mr-2 h-4 w-4" /> Paramètres
-                          </DropdownMenuItem>
-                           <DropdownMenuItem onClick={() => openScheduleDialog(device)}>
-                             <Clock className="mr-2 h-4 w-4" /> Planifier l'accès
-                          </DropdownMenuItem>
-                           <DropdownMenuItem disabled>
-                             <ShieldCheck className="mr-2 h-4 w-4" /> Règles de pare-feu
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {renderDeviceActions(device)}
                     </TableCell>
                   </TableRow>
                 ))
