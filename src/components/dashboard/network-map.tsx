@@ -74,7 +74,7 @@ export function NetworkMap() {
 
   return (
     <>
-      <Card>
+      <Card id="network-map">
         <CardHeader>
           <CardTitle>Topologie du réseau</CardTitle>
           <CardDescription>Visualisation interactive de vos appareils connectés.</CardDescription>

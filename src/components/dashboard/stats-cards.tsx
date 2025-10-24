@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import NextLink from "next/link";
 import { Wifi, ShieldAlert, ArrowDownUp, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -56,12 +57,14 @@ export function StatsCards() {
       value: `${onlineDevices} / ${totalDevices}`,
       icon: Wifi,
       color: "text-green-500",
+      href: "/dashboard#network-map"
     },
     {
       title: "Menaces détectées",
       value: "2",
       icon: ShieldAlert,
       color: "text-red-500",
+      href: "/dashboard/security"
     },
     {
       title: "Données utilisées",
@@ -79,20 +82,40 @@ export function StatsCards() {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.title}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-            <stat.icon className={cn("h-5 w-5 text-muted-foreground", stat.color)} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-            <p className="text-xs text-muted-foreground">
-              {stat.title === "Menaces détectées" && "dans les dernières 24h"}
-            </p>
-          </CardContent>
-        </Card>
-      ))}
+      {stats.map((stat) => {
+        const cardContent = (
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <stat.icon className={cn("h-5 w-5 text-muted-foreground", stat.color)} />
+            </CardHeader>
+        );
+
+        return (
+          <Card key={stat.title} className="transition-all hover:shadow-md">
+            {stat.href ? (
+                <NextLink href={stat.href} className="block">
+                    {cardContent}
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stat.value}</div>
+                        <p className="text-xs text-muted-foreground">
+                        {stat.title === "Menaces détectées" && "dans les dernières 24h"}
+                        </p>
+                    </CardContent>
+                </NextLink>
+            ) : (
+                <>
+                    {cardContent}
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stat.value}</div>
+                        <p className="text-xs text-muted-foreground">
+                        {stat.title === "Menaces détectées" && "dans les dernières 24h"}
+                        </p>
+                    </CardContent>
+                </>
+            )}
+          </Card>
+        );
+      })}
     </div>
   );
 }
