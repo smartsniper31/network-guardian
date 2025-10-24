@@ -26,9 +26,10 @@ const analyzeDeviceVulnerabilitiesPrompt = ai.definePrompt(
         name: 'analyzeDeviceVulnerabilitiesPrompt',
         input: {schema: z.object({device: z.string()})},
         output: {schema: AnalyzeDeviceVulnerabilitiesOutputSchema},
-        prompt: `You are a cybersecurity analyst. Analyze the following device data for potential security vulnerabilities.
-        Device: {{{device}}}
-        Provide a summary and a list of specific vulnerabilities with clear recommendations.
+        prompt: `Vous êtes un analyste en cybersécurité. Analysez les données de l'appareil suivantes pour détecter d'éventuelles vulnérabilités de sécurité.
+        Votre réponse DOIT être entièrement en français.
+        Appareil : {{{device}}}
+        Fournissez un résumé et une liste de vulnérabilités spécifiques avec des recommandations claires.
         `,
     },
 );

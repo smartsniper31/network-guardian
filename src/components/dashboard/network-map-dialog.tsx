@@ -43,7 +43,7 @@ const deviceIcons: { [key: string]: React.ElementType } = {
   Unknown: HelpCircle,
 };
 
-const severityIcons = {
+const severityIcons: { [key: string]: React.ReactElement } = {
   low: <ShieldCheck className="h-4 w-4 text-blue-500" />,
   medium: <ShieldAlert className="h-4 w-4 text-yellow-500" />,
   high: <ShieldAlert className="h-4 w-4 text-orange-500" />,
@@ -65,20 +65,20 @@ function VulnerabilityAnalysis({ device }: { device: Device }) {
       // Mock data for demo purposes
       setAnalysis({
         analysisSummary:
-          "Cet appareil présente de multiples vulnérabilités critiques.",
+          "Cet appareil présente plusieurs vulnérabilités critiques en raison d'un pare-feu non configuré et de ports web ouverts, le rendant vulnérable aux attaques réseau.",
         vulnerabilities: [
           {
             severity: "critical",
             description:
-              "Les identifiants par défaut du panneau d'administration sont utilisés.",
-            recommendation: "Changez immédiatement le mot de passe par défaut.",
+              "L'appareil n'a pas de règles de pare-feu configurées, ce qui suggère que le pare-feu du système est désactivé ou mal configuré.",
+            recommendation: "Activez et configurez correctement le pare-feu du système d'exploitation pour bloquer toutes les connexions entrantes inutiles.",
           },
           {
             severity: "medium",
             description:
-              "Le micrologiciel est obsolète et des correctifs de sécurité sont manquants.",
+              "Les ports 80 (HTTP) et 443 (HTTPS) sont ouverts sur un ordinateur portable administratif. Exécuter des services web sur une machine d'administrateur augmente la surface d'attaque.",
             recommendation:
-              "Mettez à jour le micrologiciel de l'appareil vers la dernière version.",
+              "Désactivez les services web si non essentiels, ou restreignez l'accès à des adresses IP de confiance uniquement.",
           },
         ],
       });
@@ -116,7 +116,7 @@ function VulnerabilityAnalysis({ device }: { device: Device }) {
                   {severityIcons[vuln.severity]}
                   <div>
                     <p className="font-semibold capitalize">
-                      Risque {vuln.severity}
+                      Risque {vuln.severity === 'low' ? 'faible' : vuln.severity === 'medium' ? 'moyen' : vuln.severity}
                     </p>
                     <p className="text-sm">{vuln.description}</p>
                     <p className="text-xs text-muted-foreground mt-1">

@@ -28,6 +28,7 @@ import {
 import { getDevices } from "@/lib/services/network-service";
 import { Skeleton } from "../ui/skeleton";
 import { NetworkMapDialog } from "./network-map-dialog";
+import { cn } from "@/lib/utils";
 
 const deviceIcons: { [key: string]: React.ElementType } = {
   Laptop,
@@ -45,6 +46,13 @@ const statusColors: { [key: string]: string } = {
   Offline: "border-gray-500",
   Blocked: "border-red-500",
   Paused: "border-yellow-500",
+};
+
+const statusBgColors: { [key: string]: string } = {
+  Online: "bg-green-500",
+  Offline: "bg-gray-500",
+  Blocked: "bg-red-500",
+  Paused: "bg-yellow-500",
 };
 
 export function NetworkMap() {
@@ -68,15 +76,16 @@ export function NetworkMap() {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Topologie interactive du réseau</CardTitle>
-          <CardDescription>Cliquez sur un appareil pour voir les détails et effectuer une analyse de sécurité.</CardDescription>
+          <CardTitle>Topologie du réseau</CardTitle>
+          <CardDescription>Visualisation interactive de vos appareils connectés.</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <Skeleton className="h-96 w-full" />
           ) : (
             <TooltipProvider>
-              <div className="relative w-full h-96 rounded-lg bg-muted/30 overflow-hidden">
+              {/* Desktop View: Interactive Map */}
+              <div className="relative w-full h-96 rounded-lg bg-muted/30 overflow-hidden hidden md:block">
                 {/* Router */}
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -142,6 +151,30 @@ export function NetworkMap() {
                       </Tooltip>
                     </React.Fragment>
                   );
+                })}
+              </div>
+
+              {/* Mobile View: List */}
+              <div className="space-y-2 md:hidden">
+                {devices.map(device => {
+                  const Icon = deviceIcons[device.type] || HelpCircle;
+                  return (
+                     <div
+                      key={device.id}
+                      onClick={() => setSelectedDevice(device)}
+                      className="flex items-center gap-4 rounded-lg border p-3 cursor-pointer hover:bg-muted/50"
+                    >
+                      <Icon className="h-6 w-6 text-muted-foreground" />
+                      <div className="flex-1">
+                        <p className="font-semibold">{device.name}</p>
+                        <p className="text-sm text-muted-foreground">{device.ip}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">{device.status}</span>
+                        <div className={cn("h-3 w-3 rounded-full", statusBgColors[device.status])} />
+                      </div>
+                    </div>
+                  )
                 })}
               </div>
             </TooltipProvider>
