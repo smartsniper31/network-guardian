@@ -6,18 +6,12 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'zod';
-
-const NetworkChatInputSchema = z.object({
-  query: z.string().describe('The user\'s question about their network.'),
-  deviceData: z.string().describe('A JSON string representing the list of devices on the network.'),
-});
-export type NetworkChatInput = z.infer<typeof NetworkChatInputSchema>;
-
-export const NetworkChatOutputSchema = z.object({
-    response: z.string().describe('The AI\'s response to the user\'s query.'),
-});
-export type NetworkChatOutput = z.infer<typeof NetworkChatOutputSchema>;
+import {
+  NetworkChatInput,
+  NetworkChatInputSchema,
+  NetworkChatOutput,
+  NetworkChatOutputSchema,
+} from '@/lib/types';
 
 
 export async function networkChat(

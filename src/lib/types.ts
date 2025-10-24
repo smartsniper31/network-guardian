@@ -159,3 +159,15 @@ export const SuggestCompromisedDevicesOutputSchema = z.object({
 export type SuggestCompomisedDevicesOutput = z.infer<
   typeof SuggestCompromisedDevicesOutputSchema
 >;
+
+// network-chat-flow
+export const NetworkChatInputSchema = z.object({
+  query: z.string().describe('The user\'s question about their network.'),
+  deviceData: z.string().describe('A JSON string representing the list of devices on the network.'),
+});
+export type NetworkChatInput = z.infer<typeof NetworkChatInputSchema>;
+
+export const NetworkChatOutputSchema = z.object({
+    response: z.string().describe('The AI\'s response to the user\'s query.'),
+});
+export type NetworkChatOutput = z.infer<typeof NetworkChatOutputSchema>;
