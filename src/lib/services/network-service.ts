@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { Device, LogEntry, User } from '@/lib/types';
@@ -27,8 +26,8 @@ const getStoredDevices = (): Device[] => {
     if (storedData) {
       return JSON.parse(storedData);
     } else {
-      window.localStorage.setItem(DEVICES_STORAGE_KEY, JSON.stringify(mockDevices));
-      return mockDevices;
+      // Don't initialize with mock data anymore, let the user add the router first
+      return [];
     }
   } catch (error) {
     console.error("Could not access localStorage. Using mock data for devices.", error);
@@ -44,9 +43,23 @@ const saveStoredDevices = (devices: Device[]) => {
   }
 };
 
+export async function hasConfiguredRouter(): Promise<boolean> {
+  await new Promise(resolve => setTimeout(resolve, 50));
+  const devices = getStoredDevices();
+  return devices.some(d => d.type === 'Router');
+}
+
 export async function getDevices(): Promise<Device[]> {
   await new Promise(resolve => setTimeout(resolve, 200));
-  return getStoredDevices();
+  
+  let devices = getStoredDevices();
+  // If no devices (e.g. first time after setup), add mock devices except for router
+  if (devices.length > 0 && devices.some(d => d.type === 'Router') && !devices.some(d => d.type !== 'Router')) {
+      const newDevices = [...devices, ...mockDevices];
+      saveStoredDevices(newDevices);
+      return newDevices;
+  }
+  return devices;
 }
 
 export async function updateDeviceStatus(deviceId: string, status: Device['status']): Promise<Device> {

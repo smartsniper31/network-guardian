@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { loginAction } from "@/actions/auth";
-import { loginUser } from "@/lib/services/network-service";
+import { loginUser, hasConfiguredRouter } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,7 +39,14 @@ export function LoginForm() {
             title: `Bienvenue, ${user.name}!`,
             description: "Vous êtes maintenant connecté.",
           })
-          router.push("/dashboard");
+          
+          const isConfigured = await hasConfiguredRouter();
+          if (isConfigured) {
+            router.push("/dashboard");
+          } else {
+            router.push("/setup");
+          }
+
         } catch (error: any) {
           setClientError(error.message);
         }

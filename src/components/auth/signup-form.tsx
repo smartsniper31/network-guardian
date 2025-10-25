@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
@@ -36,9 +37,9 @@ export function SignupForm() {
                     const user = await signupUser(state.data.name, state.data.email, state.data.password);
                     toast({
                         title: "Compte créé avec succès !",
-                        description: `Bienvenue, ${user.name}!`,
+                        description: `Bienvenue, ${user.name}! Prochaine étape : configurer votre routeur.`,
                     });
-                    router.push("/dashboard");
+                    router.push("/setup");
                 } catch (error: any) {
                     setClientError(error.message);
                 }

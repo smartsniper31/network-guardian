@@ -23,22 +23,6 @@ export const mockUser: User = {
 // =================================================================================
 export const mockDevices: Device[] = [
     {
-        "id": "device-0",
-        "ip": "192.168.1.1",
-        "mac": "00:1A:2B:3C:4D:FF",
-        "name": "Routeur Principal",
-        "type": "Router",
-        "status": "Online",
-        "bandwidthUsage": 0.5,
-        "dataUsage": { "download": 15000, "upload": 2000 },
-        "lastSeen": new Date().toISOString(),
-        "openPorts": [],
-        "dns": "1.1.1.1",
-        "dhcp": true,
-        "firewallRules": [],
-        "blockedCategories": []
-    },
-    {
         "id": "device-1",
         "ip": "192.168.1.100",
         "mac": "A8:DB:03:CE:9B:A1",
