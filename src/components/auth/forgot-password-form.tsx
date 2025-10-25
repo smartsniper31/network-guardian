@@ -33,6 +33,7 @@ function SubmitButton() {
 
 export function ForgotPasswordForm() {
   const [state, formAction] = useActionState(forgotPasswordAction, { error: null, success: null });
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -40,7 +41,6 @@ export function ForgotPasswordForm() {
   useEffect(() => {
     async function handleRecovery() {
       if (state.success && !state.error) {
-        const email = new FormData(document.querySelector('form')!).get('email') as string;
         try {
           const recoveredPassword = await getStoredUserPassword(email);
           if (recoveredPassword) {
@@ -63,7 +63,7 @@ export function ForgotPasswordForm() {
       }
     }
     handleRecovery();
-  }, [state, toast]);
+  }, [state, email, toast]);
   
   return (
     <>
@@ -76,6 +76,8 @@ export function ForgotPasswordForm() {
             type="email"
             placeholder="votre@email.com"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
          {state.error && (
