@@ -2,7 +2,6 @@
 'use client';
 
 import { Device, LogEntry, User } from '@/lib/types';
-import { mockDevices, mockLogs } from '@/lib/data';
 
 // =================================================================================
 // COUCHE DE SERVICE RÉSEAU (PERSISTANTE CÔTÉ CLIENT)
@@ -30,8 +29,8 @@ const getStoredDevices = (): Device[] => {
       return [];
     }
   } catch (error) {
-    console.error("Could not access localStorage. Using mock data for devices.", error);
-    return mockDevices;
+    console.error("Could not access localStorage. Using in-memory data for devices.", error);
+    return [];
   }
 };
 
@@ -51,17 +50,7 @@ export async function hasConfiguredRouter(): Promise<boolean> {
 
 export async function getDevices(): Promise<Device[]> {
   await new Promise(resolve => setTimeout(resolve, 200));
-  
   let devices = getStoredDevices();
-  // If only a router exists, it's the first run after setup. Add other mock devices.
-  if (devices.length === 1 && devices[0].type === 'Router') {
-      const router = devices[0];
-      // Filter out the mock router to avoid duplicates
-      const otherMockDevices = mockDevices.filter(d => d.type !== 'Router');
-      const newDevices = [router, ...otherMockDevices];
-      saveStoredDevices(newDevices);
-      return newDevices;
-  }
   return devices;
 }
 
@@ -116,7 +105,8 @@ export async function getDevice(id: string): Promise<Device | undefined> {
 // ======================================================
 export async function getLogs(): Promise<LogEntry[]> {
   await new Promise(resolve => setTimeout(resolve, 300));
-  return mockLogs;
+  // Returning empty logs as mock data is removed
+  return [];
 }
 
 
