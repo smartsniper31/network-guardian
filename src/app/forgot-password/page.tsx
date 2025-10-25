@@ -1,10 +1,10 @@
 
 import { Icons } from "@/components/icons";
-import { LoginForm } from "@/components/auth/login-form";
+import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import Link from "next/link";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function LoginPage({
+export default function ForgotPasswordPage({
   searchParams,
 }: {
   searchParams: { error?: string };
@@ -16,32 +16,27 @@ export default function LoginPage({
         <div className="flex items-center gap-3">
           <Icons.logo className="h-10 w-10 text-primary" />
           <h1 className="font-headline text-3xl font-bold tracking-tight text-foreground">
-            Network Guardian
+            Mot de passe oublié
           </h1>
         </div>
         <p className="text-center text-muted-foreground">
-          Connectez-vous pour accéder à votre tableau de bord réseau et prendre le contrôle de votre environnement numérique.
+          Saisissez votre email et nous vous aiderons à récupérer votre compte.
         </p>
-        
+
         {searchParams.error && (
           <Alert variant="destructive">
             <AlertDescription>{searchParams.error}</AlertDescription>
           </Alert>
         )}
 
-        <LoginForm />
-
-        <div className="flex justify-between w-full text-sm">
-            <p className="text-muted-foreground">
-                Pas encore de compte ?{' '}
-                <Link href="/signup" className="font-semibold text-primary hover:underline">
-                    Inscrivez-vous
-                </Link>
-            </p>
-            <Link href="/forgot-password" className="font-semibold text-primary hover:underline">
-                Mot de passe oublié ?
+        <ForgotPasswordForm />
+        
+        <p className="text-sm text-muted-foreground">
+            Vous vous souvenez de votre mot de passe ?{' '}
+            <Link href="/" className="font-semibold text-primary hover:underline">
+                Connectez-vous
             </Link>
-        </div>
+        </p>
       </div>
        <div className="absolute bottom-4 z-10 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} Network Guardian. Tous droits réservés.

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { signupAction } from "@/actions/auth";
@@ -26,7 +26,6 @@ function SubmitButton() {
 
 export function SignupForm() {
     const [state, formAction] = useActionState(signupAction, { data: null, error: null });
-    const [clientError, setClientError] = useState<string | null>(null);
     const router = useRouter();
     const { toast } = useToast();
 
@@ -41,14 +40,18 @@ export function SignupForm() {
                     });
                     router.push("/setup");
                 } catch (error: any) {
-                    setClientError(error.message);
+                     toast({
+                        variant: "destructive",
+                        title: "Erreur d'inscription",
+                        description: error.message,
+                    });
                 }
             }
         }
         handleSignup();
     }, [state, router, toast]);
 
-    const displayError = clientError || state.error;
+    const displayError = state.error;
 
   return (
     <form action={formAction} className="w-full space-y-6">
@@ -77,6 +80,16 @@ export function SignupForm() {
         <Input
           id="password"
           name="password"
+          type="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>        
+        <Input
+          id="confirmPassword"
+          name="confirmPassword"
           type="password"
           placeholder="••••••••"
           required

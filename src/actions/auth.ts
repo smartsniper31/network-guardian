@@ -9,9 +9,13 @@ const loginSchema = z.object({
 });
 
 const signupSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  password: z.string().min(6),
+  name: z.string().min(2, "Le nom doit contenir au moins 2 caractères."),
+  email: z.string().email("L'email est invalide."),
+  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères."),
+  confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas.",
+  path: ["confirmPassword"],
 });
 
 export async function loginAction(prevState: any, formData: FormData) {
@@ -39,8 +43,11 @@ export async function signupAction(prevState: any, formData: FormData) {
 
    if (!validatedFields.success) {
     const errors = validatedFields.error.flatten().fieldErrors;
-    if (errors.password) {
-      return { data: null, error: "Le mot de passe doit contenir au moins 6 caractères." };
+    // Return the first error found
+    for (const key in errors) {
+        if (errors[key as keyof typeof errors]) {
+            return { data: null, error: errors[key as keyof typeof errors]![0] };
+        }
     }
     return {
       data: null,
@@ -53,3 +60,18 @@ export async function signupAction(prevState: any, formData: FormData) {
       error: null,
   }
 }
+
+export async function forgotPasswordAction(prevState: any, formData: FormData) {
+  const emailSchema = z.object({ email: z.string().email("L'email est invalide.") });
+  const validatedFields = emailSchema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!validatedFields.success) {
+    return { error: "Veuillez saisir une adresse email valide.", success: null };
+  }
+
+  return {
+    error: null,
+    success: "Si un compte est associé à cet email, nous vous montrerons comment le récupérer."
+  }
+}
+

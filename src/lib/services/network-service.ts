@@ -53,9 +53,12 @@ export async function getDevices(): Promise<Device[]> {
   await new Promise(resolve => setTimeout(resolve, 200));
   
   let devices = getStoredDevices();
-  // If no devices (e.g. first time after setup), add mock devices except for router
-  if (devices.length > 0 && devices.some(d => d.type === 'Router') && !devices.some(d => d.type !== 'Router')) {
-      const newDevices = [...devices, ...mockDevices];
+  // If only a router exists, it's the first run after setup. Add other mock devices.
+  if (devices.length === 1 && devices[0].type === 'Router') {
+      const router = devices[0];
+      // Filter out the mock router to avoid duplicates
+      const otherMockDevices = mockDevices.filter(d => d.type !== 'Router');
+      const newDevices = [router, ...otherMockDevices];
       saveStoredDevices(newDevices);
       return newDevices;
   }
@@ -138,7 +141,7 @@ export async function loginUser(email: string, password: string):Promise<User> {
     const storedUser = getStoredUser();
 
     if (!storedUser) {
-        throw new Error("Aucun compte trouvé. Veuillez vous inscrire.");
+        throw new Error("Aucun compte administrateur trouvé. Veuillez vous inscrire.");
     }
 
     if (storedUser.email !== email || storedUser.password !== password) {
@@ -158,8 +161,8 @@ export async function loginUser(email: string, password: string):Promise<User> {
 export async function signupUser(name: string, email:string, password: string):Promise<User> {
     await new Promise(resolve => setTimeout(resolve, 200));
     
-    // This will overwrite any existing user, ensuring signup always works.
     try {
+        // This will overwrite any existing user and devices, ensuring signup always works as a "reset".
         window.localStorage.removeItem(USER_STORAGE_KEY);
         window.localStorage.removeItem(DEVICES_STORAGE_KEY);
     } catch (error) {
@@ -201,4 +204,13 @@ export async function getUser(): Promise<User | null> {
         avatar: '/user-avatar.png',
         ...userWithoutPassword
     };
+}
+
+export async function getStoredUserPassword(email: string): Promise<string | null> {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    const storedUser = getStoredUser();
+    if (storedUser && storedUser.email === email) {
+        return storedUser.password || null;
+    }
+    return null;
 }
