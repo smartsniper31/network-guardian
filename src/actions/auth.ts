@@ -8,3 +8,10 @@ export async function loginAction() {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   redirect("/dashboard");
 }
+
+export async function signupAction() {
+  // In a real application, you would create a new user here.
+  // For this demo, we'll just simulate a delay and redirect.
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  redirect("/dashboard");
+}

@@ -1,8 +1,8 @@
 import { Icons } from "@/components/icons";
-import { LoginForm } from "@/components/auth/login-form";
+import { SignupForm } from "@/components/auth/signup-form";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-background"></div>
@@ -10,17 +10,17 @@ export default function LoginPage() {
         <div className="flex items-center gap-3">
           <Icons.logo className="h-10 w-10 text-primary" />
           <h1 className="font-headline text-3xl font-bold tracking-tight text-foreground">
-            Network Guardian
+            Créer un compte
           </h1>
         </div>
         <p className="text-center text-muted-foreground">
-          Connectez-vous pour accéder à votre tableau de bord réseau et prendre le contrôle de votre environnement numérique.
+          Rejoignez Network Guardian et prenez le contrôle de votre réseau dès aujourd'hui.
         </p>
-        <LoginForm />
+        <SignupForm />
         <p className="text-sm text-muted-foreground">
-            Pas encore de compte ?{' '}
-            <Link href="/signup" className="font-semibold text-primary hover:underline">
-                Inscrivez-vous
+            Vous avez déjà un compte ?{' '}
+            <Link href="/" className="font-semibold text-primary hover:underline">
+                Connectez-vous
             </Link>
         </p>
       </div>
