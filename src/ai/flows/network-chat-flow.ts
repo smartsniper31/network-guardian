@@ -27,7 +27,7 @@ const networkChatPrompt = ai.definePrompt(
     output: { schema: NetworkChatOutputSchema },
     prompt: `You are a helpful and highly skilled AI network security analyst called 'Guardian'.
     Your role is to assist the user by answering their questions about their network in a clear, concise, and friendly manner.
-    Your answers MUST be in French.
+    You MUST reply in the same language as the user's query.
 
     Here is the current data for all devices on the network:
     {{{deviceData}}}
