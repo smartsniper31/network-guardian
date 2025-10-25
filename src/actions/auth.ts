@@ -1,8 +1,10 @@
+
 "use server";
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { loginUser, signupUser } from "@/lib/services/network-service";
+import { User } from "@/lib/types";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -26,15 +28,22 @@ export async function loginAction(prevState: any, formData: FormData) {
     };
   }
 
+  let user: User | null = null;
   try {
-    await loginUser(validatedFields.data.email, validatedFields.data.password);
+    user = await loginUser(validatedFields.data.email, validatedFields.data.password);
   } catch (error: any) {
     return {
       error: error.message,
     };
   }
 
-  redirect("/dashboard");
+  if (user) {
+    redirect("/dashboard");
+  }
+  
+  return {
+    error: "Une erreur inconnue est survenue."
+  }
 }
 
 export async function signupAction(prevState: any, formData: FormData) {
@@ -51,9 +60,10 @@ export async function signupAction(prevState: any, formData: FormData) {
       error: "Veuillez vérifier les informations saisies.",
     };
   }
-
+  
+  let user: User | null = null;
   try {
-    await signupUser(
+    user = await signupUser(
         validatedFields.data.name,
         validatedFields.data.email,
         validatedFields.data.password
@@ -64,5 +74,11 @@ export async function signupAction(prevState: any, formData: FormData) {
     }
   }
 
-  redirect("/dashboard");
+  if(user) {
+    redirect("/dashboard");
+  }
+
+  return {
+    error: "Une erreur inconnue est survenue lors de l'inscription."
+  }
 }

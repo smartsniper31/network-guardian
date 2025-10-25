@@ -3,7 +3,7 @@
 'use client';
 
 import { Device, LogEntry, User } from '@/lib/types';
-import { mockDevices, mockLogs } from '@/lib/data';
+import { mockDevices, mockLogs, mockUser as defaultMockUser } from '@/lib/data';
 
 // =================================================================================
 // COUCHE DE SERVICE RÉSEAU (PERSISTANTE CÔTÉ CLIENT)
@@ -108,7 +108,9 @@ export async function getLogs(): Promise<LogEntry[]> {
 // Gestion de l'utilisateur (authentification locale)
 // ======================================================
 
-const getStoredUser = (): (Omit<User, 'id' | 'avatar'> & { password?: string }) | null => {
+type StoredUser = Omit<User, 'id' | 'avatar'> & { password?: string };
+
+const getStoredUser = (): StoredUser | null => {
     try {
         const storedData = window.localStorage.getItem(USER_STORAGE_KEY);
         return storedData ? JSON.parse(storedData) : null;
@@ -118,7 +120,7 @@ const getStoredUser = (): (Omit<User, 'id' | 'avatar'> & { password?: string }) 
     }
 }
 
-export async function loginUser(email: string, password: string):Promise<void> {
+export async function loginUser(email: string, password: string):Promise<User> {
     await new Promise(resolve => setTimeout(resolve, 200));
     const storedUser = getStoredUser();
 
@@ -130,14 +132,23 @@ export async function loginUser(email: string, password: string):Promise<void> {
         throw new Error("Email ou mot de passe incorrect.");
     }
 
+    const { password: _, ...userWithoutPassword } = storedUser;
+    const finalUser = {
+      ...userWithoutPassword,
+      id: 'local-user',
+      avatar: '/user-avatar.png'
+    };
+
     try {
       window.sessionStorage.setItem('loggedIn', 'true');
     } catch(e) {
-      // Session storage might fail in some environments
+      console.warn("Could not set session storage for login status", e);
     }
+    
+    return finalUser;
 }
 
-export async function signupUser(name: string, email:string, password: string):Promise<void> {
+export async function signupUser(name: string, email:string, password: string):Promise<User> {
     await new Promise(resolve => setTimeout(resolve, 200));
     const storedUser = getStoredUser();
 
@@ -145,7 +156,7 @@ export async function signupUser(name: string, email:string, password: string):P
         throw new Error("Un compte administrateur existe déjà pour cette application.");
     }
 
-    const newUser = {
+    const newUser: StoredUser = {
         name,
         email,
         password,
@@ -159,7 +170,15 @@ export async function signupUser(name: string, email:string, password: string):P
         console.error("Could not save user to localStorage.", error);
         throw new Error("Impossible de créer le compte.");
     }
+    
+    const { password: _, ...userWithoutPassword } = newUser;
+    return {
+        ...userWithoutPassword,
+        id: 'local-user',
+        avatar: '/user-avatar.png'
+    };
 }
+
 
 export async function getUser(): Promise<User | null> {
     await new Promise(resolve => setTimeout(resolve, 50));
