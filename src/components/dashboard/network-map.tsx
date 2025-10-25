@@ -15,9 +15,10 @@ import {
   Tablet,
   Tv,
   Camera,
-  Router,
+  Router as RouterIcon,
   HelpCircle,
   Server,
+  Network,
 } from "lucide-react";
 import {
   Tooltip,
@@ -36,7 +37,7 @@ const deviceIcons: { [key: string]: React.ElementType } = {
   Tablet,
   TV: Tv,
   Camera,
-  Router,
+  Router: RouterIcon,
   IoT: Server,
   Unknown: HelpCircle,
 };
@@ -72,6 +73,9 @@ export function NetworkMap() {
     fetchData();
   }, []);
 
+  const routerDevice = devices.find(d => d.type === 'Router');
+  const otherDevices = devices.filter(d => d.type !== 'Router');
+
   return (
     <>
       <Card id="network-map">
@@ -86,72 +90,85 @@ export function NetworkMap() {
             <TooltipProvider>
               {/* Desktop View: Interactive Map */}
               <div className="relative w-full h-96 rounded-lg bg-muted/30 overflow-hidden hidden md:block">
-                {/* Router */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
-                      style={{ left: `${routerPosition.x}%`, top: `${routerPosition.y}%` }}
-                    >
-                      <div className="h-16 w-16 rounded-full bg-primary/10 border-2 border-dashed border-primary flex items-center justify-center">
-                        <Router className="h-8 w-8 text-primary" />
-                      </div>
-                      <p className="text-xs font-semibold mt-1">Routeur Principal</p>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>192.168.1.1</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                {/* Devices */}
-                {devices.map((device, index) => {
-                  const angle = (index / devices.length) * 2 * Math.PI;
-                  const x = routerPosition.x + radius * Math.cos(angle);
-                  const y = routerPosition.y + radius * Math.sin(angle);
-                  const Icon = deviceIcons[device.type] || HelpCircle;
-
-                  return (
-                    <React.Fragment key={device.id}>
-                      {/* Connection Line */}
-                      <svg className="absolute top-0 left-0 w-full h-full" style={{ pointerEvents: 'none' }}>
-                        <line
-                          x1={`${routerPosition.x}%`}
-                          y1={`${routerPosition.y}%`}
-                          x2={`${x}%`}
-                          y2={`${y}%`}
-                          className="stroke-border"
-                          strokeWidth="1"
-                          strokeDasharray={device.status === 'Online' ? "0" : "4 2"}
-                        />
-                      </svg>
-
-                      {/* Device Icon */}
-                      <Tooltip>
-                        <TooltipTrigger
-                          asChild
-                          onClick={() => setSelectedDevice(device)}
-                          className="cursor-pointer"
+                {routerDevice ? (
+                  <>
+                    {/* Router */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div
+                          className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer"
+                          style={{ left: `${routerPosition.x}%`, top: `${routerPosition.y}%` }}
+                           onClick={() => setSelectedDevice(routerDevice)}
                         >
-                          <div
-                            className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
-                            style={{ left: `${x}%`, top: `${y}%` }}
-                          >
-                            <div className={`h-12 w-12 rounded-full bg-card border-2 flex items-center justify-center ${statusColors[device.status]}`}>
-                                <Icon className="h-6 w-6 text-foreground" />
-                            </div>
-                            <p className="text-xs text-center mt-1 w-20 truncate">{device.name}</p>
+                          <div className="h-16 w-16 rounded-full bg-primary/10 border-2 border-dashed border-primary flex items-center justify-center">
+                            <RouterIcon className="h-8 w-8 text-primary" />
                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="font-semibold">{device.name}</p>
-                          <p>{device.ip}</p>
-                          <p>Statut: {device.status}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </React.Fragment>
-                  );
-                })}
+                          <p className="text-xs font-semibold mt-1 w-24 text-center truncate">{routerDevice.name}</p>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="font-semibold">{routerDevice.name}</p>
+                        <p>{routerDevice.ip}</p>
+                        <p>Statut: {routerDevice.status}</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Devices */}
+                    {otherDevices.map((device, index) => {
+                      const angle = (index / otherDevices.length) * 2 * Math.PI;
+                      const x = routerPosition.x + radius * Math.cos(angle);
+                      const y = routerPosition.y + radius * Math.sin(angle);
+                      const Icon = deviceIcons[device.type] || HelpCircle;
+
+                      return (
+                        <React.Fragment key={device.id}>
+                          {/* Connection Line */}
+                          <svg className="absolute top-0 left-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+                            <line
+                              x1={`${routerPosition.x}%`}
+                              y1={`${routerPosition.y}%`}
+                              x2={`${x}%`}
+                              y2={`${y}%`}
+                              className="stroke-border"
+                              strokeWidth="1"
+                              strokeDasharray={device.status === 'Online' ? "0" : "4 2"}
+                            />
+                          </svg>
+
+                          {/* Device Icon */}
+                          <Tooltip>
+                            <TooltipTrigger
+                              asChild
+                              onClick={() => setSelectedDevice(device)}
+                              className="cursor-pointer"
+                            >
+                              <div
+                                className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+                                style={{ left: `${x}%`, top: `${y}%` }}
+                              >
+                                <div className={`h-12 w-12 rounded-full bg-card border-2 flex items-center justify-center ${statusColors[device.status]}`}>
+                                    <Icon className="h-6 w-6 text-foreground" />
+                                </div>
+                                <p className="text-xs text-center mt-1 w-20 truncate">{device.name}</p>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="font-semibold">{device.name}</p>
+                              <p>{device.ip}</p>
+                              <p>Statut: {device.status}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </React.Fragment>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                    <Network className="h-12 w-12 mb-4" />
+                    <p className="font-semibold">Routeur principal introuvable</p>
+                    <p className="text-sm">Impossible de visualiser la topologie sans appareil de type 'Routeur'.</p>
+                  </div>
+                )}
               </div>
 
               {/* Mobile View: List */}
