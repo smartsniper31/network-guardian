@@ -2,7 +2,7 @@
 'use client';
 
 import { Device, LogEntry, User } from '@/lib/types';
-import { mockDevices, mockLogs, mockUser as defaultMockUser } from '@/lib/data';
+import { mockDevices, mockLogs } from '@/lib/data';
 
 // =================================================================================
 // COUCHE DE SERVICE RÉSEAU (PERSISTANTE CÔTÉ CLIENT)
@@ -151,22 +151,19 @@ export async function loginUser(email: string, password: string):Promise<User> {
       id: 'local-user',
       avatar: '/user-avatar.png'
     };
-
-    try {
-      window.sessionStorage.setItem('loggedIn', 'true');
-    } catch(e) {
-      console.warn("Could not set session storage for login status", e);
-    }
     
     return finalUser;
 }
 
 export async function signupUser(name: string, email:string, password: string):Promise<User> {
     await new Promise(resolve => setTimeout(resolve, 200));
-    const storedUser = getStoredUser();
-
-    if (storedUser) {
-        throw new Error("Un compte administrateur existe déjà pour cette application.");
+    
+    // This will overwrite any existing user, ensuring signup always works.
+    try {
+        window.localStorage.removeItem(USER_STORAGE_KEY);
+        window.localStorage.removeItem(DEVICES_STORAGE_KEY);
+    } catch (error) {
+        console.error("Could not clear previous user data from localStorage.", error);
     }
 
     const newUser: StoredUser = {
@@ -178,7 +175,6 @@ export async function signupUser(name: string, email:string, password: string):P
 
     try {
         window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
-        window.sessionStorage.setItem('loggedIn', 'true');
     } catch (error) {
         console.error("Could not save user to localStorage.", error);
         throw new Error("Impossible de créer le compte.");
