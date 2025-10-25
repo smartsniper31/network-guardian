@@ -23,7 +23,7 @@ import { Device } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { AccessScheduleDialog } from './access-schedule-dialog';
 import { ContentFilterDialog } from './content-filter-dialog';
-import { getDevices, updateDeviceStatus } from '@/lib/services/network-service';
+import { getDevices, updateDeviceStatus, updateDeviceBlockedCategories } from '@/lib/services/network-service';
 import { Skeleton } from '../ui/skeleton';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../ui/dropdown-menu';
 
@@ -53,14 +53,15 @@ export function ControlsView() {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
   const { toast } = useToast();
 
+  const fetchAndSetDevices = async () => {
+    setIsLoading(true);
+    const data = await getDevices();
+    setDevices(data);
+    setIsLoading(false);
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true);
-      const data = await getDevices();
-      setDevices(data);
-      setIsLoading(false);
-    }
-    fetchData();
+    fetchAndSetDevices();
   }, []);
 
   const handleStatusChange = async (deviceId: string, newStatus: Device['status']) => {
@@ -100,9 +101,18 @@ export function ControlsView() {
     setIsFilterDialogOpen(true);
   };
 
-  const handleFilterSave = (deviceId: string, blockedCategories: string[]) => {
-    setDevices(devices.map(d => d.id === deviceId ? { ...d, blockedCategories } : d));
-    // Toast is handled in the dialog
+  const handleFilterSave = async (deviceId: string, blockedCategories: string[]) => {
+    try {
+      await updateDeviceBlockedCategories(deviceId, blockedCategories);
+      setDevices(devices.map(d => d.id === deviceId ? { ...d, blockedCategories } : d));
+      // Toast is handled in the dialog
+    } catch (error) {
+       toast({
+        title: "Erreur",
+        description: "Échec de la mise à jour des filtres de contenu.",
+        variant: "destructive"
+      });
+    }
   };
 
   const renderDesktopActions = (device: Device) => (
