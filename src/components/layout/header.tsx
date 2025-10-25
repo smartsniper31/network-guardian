@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import {
   Bell,
@@ -55,6 +55,7 @@ const notifications = [
 export function Header() {
   const { toggleSidebar, state } = useSidebar();
   const pathname = usePathname();
+  const router = useRouter();
   const userAvatar = getPlaceholderImage("user-avatar");
   const [user, setUser] = useState<UserType | null>(null);
 
@@ -65,6 +66,18 @@ export function Header() {
     }
     fetchUser();
   }, [])
+
+  const handleLogout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    try {
+      // Clear all local and session storage for a full reset
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+    } catch (error) {
+      console.error("Could not clear storage", error);
+    }
+    router.push('/');
+  }
 
   return (
     <header className="fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
@@ -150,7 +163,7 @@ export function Header() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/">Se déconnecter</Link>
+              <a href="/" onClick={handleLogout}>Se déconnecter</a>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
