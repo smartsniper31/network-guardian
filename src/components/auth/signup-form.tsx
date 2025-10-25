@@ -1,11 +1,12 @@
 "use client";
 
-import { useFormStatus } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { signupAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserPlus } from "lucide-react";
+import { Alert, AlertDescription } from "../ui/alert";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -19,8 +20,10 @@ function SubmitButton() {
 }
 
 export function SignupForm() {
+    const [state, formAction] = useFormState(signupAction, null);
+
   return (
-    <form action={signupAction} className="w-full space-y-6">
+    <form action={formAction} className="w-full space-y-6">
        <div className="space-y-2">
         <Label htmlFor="name">Nom complet</Label>
         <Input
@@ -51,6 +54,11 @@ export function SignupForm() {
           required
         />
       </div>
+      {state?.error && (
+        <Alert variant="destructive">
+          <AlertDescription>{state.error}</AlertDescription>
+        </Alert>
+      )}
       <SubmitButton />
     </form>
   );

@@ -1,11 +1,12 @@
 "use client";
 
-import { useFormStatus } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { loginAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LogIn } from "lucide-react";
+import { Alert, AlertDescription } from "../ui/alert";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -19,8 +20,10 @@ function SubmitButton() {
 }
 
 export function LoginForm() {
+  const [state, formAction] = useFormState(loginAction, null);
+
   return (
-    <form action={loginAction} className="w-full space-y-6">
+    <form action={formAction} className="w-full space-y-6">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -28,7 +31,6 @@ export function LoginForm() {
           name="email"
           type="email"
           placeholder="admin@networkguardian.com"
-          defaultValue="admin@networkguardian.com"
           required
         />
       </div>
@@ -39,10 +41,14 @@ export function LoginForm() {
           name="password"
           type="password"
           placeholder="••••••••"
-          defaultValue="password"
           required
         />
       </div>
+       {state?.error && (
+        <Alert variant="destructive">
+            <AlertDescription>{state.error}</AlertDescription>
+        </Alert>
+      )}
       <SubmitButton />
     </form>
   );

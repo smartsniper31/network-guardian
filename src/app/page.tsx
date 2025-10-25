@@ -1,8 +1,13 @@
 import { Icons } from "@/components/icons";
 import { LoginForm } from "@/components/auth/login-form";
 import Link from "next/link";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-background"></div>
@@ -16,7 +21,15 @@ export default function LoginPage() {
         <p className="text-center text-muted-foreground">
           Connectez-vous pour accéder à votre tableau de bord réseau et prendre le contrôle de votre environnement numérique.
         </p>
+        
+        {searchParams.error && (
+          <Alert variant="destructive">
+            <AlertDescription>{searchParams.error}</AlertDescription>
+          </Alert>
+        )}
+
         <LoginForm />
+
         <p className="text-sm text-muted-foreground">
             Pas encore de compte ?{' '}
             <Link href="/signup" className="font-semibold text-primary hover:underline">

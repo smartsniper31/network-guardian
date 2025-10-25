@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React, { useState, useEffect } from "react";
 import {
   Bell,
   PanelLeftClose,
@@ -22,7 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { mockUser } from "@/lib/data";
+import { getUser } from "@/lib/services/network-service";
+import type { User as UserType } from "@/lib/types";
 
 const getPageTitle = (pathname: string) => {
   if (pathname.startsWith("/dashboard/analyst")) return "Analyste IA";
@@ -53,6 +55,15 @@ export function Header() {
   const { toggleSidebar, state } = useSidebar();
   const pathname = usePathname();
   const userAvatar = getPlaceholderImage("user-avatar");
+  const [user, setUser] = useState<UserType | null>(null);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const userData = await getUser();
+      setUser(userData);
+    }
+    fetchUser();
+  }, [])
 
   return (
     <header className="fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
@@ -108,12 +119,12 @@ export function Header() {
                 {userAvatar && (
                    <AvatarImage
                     src={userAvatar.imageUrl}
-                    alt={mockUser.name}
+                    alt={user?.name || ""}
                     data-ai-hint={userAvatar.imageHint}
                   />
                 )}
                 <AvatarFallback>
-                  {mockUser.name
+                  {user?.name
                     .split(" ")
                     .map((n) => n[0])
                     .join("")}
@@ -122,14 +133,16 @@ export function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end">
-            <DropdownMenuLabel>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{mockUser.name}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  {mockUser.role}
-                </p>
-              </div>
-            </DropdownMenuLabel>
+            {user && (
+                <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user.name}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                    {user.role}
+                    </p>
+                </div>
+                </DropdownMenuLabel>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profil</DropdownMenuItem>
             <DropdownMenuItem>Paramètres</DropdownMenuItem>
