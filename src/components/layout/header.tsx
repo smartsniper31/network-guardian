@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -29,7 +30,7 @@ import type { User as UserType } from "@/lib/types";
 const getPageTitle = (pathname: string) => {
   if (pathname.startsWith("/dashboard/analyst")) return "Analyste IA";
   if (pathname.startsWith("/dashboard/security")) return "Sécurité";
-  if (pathname.startsWith("/dashboard/logs")) return "Journaux et Historique";
+  if (pathname.startsWith("/dashboard/logs")) return "Journaux";
   if (pathname.startsWith("/dashboard/parental-controls")) return "Contrôles Parentaux";
   if (pathname.startsWith("/dashboard/reports")) return "Rapports";
   if (pathname.startsWith("/dashboard/settings")) return "Paramètres";
@@ -116,7 +117,7 @@ export function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
               <Avatar className="h-10 w-10">
-                {userAvatar && (
+                {userAvatar && user?.avatar && (
                    <AvatarImage
                     src={userAvatar.imageUrl}
                     alt={user?.name || ""}
@@ -144,8 +145,9 @@ export function Header() {
                 </DropdownMenuLabel>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profil</DropdownMenuItem>
-            <DropdownMenuItem>Paramètres</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+                <Link href="/dashboard/settings">Paramètres</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href="/">Se déconnecter</Link>

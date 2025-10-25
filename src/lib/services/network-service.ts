@@ -1,7 +1,8 @@
 
+
 'use client';
 
-import { Device, LogEntry } from '@/lib/types';
+import { Device, LogEntry, User } from '@/lib/types';
 import { mockDevices, mockLogs } from '@/lib/data';
 
 // =================================================================================
@@ -13,55 +14,39 @@ import { mockDevices, mockLogs } from '@/lib/data';
 // restaurées entre les sessions.
 // =================================================================================
 
-const STORAGE_KEY = 'network-guardian-devices';
+const DEVICES_STORAGE_KEY = 'network-guardian-devices';
+const USER_STORAGE_KEY = 'network-guardian-user';
 
-// Fonction pour initialiser les données si elles n'existent pas dans le localStorage
-const initializeStorage = (): Device[] => {
+// ======================================================
+// Gestion des appareils
+// ======================================================
+
+const getStoredDevices = (): Device[] => {
   try {
-    const storedData = window.localStorage.getItem(STORAGE_KEY);
+    const storedData = window.localStorage.getItem(DEVICES_STORAGE_KEY);
     if (storedData) {
       return JSON.parse(storedData);
     } else {
-      // Si aucune donnée n'est stockée, on utilise les données de simulation initiales
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(mockDevices));
+      window.localStorage.setItem(DEVICES_STORAGE_KEY, JSON.stringify(mockDevices));
       return mockDevices;
     }
   } catch (error) {
-    console.error("Could not access localStorage. Using mock data for this session.", error);
-    // En cas d'erreur (ex: navigation privée), on utilise les données de base
+    console.error("Could not access localStorage. Using mock data for devices.", error);
     return mockDevices;
   }
 };
 
-// Fonction pour récupérer tous les appareils depuis le localStorage
-const getStoredDevices = (): Device[] => {
-  try {
-    const storedData = window.localStorage.getItem(STORAGE_KEY);
-    return storedData ? JSON.parse(storedData) : initializeStorage();
-  } catch (error) {
-    console.error("Could not access localStorage. Using mock data for this session.", error);
-    return mockDevices;
-  }
-};
-
-// Fonction pour sauvegarder les appareils dans le localStorage
 const saveStoredDevices = (devices: Device[]) => {
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(devices));
+    window.localStorage.setItem(DEVICES_STORAGE_KEY, JSON.stringify(devices));
   } catch (error) {
-     console.error("Could not save to localStorage.", error);
+     console.error("Could not save devices to localStorage.", error);
   }
 };
-
 
 export async function getDevices(): Promise<Device[]> {
   await new Promise(resolve => setTimeout(resolve, 200));
   return getStoredDevices();
-}
-
-export async function getLogs(): Promise<LogEntry[]> {
-  await new Promise(resolve => setTimeout(resolve, 300));
-  return mockLogs; // Les journaux ne sont pas rendus persistants pour cette démo
 }
 
 export async function updateDeviceStatus(deviceId: string, status: Device['status']): Promise<Device> {
@@ -108,4 +93,84 @@ export async function getDevice(id: string): Promise<Device | undefined> {
     await new Promise(resolve => setTimeout(resolve, 50));
     const devices = getStoredDevices();
     return devices.find(d => d.id === id);
+}
+
+// ======================================================
+// Gestion des logs (non persistants pour la démo)
+// ======================================================
+export async function getLogs(): Promise<LogEntry[]> {
+  await new Promise(resolve => setTimeout(resolve, 300));
+  return mockLogs;
+}
+
+
+// ======================================================
+// Gestion de l'utilisateur (authentification locale)
+// ======================================================
+
+const getStoredUser = (): (Omit<User, 'id' | 'avatar'> & { password?: string }) | null => {
+    try {
+        const storedData = window.localStorage.getItem(USER_STORAGE_KEY);
+        return storedData ? JSON.parse(storedData) : null;
+    } catch (error) {
+        console.error("Could not access localStorage for user.", error);
+        return null;
+    }
+}
+
+export async function loginUser(email: string, password: string):Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const storedUser = getStoredUser();
+
+    if (!storedUser) {
+        throw new Error("Aucun compte trouvé. Veuillez vous inscrire.");
+    }
+
+    if (storedUser.email !== email || storedUser.password !== password) {
+        throw new Error("Email ou mot de passe incorrect.");
+    }
+
+    try {
+      window.sessionStorage.setItem('loggedIn', 'true');
+    } catch(e) {
+      // Session storage might fail in some environments
+    }
+}
+
+export async function signupUser(name: string, email:string, password: string):Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const storedUser = getStoredUser();
+
+    if (storedUser) {
+        throw new Error("Un compte administrateur existe déjà pour cette application.");
+    }
+
+    const newUser = {
+        name,
+        email,
+        password,
+        role: 'Admin',
+    };
+
+    try {
+        window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
+        window.sessionStorage.setItem('loggedIn', 'true');
+    } catch (error) {
+        console.error("Could not save user to localStorage.", error);
+        throw new Error("Impossible de créer le compte.");
+    }
+}
+
+export async function getUser(): Promise<User | null> {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    const storedUser = getStoredUser();
+    if (!storedUser) return null;
+    
+    const { password, ...userWithoutPassword } = storedUser;
+    
+    return {
+        id: 'local-user',
+        avatar: '/user-avatar.png',
+        ...userWithoutPassword
+    };
 }
