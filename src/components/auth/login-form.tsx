@@ -1,13 +1,16 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
 import { loginAction } from "@/actions/auth";
+import { loginUser } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LogIn } from "lucide-react";
 import { Alert, AlertDescription } from "../ui/alert";
+import { useToast } from "@/hooks/use-toast";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -21,7 +24,30 @@ function SubmitButton() {
 }
 
 export function LoginForm() {
-  const [state, formAction] = useActionState(loginAction, null);
+  const [state, formAction] = useActionState(loginAction, { data: null, error: null });
+  const [clientError, setClientError] = useState<string | null>(null);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    async function handleLogin() {
+      if (state.data && !state.error) {
+        try {
+          const user = await loginUser(state.data.email, state.data.password);
+          toast({
+            title: `Bienvenue, ${user.name}!`,
+            description: "Vous êtes maintenant connecté.",
+          })
+          router.push("/dashboard");
+        } catch (error: any) {
+          setClientError(error.message);
+        }
+      }
+    }
+    handleLogin();
+  }, [state, router, toast]);
+
+  const displayError = clientError || state.error;
 
   return (
     <form action={formAction} className="w-full space-y-6">
@@ -45,9 +71,9 @@ export function LoginForm() {
           required
         />
       </div>
-       {state?.error && (
+       {displayError && (
         <Alert variant="destructive">
-            <AlertDescription>{state.error}</AlertDescription>
+            <AlertDescription>{displayError}</AlertDescription>
         </Alert>
       )}
       <SubmitButton />
