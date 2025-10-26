@@ -19,7 +19,6 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        pending: "bg-primary/80 text-primary-foreground cursor-not-allowed",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -45,11 +44,25 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, pending = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
-    const finalVariant = pending ? 'pending' : variant;
+    
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          {...props}
+        >
+          <>
+            {pending && <Loader2 className="animate-spin" />}
+            {children}
+          </>
+        </Slot>
+      )
+    }
 
     return (
       <Comp
-        className={cn(buttonVariants({ variant: finalVariant, size, className }))}
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         disabled={pending || props.disabled}
         {...props}
