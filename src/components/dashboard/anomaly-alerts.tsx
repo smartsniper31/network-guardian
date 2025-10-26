@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, ShieldAlert, Loader2, ShieldCheck, Ban, History, BrainCircuit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { getDevices, getDevice, updateDeviceStatus } from "@/lib/services/network-service";
+import { getDevice, updateDeviceStatus } from "@/lib/services/network-service";
 import { z } from "zod";
 
 const severityConfig = {
@@ -49,20 +49,22 @@ export function AnomalyAlerts() {
     setIsLoading(true);
     const timestamp = new Date().toLocaleTimeString();
     try {
-      const devices = await getDevices();
+        // In a real app, this would get live data after a scan.
+        // Here, we're just getting all devices known to the system.
+      const devices = await getDevice( 'all' ) as unknown as Device[];
       const networkData = JSON.stringify(devices, null, 2);
       const result = await detectAnomalousNetworkActivity({ networkData });
       
       const mockResults = [
         {
-          deviceId: 'device-5',
+          deviceId: 'device-scanned-4', // PC de jeu
           anomalyType: 'Accès non autorisé au port',
           severity: 'high' as const,
           timestamp: new Date().toISOString(),
           details: 'L\'appareil a tenté d\'accéder à un port RDP bloqué (3389).',
         },
         {
-          deviceId: 'device-2',
+          deviceId: 'device-scanned-2', // TV du salon
           anomalyType: 'Bande passante excessive',
           severity: 'medium' as const,
           timestamp: new Date().toISOString(),
@@ -103,7 +105,7 @@ export function AnomalyAlerts() {
        setScanHistory(prev => [`${timestamp}: Échec de l'analyse.`, ...prev]);
        const mockErrorResult = [
           {
-            deviceId: 'device-5',
+            deviceId: 'device-scanned-4',
             anomalyType: 'Accès non autorisé au port',
             severity: 'high' as const,
             timestamp: new Date().toISOString(),

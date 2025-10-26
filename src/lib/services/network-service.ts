@@ -50,7 +50,7 @@ export async function hasConfiguredRouter(): Promise<boolean> {
 }
 
 export async function getDevices(): Promise<Device[]> {
-  await new Promise(resolve => setTimeout(resolve, 200));
+  await new Promise(resolve => setTimeout(resolve, 50)); // Fast read
   return getStoredDevices();
 }
 
