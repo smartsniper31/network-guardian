@@ -9,7 +9,7 @@ import { signupUser } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "../ui/alert";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,9 +17,18 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" className="w-full" pending={pending}>
-      <UserPlus />
-      S'inscrire
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Inscription en cours...
+        </>
+      ) : (
+        <>
+          <UserPlus />
+          S'inscrire
+        </>
+      )}
     </Button>
   );
 }

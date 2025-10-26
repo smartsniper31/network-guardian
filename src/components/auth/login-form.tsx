@@ -9,7 +9,7 @@ import { loginUser, hasConfiguredRouter } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LogIn } from "lucide-react";
+import { LogIn, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "../ui/alert";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,9 +17,18 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" className="w-full" pending={pending}>
-      <LogIn />
-      Se connecter
+    <Button type="submit" className="w-full" disabled={pending}>
+       {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Connexion...
+        </>
+      ) : (
+        <>
+          <LogIn />
+          Se connecter
+        </>
+      )}
     </Button>
   );
 }

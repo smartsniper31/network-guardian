@@ -8,7 +8,7 @@ import { getStoredUserPassword } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import {
   Dialog,
@@ -24,9 +24,18 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" className="w-full" pending={pending}>
-      <Send />
-      Récupérer le mot de passe
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Envoi en cours...
+        </>
+      ) : (
+        <>
+          <Send />
+          Récupérer le mot de passe
+        </>
+      )}
     </Button>
   );
 }
