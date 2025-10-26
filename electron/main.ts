@@ -1,3 +1,4 @@
+
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 

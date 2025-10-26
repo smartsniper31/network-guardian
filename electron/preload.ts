@@ -1,3 +1,4 @@
+
 import { contextBridge, ipcRenderer } from 'electron';
 
 // Expose a safe, limited API to the renderer process (our Next.js app)
