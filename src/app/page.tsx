@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import Image from 'next/image';
 import { BrainCircuit, Users, ShieldCheck, ClipboardList, Menu } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
 
 const features = [
@@ -66,11 +66,14 @@ export default function HomePage() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex h-full flex-col p-6">
-                <div className="flex items-center gap-2 font-bold mb-8">
-                  <Icons.logo className="h-8 w-8 text-primary" />
-                  <span className="font-headline text-xl">Network Guardian</span>
-                </div>
+               <SheetHeader>
+                <SheetTitle className="sr-only">Navigation Mobile</SheetTitle>
+                 <Link href="/" className="flex items-center gap-2 font-bold mb-8">
+                    <Icons.logo className="h-8 w-8 text-primary" />
+                    <span className="font-headline text-xl">Network Guardian</span>
+                  </Link>
+              </SheetHeader>
+              <nav className="flex h-full flex-col p-6 pt-0">
                 <div className="flex flex-col gap-4">
                   <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium">Connexion</Link>
                   <Button asChild size="lg" className="w-full">
