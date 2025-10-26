@@ -31,7 +31,7 @@ declare global {
 export async function performScan(routerIp: string): Promise<Omit<Device, 'id'>[]> {
   // Vérifie si l'API Electron est disponible.
   if (window.electronAPI && typeof window.electronAPI.scanNetwork === 'function') {
-    console.log('[Scan Service] Détection de l'environnement Electron. Appel du scan natif...');
+    console.log("[Scan Service] Détection de l'environnement Electron. Appel du scan natif...");
     try {
       const nativeDevices = await window.electronAPI.scanNetwork();
       console.log(`[Scan Service] Scan natif terminé. ${nativeDevices.length} appareils reçus.`);
