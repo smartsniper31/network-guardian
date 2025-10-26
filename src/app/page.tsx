@@ -1,27 +1,22 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
-import { ShieldCheck, Users, BrainCircuit, ClipboardList, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 const features = [
   {
-    icon: <BrainCircuit className="h-10 w-10 text-primary" />,
     title: 'Analyse par IA',
-    description: 'Notre IA analyse votre réseau pour détecter les menaces, les anomalies et les vulnérabilités en temps réel.',
+    description: "Notre IA analyse votre réseau pour détecter les menaces, les anomalies et les vulnérabilités en temps réel.",
   },
   {
-    icon: <Users className="h-10 w-10 text-primary" />,
     title: 'Contrôles Parentaux',
     description: "Gérez le temps d'écran, filtrez le contenu et mettez en pause l'accès à internet pour n'importe quel appareil.",
   },
   {
-    icon: <ShieldCheck className="h-10 w-10 text-primary" />,
     title: 'Sécurité Robuste',
-    description: 'Bloquez les appareils inconnus, isolez les menaces et recevez des alertes instantanées pour toute activité suspecte.',
+    description: "Bloquez les appareils inconnus, isolez les menaces et recevez des alertes instantanées pour toute activité suspecte.",
   },
   {
-    icon: <ClipboardList className="h-10 w-10 text-primary" />,
     title: 'Rapports Détaillés',
     description: "Obtenez des rapports hebdomadaires clairs et concis sur l'activité de votre réseau, générés par l'IA.",
   },
@@ -64,13 +59,13 @@ export default function HomePage() {
             <div className="flex justify-center gap-4 lg:justify-start">
               <Button asChild size="lg">
                 <Link href="/signup">
-                  Créez votre forteresse numérique <ArrowRight className="ml-2 h-5 w-5" />
+                  Créez votre forteresse numérique
                 </Link>
               </Button>
             </div>
           </div>
           <div className="flex items-center justify-center">
-              <Image 
+              <Image
                 src="https://picsum.photos/seed/rocket/800/600"
                 width={800}
                 height={600}
@@ -93,7 +88,6 @@ export default function HomePage() {
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {features.map((feature) => (
                 <div key={feature.title} className="rounded-lg border bg-card p-6 text-center shadow-sm">
-                  <div className="mb-4 flex justify-center">{feature.icon}</div>
                   <h3 className="text-xl font-bold">{feature.title}</h3>
                   <p className="mt-2 text-muted-foreground">{feature.description}</p>
                 </div>
@@ -101,7 +95,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-        
+
         {/* Final CTA */}
         <section className="w-full bg-background">
             <div className="container flex flex-col items-center gap-6 py-24 text-center">
@@ -111,7 +105,7 @@ export default function HomePage() {
                 </p>
                  <Button asChild size="lg">
                     <Link href="/signup">
-                        Commencer gratuitement <ArrowRight className="ml-2 h-5 w-5" />
+                        Commencer gratuitement
                     </Link>
                 </Button>
             </div>
