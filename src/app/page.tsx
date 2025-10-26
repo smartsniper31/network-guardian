@@ -1,8 +1,13 @@
+
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import Image from 'next/image';
-import { BrainCircuit, Users, ShieldCheck, ClipboardList } from 'lucide-react';
+import { BrainCircuit, Users, ShieldCheck, ClipboardList, Menu } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useState } from 'react';
 
 const features = [
   {
@@ -28,6 +33,8 @@ const features = [
 ];
 
 export default function HomePage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,7 +43,9 @@ export default function HomePage() {
             <Icons.logo className="h-8 w-8 text-primary" />
             <span className="font-headline text-xl">Network Guardian</span>
           </Link>
-          <nav className="ml-auto flex items-center gap-4">
+          
+          {/* Desktop Navigation */}
+          <nav className="ml-auto hidden items-center gap-4 md:flex">
             <Link
               href="/login"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -47,6 +56,31 @@ export default function HomePage() {
               <Link href="/signup">S'inscrire gratuitement</Link>
             </Button>
           </nav>
+          
+          {/* Mobile Navigation */}
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="ml-auto md:hidden">
+                <Menu />
+                <span className="sr-only">Ouvrir le menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <nav className="flex h-full flex-col p-6">
+                <div className="flex items-center gap-2 font-bold mb-8">
+                  <Icons.logo className="h-8 w-8 text-primary" />
+                  <span className="font-headline text-xl">Network Guardian</span>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium">Connexion</Link>
+                  <Button asChild size="lg" className="w-full">
+                    <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>S'inscrire gratuitement</Link>
+                  </Button>
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
+
         </div>
       </header>
 
@@ -61,7 +95,7 @@ export default function HomePage() {
             <p className="mx-auto max-w-xl text-lg text-muted-foreground lg:mx-0">
               Prenez le contrôle total de votre réseau domestique. Sécurisez vos appareils, protégez votre famille et comprenez votre trafic internet comme jamais auparavant.
             </p>
-            <div className="flex justify-center gap-4 lg:justify-start">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 lg:justify-start">
               <Button asChild size="lg">
                 <Link href="/signup">
                   Créez votre forteresse numérique
@@ -75,7 +109,7 @@ export default function HomePage() {
                 width={800}
                 height={600}
                 alt="Tableau de bord de Network Guardian"
-                className="rounded-lg shadow-2xl"
+                className="rounded-lg shadow-2xl aspect-[4/3] object-cover"
                 data-ai-hint="network dashboard"
               />
           </div>
