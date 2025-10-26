@@ -76,7 +76,7 @@ export function Header() {
     } catch (error) {
       console.error("Could not clear storage", error);
     }
-    router.push('/');
+    router.push('/login');
   }
 
   return (
@@ -163,7 +163,7 @@ export function Header() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <a href="/" onClick={handleLogout}>Se déconnecter</a>
+              <a href="/login" onClick={handleLogout}>Se déconnecter</a>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
