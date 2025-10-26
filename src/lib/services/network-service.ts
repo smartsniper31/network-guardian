@@ -8,9 +8,8 @@ import { performScan } from '@/lib/services/scan-service';
 // COUCHE DE SERVICE RÉSEAU (PERSISTANTE CÔTÉ CLIENT)
 // =================================================================================
 // NOTE IMPORTANTE :
-// Ce service utilise le `localStorage` du navigateur pour simuler une base de données
-// persistante. Les modifications (ajout, blocage, etc.) sont sauvegardées et
-// restaurées entre les sessions.
+// Ce service utilise le `localStorage` du navigateur comme source de vérité unique
+// pour garantir la cohérence des données entre les sessions et les onglets.
 // =================================================================================
 
 const DEVICES_STORAGE_KEY = 'network-guardian-devices';
@@ -26,7 +25,6 @@ const getStoredDevices = (): Device[] => {
     if (storedData) {
       return JSON.parse(storedData);
     } else {
-      // Don't initialize with mock data anymore, let the user add the router first
       return [];
     }
   } catch (error) {
@@ -49,6 +47,10 @@ export async function hasConfiguredRouter(): Promise<boolean> {
   return devices.some(d => d.type === 'Router');
 }
 
+/**
+ * Lit et retourne la liste des appareils depuis le localStorage.
+ * Cette fonction a une seule responsabilité : lire les données. Elle ne déclenche aucun scan.
+ */
 export async function getDevices(): Promise<Device[]> {
   await new Promise(resolve => setTimeout(resolve, 50)); // Fast read
   return getStoredDevices();
@@ -105,7 +107,8 @@ export async function getDevice(id: string): Promise<Device | undefined> {
 // ======================================================
 export async function getLogs(): Promise<LogEntry[]> {
   await new Promise(resolve => setTimeout(resolve, 300));
-  // Returning empty logs as mock data is removed
+  // Retourne un tableau de logs vide car les données mock ont été supprimées.
+  // Dans une vraie application, cela pourrait interroger une API ou IndexedDB.
   return [];
 }
 
@@ -151,8 +154,9 @@ export async function loginUser(email: string, password: string):Promise<User> {
 export async function signupUser(name: string, email:string, password: string):Promise<User> {
     await new Promise(resolve => setTimeout(resolve, 200));
     
+    // Cette approche garantit que l'inscription fonctionne toujours comme une "réinitialisation".
+    // Elle supprime tout utilisateur ou appareil précédent pour éviter les conflits.
     try {
-        // This will overwrite any existing user and devices, ensuring signup always works as a "reset".
         window.localStorage.removeItem(USER_STORAGE_KEY);
         window.localStorage.removeItem(DEVICES_STORAGE_KEY);
     } catch (error) {
