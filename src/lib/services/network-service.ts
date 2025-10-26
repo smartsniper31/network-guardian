@@ -2,6 +2,7 @@
 'use client';
 
 import { Device, LogEntry, User } from '@/lib/types';
+import { performScan } from '@/lib/services/scan-service';
 
 // =================================================================================
 // COUCHE DE SERVICE RÉSEAU (PERSISTANTE CÔTÉ CLIENT)
@@ -51,6 +52,17 @@ export async function hasConfiguredRouter(): Promise<boolean> {
 export async function getDevices(): Promise<Device[]> {
   await new Promise(resolve => setTimeout(resolve, 200));
   let devices = getStoredDevices();
+  
+  // If only a router exists, it means we just completed setup.
+  // Perform an initial "scan" to populate other devices.
+  if (devices.length === 1 && devices[0].type === 'Router') {
+      const router = devices[0];
+      const scannedDevices = await performScan(router.ip);
+      const allDevices = [router, ...scannedDevices];
+      saveStoredDevices(allDevices);
+      return allDevices;
+  }
+
   return devices;
 }
 

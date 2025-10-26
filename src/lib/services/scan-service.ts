@@ -1,0 +1,123 @@
+
+'use client';
+
+import type { Device } from '@/lib/types';
+
+// =================================================================================
+// SERVICE DE SCAN RÉSEAU (SIMULÉ)
+// =================================================================================
+// NOTE IMPORTANTE :
+// Ce service simule un scan réseau. Dans une application réelle (ex: Electron),
+// cette fonction contiendrait la logique pour scanner le réseau local et
+// retourner les appareils découverts.
+// =================================================================================
+
+const mockDevices: Omit<Device, 'id' | 'type'>[] = [
+  {
+    ip: '192.168.1.101',
+    mac: 'E8:6A:6E:7B:6B:1A',
+    name: 'iPhone de l\'invité',
+    status: 'Paused',
+    bandwidthUsage: 5.2,
+    dataUsage: { download: 1200, upload: 150 },
+    lastSeen: '2023-10-27T10:00:00Z',
+    openPorts: [],
+    dns: '8.8.8.8',
+    dhcp: true,
+    firewallRules: [],
+    blockedCategories: ['Jeux', 'Contenu pour adultes'],
+  },
+  {
+    ip: '192.168.1.102',
+    mac: 'F8:A7:3E:8B:7B:2B',
+    name: 'TV du Salon',
+    status: 'Online',
+    bandwidthUsage: 25.8,
+    dataUsage: { download: 25000, upload: 800 },
+    lastSeen: '2023-10-27T12:00:00Z',
+    openPorts: [8008, 8009],
+    dns: '1.1.1.1',
+    dhcp: true,
+    firewallRules: [],
+    blockedCategories: [],
+  },
+  {
+    ip: '192.168.1.103',
+    mac: 'C8:6A:2E:7B:3B:4A',
+    name: 'Caméra de sécurité 1',
+    status: 'Online',
+    bandwidthUsage: 1.5,
+    dataUsage: { download: 500, upload: 5000 },
+    lastSeen: '2023-10-27T12:00:00Z',
+    openPorts: [554],
+    dns: '8.8.8.8',
+    dhcp: false,
+    firewallRules: ['Block all incoming except from 192.168.1.200'],
+    blockedCategories: [],
+  },
+  {
+    ip: '192.168.1.104',
+    mac: 'B8:A7:9E:8B:7B:5C',
+    name: 'PC de jeu',
+    status: 'Online',
+    bandwidthUsage: 15.3,
+    dataUsage: { download: 18000, upload: 2500 },
+    lastSeen: '2023-10-27T11:45:00Z',
+    openPorts: [3389],
+    dns: '1.1.1.1',
+    dhcp: true,
+    firewallRules: [],
+    blockedCategories: ['Réseaux sociaux'],
+  },
+  {
+    ip: '192.168.1.105',
+    mac: 'A8:DB:03:CE:9B:A1',
+    name: 'Google Home',
+    status: 'Online',
+    bandwidthUsage: 0.8,
+    dataUsage: { download: 300, upload: 50 },
+    lastSeen: '2023-10-27T12:00:00Z',
+    openPorts: [],
+    dns: '8.8.8.8',
+    dhcp: true,
+    firewallRules: [],
+    blockedCategories: [],
+  },
+  {
+    ip: '192,168.1.106',
+    mac: 'D8:C0:0A:3E:6B:9D',
+    name: 'Tablette de cuisine',
+    status: 'Offline',
+    bandwidthUsage: 0,
+    dataUsage: { download: 5000, upload: 100 },
+    lastSeen: '2023-10-26T18:00:00Z',
+    openPorts: [],
+    dns: '8.8.8.8',
+    dhcp: true,
+    firewallRules: [],
+    blockedCategories: [],
+  },
+];
+
+const deviceTypes: Device['type'][] = ['Smartphone', 'TV', 'Camera', 'Laptop', 'IoT', 'Tablet'];
+
+/**
+ * Simule un scan du réseau pour découvrir les appareils.
+ * @param routerIp L'adresse IP du routeur, utilisée comme point de départ (non utilisée dans la simulation).
+ * @returns Une promesse qui se résout avec une liste d'appareils découverts (sans le routeur).
+ */
+export async function performScan(routerIp: string): Promise<Device[]> {
+  console.log(`[Simulation] Début du scan réseau depuis le routeur ${routerIp}...`);
+
+  await new Promise(resolve => setTimeout(resolve, 1500)); // Simule la durée du scan
+
+  const discoveredDevices = mockDevices.map((device, index): Device => ({
+    ...device,
+    id: `device-scanned-${index + 1}`,
+    // Assign a type from the list, cycling through
+    type: deviceTypes[index % deviceTypes.length],
+  }));
+
+  console.log(`[Simulation] Scan terminé. ${discoveredDevices.length} appareils découverts.`);
+  return discoveredDevices;
+}
