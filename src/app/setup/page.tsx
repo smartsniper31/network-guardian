@@ -7,30 +7,51 @@ import { Icons } from "@/components/icons";
 import { AddDeviceDialog } from "@/components/dashboard/add-device-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { addDevice } from "@/lib/services/network-service";
+import { addDevice, saveStoredDevices } from "@/lib/services/network-service";
+import { performScan } from "@/lib/services/scan-service";
 import { useToast } from "@/hooks/use-toast";
 import type { Device } from "@/lib/types";
+import { Loader2 } from "lucide-react";
 
 export default function SetupPage() {
     const [isAddRouterOpen, setIsAddRouterOpen] = useState(false);
+    const [isScanning, setIsScanning] = useState(false);
     const router = useRouter();
     const { toast } = useToast();
 
     const handleAddRouter = async (routerData: Omit<Device, 'id' | 'type'>) => {
+        setIsScanning(true);
         try {
+            // 1. Add the router itself
             const newRouterData = { ...routerData, type: 'Router' as const };
-            const newDevice = await addDevice(newRouterData);
+            const newRouter = await addDevice(newRouterData);
+            
             toast({
                 title: "Routeur ajouté",
-                description: `${newDevice.name} est maintenant configuré comme votre routeur principal.`,
+                description: "Scan du réseau à la recherche d'autres appareils...",
             });
+
+            // 2. Perform the scan to discover other devices
+            const scannedDevices = await performScan(newRouter.ip);
+
+            // 3. Save all devices (router + scanned)
+            const allDevices = [newRouter, ...scannedDevices];
+            saveStoredDevices(allDevices);
+            
+            toast({
+                title: "Scan terminé !",
+                description: `${scannedDevices.length} appareils supplémentaires ont été découverts. Redirection vers le tableau de bord.`,
+            });
+            
+            // 4. Redirect to dashboard
             router.push('/dashboard');
         } catch (error) {
             toast({
                 title: "Erreur",
-                description: "Impossible d'ajouter le routeur.",
+                description: "Impossible d'ajouter le routeur ou de scanner le réseau.",
                 variant: "destructive",
             });
+            setIsScanning(false);
         }
     };
     
@@ -57,9 +78,16 @@ export default function SetupPage() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Button className="w-full" onClick={() => setIsAddRouterOpen(true)}>
-                                Ajouter le routeur principal
-                            </Button>
+                            {isScanning ? (
+                                <Button className="w-full" disabled>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Scan en cours...
+                                </Button>
+                            ) : (
+                                <Button className="w-full" onClick={() => setIsAddRouterOpen(true)}>
+                                    Ajouter le routeur principal
+                                </Button>
+                            )}
                              <p className="text-xs text-muted-foreground mt-4 text-center">
                                 Vous pouvez trouver ces informations (adresse IP, MAC) sur une étiquette collée sur votre routeur ou dans son interface d'administration web.
                             </p>
