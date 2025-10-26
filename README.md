@@ -6,7 +6,7 @@ To get started, take a look at src/app/page.tsx.
 
 ## Architectural Vision for a Real-World Application
 
-This project is currently built as a web application using Next.js, which is perfect for developing the user interface and the AI-powered logic. However, due to browser security limitations, a web application cannot directly scan a user's local network. The current version uses **simulated data** (`src/lib/data.ts`) to allow for rapid UI and feature development.
+This project is currently built as a web application using Next.js, which is perfect for developing the user interface and the AI-powered logic. However, due to browser security limitations, a web application cannot directly scan a user's local network. The current version uses **simulated data** (`src/lib/services/scan-service.ts`) to allow for rapid UI and feature development.
 
 To evolve this prototype into a real-world product capable of scanning a WiFi network in real-time, the recommended architecture is to package this web application into a desktop application using a framework like **Electron**.
 
