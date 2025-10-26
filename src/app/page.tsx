@@ -1,8 +1,7 @@
-
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
-import { ShieldCheck, Users, BrainCircuit, ClipboardList, ArrowRight, Star } from 'lucide-react';
+import { ShieldCheck, Users, BrainCircuit, ClipboardList, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 const features = [
@@ -25,24 +24,6 @@ const features = [
     icon: <ClipboardList className="h-10 w-10 text-primary" />,
     title: 'Rapports Détaillés',
     description: "Obtenez des rapports hebdomadaires clairs et concis sur l'activité de votre réseau, générés par l'IA.",
-  },
-];
-
-const testimonials = [
-  {
-    name: 'Famille Dupont',
-    quote: "Enfin une solution simple pour gérer l'accès internet de nos enfants. L'analyse IA est un vrai plus pour notre tranquillité d'esprit.",
-    avatar: '/avatars/avatar1.png'
-  },
-  {
-    name: 'M. Kherchi',
-    quote: "En tant que freelance, la sécurité de mon réseau domestique est primordiale. Network Guardian m'a permis d'identifier et de corriger des failles que j'ignorais.",
-    avatar: '/avatars/avatar2.png'
-  },
-  {
-    name: 'Sophie L.',
-    quote: "L'interface est incroyablement intuitive. En quelques clics, j'ai pu bloquer des sites inappropriés sur la tablette de mon fils. Je recommande à 100% !",
-    avatar: '/avatars/avatar3.png'
   },
 ];
 
@@ -121,40 +102,8 @@ export default function HomePage() {
           </div>
         </section>
         
-        {/* Testimonials */}
-        <section className="w-full py-16 md:py-24">
-            <div className="container">
-                <div className="mx-auto mb-12 max-w-2xl text-center">
-                    <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Ils nous font confiance.</h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
-                        Découvrez pourquoi des familles et des professionnels choisissent Network Guardian.
-                    </p>
-                </div>
-                <div className="grid gap-8 sm:grid-cols-1 lg:grid-cols-3">
-                    {testimonials.map((testimonial, index) => (
-                        <div key={index} className="flex flex-col justify-between rounded-lg border bg-card p-6 shadow-sm">
-                            <div>
-                                <div className="flex text-yellow-400 mb-2">
-                                    {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-current" />)}
-                                </div>
-                                <p className="text-muted-foreground italic">"{testimonial.quote}"</p>
-                            </div>
-                            <div className="flex items-center gap-4 mt-6">
-                                <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
-                                    <Image src={`https://i.pravatar.cc/48?u=${index}`} alt={testimonial.name} width={48} height={48} className="rounded-full" />
-                                </div>
-                                <div>
-                                    <p className="font-semibold">{testimonial.name}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-
         {/* Final CTA */}
-        <section className="w-full bg-muted">
+        <section className="w-full bg-background">
             <div className="container flex flex-col items-center gap-6 py-24 text-center">
                 <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Prêt à prendre le contrôle ?</h2>
                 <p className="max-w-xl text-lg text-muted-foreground">
@@ -186,7 +135,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-    
-
-    
