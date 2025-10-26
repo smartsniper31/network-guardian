@@ -2,7 +2,6 @@
 'use client';
 
 import { Device, LogEntry, User } from '@/lib/types';
-import { performScan } from '@/lib/services/scan-service';
 
 // =================================================================================
 // COUCHE DE SERVICE RÉSEAU (PERSISTANTE CÔTÉ CLIENT)
@@ -37,7 +36,7 @@ export const saveStoredDevices = (devices: Device[]) => {
   try {
     window.localStorage.setItem(DEVICES_STORAGE_KEY, JSON.stringify(devices));
   } catch (error) {
-     console.error("Could not save devices to localStorage.", error);
+    console.error("Could not save devices to localStorage.", error);
   }
 };
 
