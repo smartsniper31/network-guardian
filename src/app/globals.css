@@ -1,3 +1,8 @@
+/* 
+  These are Tailwind CSS directives. 
+  They are processed by the Tailwind CSS build process.
+  See: https://tailwindcss.com/docs/functions-and-directives#tailwind
+*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
