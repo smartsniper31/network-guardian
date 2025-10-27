@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -27,15 +28,15 @@ import { getDevices, updateDeviceStatus, updateDeviceBlockedCategories } from '@
 import { Skeleton } from '../ui/skeleton';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '../ui/dropdown-menu';
 
-const deviceIcons = {
-  Laptop: <Laptop className="h-5 w-5" />,
-  Smartphone: <Smartphone className="h-5 w-5" />,
-  Tablet: <Tablet className="h-5 w-5" />,
-  TV: <Tv className="h-5 w-5" />,
-  Camera: <Camera className="h-5 w-5" />,
-  Router: <Router className="h-5 w-5" />,
-  IoT: <Server className="h-5 w-5" />,
-  Unknown: <HelpCircle className="h-5 w-5" />,
+const deviceIcons: { [key: string]: React.ElementType } = {
+  Laptop,
+  Smartphone,
+  Tablet,
+  TV: Tv,
+  Camera,
+  Router,
+  IoT: Server,
+  Unknown: HelpCircle,
 };
 
 const statusColors = {
@@ -183,9 +184,11 @@ export function ControlsView() {
           {isLoading ? (
             [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
           ) : (
-            devices.map((device) => (
+            devices.map((device) => {
+              const Icon = deviceIcons[device.type as keyof typeof deviceIcons] || HelpCircle;
+              return (
               <div key={device.id} className="flex items-start gap-4 rounded-lg border p-3">
-                <div className="text-muted-foreground mt-1">{deviceIcons[device.type]}</div>
+                <div className="text-muted-foreground mt-1"><Icon /></div>
                 <div className="flex-1 space-y-2">
                   <p className="font-medium truncate">{device.name}</p>
                   <div className="flex items-center gap-4 text-sm">
@@ -205,7 +208,7 @@ export function ControlsView() {
                   {renderMobileActions(device)}
                 </div>
               </div>
-            ))
+            )})
           )}
         </div>
 
@@ -231,11 +234,13 @@ export function ControlsView() {
                   </TableRow>
                 ))
               ) : (
-                devices.map((device) => (
+                devices.map((device) => {
+                  const Icon = deviceIcons[device.type as keyof typeof deviceIcons] || HelpCircle;
+                  return (
                   <TableRow key={device.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="text-muted-foreground">{deviceIcons[device.type]}</div>
+                        <div className="text-muted-foreground"><Icon /></div>
                         <div>
                           <p className="font-medium">{device.name}</p>
                           <p className="text-sm text-muted-foreground hidden sm:block">{device.ip}</p>
@@ -260,7 +265,7 @@ export function ControlsView() {
                       {renderDesktopActions(device)}
                     </TableCell>
                   </TableRow>
-                ))
+                )})
               )}
             </TableBody>
           </Table>
@@ -288,3 +293,5 @@ export function ControlsView() {
     </>
   );
 }
+
+    

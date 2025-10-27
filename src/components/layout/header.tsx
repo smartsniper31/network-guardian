@@ -39,12 +39,14 @@ const getPageTitle = (pathname: string) => {
 
 const notifications = [
     {
+        id: "notif-1",
         icon: <ShieldAlert className="h-4 w-4 text-red-500" />,
         title: "Menace critique détectée",
         description: "Appareil inconnu bloqué sur le port 3389.",
         time: "2m"
     },
     {
+        id: "notif-2",
         icon: <User className="h-4 w-4 text-blue-500" />,
         title: "Nouvel appareil connecté",
         description: "Un nouveau smartphone s'est connecté au réseau invité.",
@@ -108,8 +110,8 @@ export function Header() {
                 <DropdownMenuLabel>Notifications</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    {notifications.map((item, index) => (
-                        <DropdownMenuItem key={index} className="gap-3">
+                    {notifications.map((item) => (
+                        <DropdownMenuItem key={item.id} className="gap-3">
                             {item.icon}
                             <div className="flex-1">
                                 <p className="font-semibold">{item.title}</p>
@@ -171,3 +173,5 @@ export function Header() {
     </header>
   );
 }
+
+    
