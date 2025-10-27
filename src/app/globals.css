@@ -1,8 +1,3 @@
-/* 
-  These are Tailwind CSS directives. 
-  They are processed by the Tailwind CSS build process.
-  See: https://tailwindcss.com/docs/functions-and-directives#tailwind
-*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -82,10 +77,11 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
   
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 }
