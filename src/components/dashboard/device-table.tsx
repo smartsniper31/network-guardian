@@ -33,15 +33,15 @@ import { AccessScheduleDialog } from '../parental-controls/access-schedule-dialo
 import { NetworkMapDialog } from './network-map-dialog';
 
 
-const deviceIcons = {
-  Laptop: <Laptop className="h-5 w-5" />,
-  Smartphone: <Smartphone className="h-5 w-5" />,
-  Tablet: <Tablet className="h-5 w-5" />,
-  TV: <Tv className="h-5 w-5" />,
-  Camera: <Camera className="h-5 w-5" />,
-  Router: <Router className="h-5 w-5" />,
-  IoT: <Server className="h-5 w-5" />,
-  Unknown: <HelpCircle className="h-5 w-5" />,
+const deviceIcons: { [key: string]: React.ElementType } = {
+  Laptop,
+  Smartphone,
+  Tablet,
+  TV: Tv,
+  Camera,
+  Router,
+  IoT: Server,
+  Unknown: HelpCircle,
 };
 
 const statusColors = {
@@ -180,10 +180,10 @@ export function DeviceTable() {
             [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
           ) : (
             devices.map((device) => {
-              const deviceIcon = deviceIcons[device.type] || <HelpCircle className="h-5 w-5" />;
+              const Icon = deviceIcons[device.type] || HelpCircle;
               return (
                 <div key={device.id} className="flex items-center gap-4 rounded-lg border p-3">
-                  <div className="text-muted-foreground">{React.cloneElement(deviceIcon, { className: "h-5 w-5" })}</div>
+                  <Icon className="h-5 w-5 text-muted-foreground" />
                   <div className="flex-1 space-y-1">
                     <p className="font-medium truncate">{device.name}</p>
                     <div className="flex items-center gap-2">
@@ -227,30 +227,35 @@ export function DeviceTable() {
                   </TableRow>
                 ))
               ) : (
-                devices.map((device) => (
-                  <TableRow key={device.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="text-muted-foreground">{deviceIcons[device.type]}</div>
-                        <div>
-                          <p className="font-medium">{device.name}</p>
-                          <p className="text-sm text-muted-foreground">{device.mac}</p>
+                devices.map((device) => {
+                  const Icon = deviceIcons[device.type] || HelpCircle;
+                  return (
+                    <TableRow key={device.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="text-muted-foreground">
+                            <Icon />
+                          </div>
+                          <div>
+                            <p className="font-medium">{device.name}</p>
+                            <p className="text-sm text-muted-foreground">{device.mac}</p>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="flex items-center gap-2">
-                         <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
-                         {device.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">{device.ip}</TableCell>
-                    <TableCell className="hidden lg:table-cell">{device.bandwidthUsage} Mbps</TableCell>
-                    <TableCell className="text-right">
-                      {renderDeviceActions(device)}
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="flex items-center gap-2">
+                          <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
+                          {device.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">{device.ip}</TableCell>
+                      <TableCell className="hidden lg:table-cell">{device.bandwidthUsage} Mbps</TableCell>
+                      <TableCell className="text-right">
+                        {renderDeviceActions(device)}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
               )}
             </TableBody>
           </Table>
