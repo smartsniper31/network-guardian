@@ -179,24 +179,27 @@ export function DeviceTable() {
           {isLoading ? (
             [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
           ) : (
-            devices.map((device) => (
-              <div key={device.id} className="flex items-center gap-4 rounded-lg border p-3">
-                 <div className="text-muted-foreground">{deviceIcons[device.type]}</div>
-                 <div className="flex-1 space-y-1">
+            devices.map((device) => {
+              const deviceIcon = deviceIcons[device.type] || <HelpCircle className="h-5 w-5" />;
+              return (
+                <div key={device.id} className="flex items-center gap-4 rounded-lg border p-3">
+                  <div className="text-muted-foreground">{React.cloneElement(deviceIcon, { className: "h-5 w-5" })}</div>
+                  <div className="flex-1 space-y-1">
                     <p className="font-medium truncate">{device.name}</p>
                     <div className="flex items-center gap-2">
-                       <Badge variant="outline" className="flex items-center gap-2">
-                         <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
-                         {device.status}
+                      <Badge variant="outline" className="flex items-center gap-2">
+                        <span className={`h-2 w-2 rounded-full ${statusColors[device.status]}`}></span>
+                        {device.status}
                       </Badge>
                       <p className="text-sm text-muted-foreground">{device.ip}</p>
                     </div>
-                 </div>
-                 <div className="ml-auto">
+                  </div>
+                  <div className="ml-auto">
                     {renderDeviceActions(device)}
-                 </div>
-              </div>
-            ))
+                  </div>
+                </div>
+              );
+            })
           )}
         </div>
 
