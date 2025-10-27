@@ -2,14 +2,13 @@
 'use client';
 
 import type { Device } from '@/lib/types';
-import mockData from './mock-scan-data.json';
 
 // =================================================================================
 // SERVICE DE SCAN RÉSEAU (HYBRIDE)
 // =================================================================================
 // NOTE IMPORTANTE :
 // Ce service est le point de connexion entre l'interface utilisateur et le moteur
-// de scan natif (via Electron). Il est conçu pour être "hybride".
+// de scan natif (via Electron).
 // =================================================================================
 
 // Déclare l'API Electron potentiellement disponible sur l'objet window
@@ -24,7 +23,6 @@ declare global {
 /**
  * Exécute un scan du réseau pour découvrir les appareils.
  * - En mode Electron, il appelle la fonction native exposée via le script de pré-chargement.
- * - En mode navigateur web simple, il retourne des données simulées pour le développement de l'UI.
  * @param routerIp L'adresse IP du routeur (utilisée potentiellement par le scan natif).
  * @returns Une promesse qui se résout avec une liste d'appareils découverts.
  */
@@ -62,19 +60,9 @@ export async function performScan(routerIp: string): Promise<Omit<Device, 'id'>[
     }
 
   } else {
-    // Si l'API n'est pas là, nous sommes dans un navigateur web standard.
-    console.log(`[Scan Service] Environnement web détecté. Utilisation des données de simulation.`);
-    
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Simule la durée du scan
-
-    const deviceTypes: Device['type'][] = ['Smartphone', 'TV', 'Camera', 'Laptop', 'IoT', 'Tablet'];
-
-    const discoveredDevices: Omit<Device, 'id'>[] = mockData.mockDevices.map((device, index) => ({
-      ...device,
-      type: deviceTypes[index % deviceTypes.length],
-    })) as Omit<Device, 'id'>[];
-
-    console.log(`[Scan Service] Scan simulé terminé. ${discoveredDevices.length} appareils découverts.`);
-    return discoveredDevices;
+    // Si l'API n'est pas là, nous sommes dans un environnement non pris en charge.
+    console.warn(`[Scan Service] API Electron non trouvée. Cette application est conçue pour fonctionner dans Electron.`);
+    alert("Erreur de configuration : L'API de scan réseau n'est pas disponible. Veuillez lancer l'application via Electron.");
+    return [];
   }
 }
