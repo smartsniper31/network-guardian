@@ -101,6 +101,7 @@ export default function SetupPage() {
                 isOpen={isAddRouterOpen}
                 onOpenChange={setIsAddRouterOpen}
                 onSave={(deviceData) => handleAddRouter(deviceData as Omit<Device, 'id' | 'type'>)}
+                isRouterSetup={true}
             />
         </>
     );

@@ -2,13 +2,14 @@
 'use client';
 
 import type { Device } from '@/lib/types';
+import mockData from './mock-scan-data.json';
 
 // =================================================================================
 // SERVICE DE SCAN RÉSEAU (HYBRIDE)
-// =================================================================================
+// =================================G================================================
 // NOTE IMPORTANTE :
 // Ce service est le point de connexion entre l'interface utilisateur et le moteur
-// de scan natif (via Electron).
+// de scan natif (via Electron), ou il fournit des données simulées pour la version web.
 // =================================================================================
 
 // Déclare l'API Electron potentiellement disponible sur l'objet window
@@ -23,6 +24,7 @@ declare global {
 /**
  * Exécute un scan du réseau pour découvrir les appareils.
  * - En mode Electron, il appelle la fonction native exposée via le script de pré-chargement.
+ * - En mode Web (ex: Vercel), il retourne des données simulées pour la démonstration.
  * @param routerIp L'adresse IP du routeur, nécessaire pour déterminer le sous-réseau à scanner.
  * @returns Une promesse qui se résout avec une liste d'appareils découverts.
  */
@@ -61,9 +63,11 @@ export async function performScan(routerIp: string): Promise<Omit<Device, 'id'>[
     }
 
   } else {
-    // Si l'API n'est pas là, nous sommes dans un environnement non pris en charge.
-    console.warn(`[Scan Service] API Electron non trouvée. Cette application est conçue pour fonctionner dans Electron.`);
-    alert("Erreur de configuration : L'API de scan réseau n'est pas disponible. Veuillez lancer l'application via Electron.");
-    return [];
+    // Si l'API n'est pas là, nous sommes dans un environnement web.
+    console.log("[Scan Service] API Electron non trouvée. Retour des données de démonstration pour la version web.");
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Simuler la latence du scan
+    
+    // Retourner les données du fichier JSON de simulation
+    return mockData.mockDevices as Omit<Device, 'id'>[];
   }
 }

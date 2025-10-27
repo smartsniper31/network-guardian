@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -43,22 +44,24 @@ interface AddDeviceDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (device: Omit<Device, 'id'>) => void;
+  isRouterSetup?: boolean;
 }
 
-export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialogProps) {
+export function AddDeviceDialog({ isOpen, onOpenChange, onSave, isRouterSetup = false }: AddDeviceDialogProps) {
   const form = useForm<AddDeviceFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      ip: "",
+      name: isRouterSetup ? "Routeur Principal" : "",
+      ip: isRouterSetup ? "192.168.1.1" : "",
       mac: "",
-      type: "Unknown",
+      type: isRouterSetup ? "Router" : "Unknown",
     },
   });
 
   const onSubmit = (values: AddDeviceFormValues) => {
     const newDevice: Omit<Device, 'id'> = {
       ...values,
+      type: isRouterSetup ? 'Router' : values.type,
       status: 'Online',
       bandwidthUsage: 0,
       dataUsage: { download: 0, upload: 0 },
@@ -73,14 +76,20 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
     onOpenChange(false);
     form.reset();
   };
+  
+  const title = isRouterSetup ? "Ajouter votre routeur principal" : "Ajouter un nouvel appareil";
+  const description = isRouterSetup 
+    ? "Enregistrez votre routeur pour permettre à l'application de scanner votre réseau."
+    : "Ajoutez manuellement un appareil à votre réseau pour le surveiller et le gérer.";
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Ajouter un nouvel appareil</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Ajoutez manuellement un appareil à votre réseau pour le surveiller et le gérer.
+            {description}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -132,7 +141,7 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type d'appareil</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isRouterSetup}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionnez un type" />
@@ -140,7 +149,7 @@ export function AddDeviceDialog({ isOpen, onOpenChange, onSave }: AddDeviceDialo
                     </FormControl>
                     <SelectContent>
                       {['Laptop', 'Smartphone', 'Tablet', 'IoT', 'Camera', 'TV', 'Router', 'Unknown'].map(type => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                        <SelectItem key={type} value={type} disabled={isRouterSetup && type !== 'Router'}>{type}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
