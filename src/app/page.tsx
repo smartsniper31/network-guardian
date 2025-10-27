@@ -7,7 +7,8 @@ import { Icons } from '@/components/icons';
 import Image from 'next/image';
 import { BrainCircuit, Users, ShieldCheck, ClipboardList, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { InstallPromptDialog } from '@/components/home/install-prompt-dialog';
 
 const features = [
   {
@@ -32,10 +33,42 @@ const features = [
   },
 ];
 
+const SESSION_STORAGE_KEY = 'install_prompt_dismissed';
+
 export default function HomePage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isInstallPromptOpen, setIsInstallPromptOpen] = useState(false);
+
+  useEffect(() => {
+    // Vérifie si on est dans un navigateur standard (pas dans Electron)
+    const isBrowser = typeof window !== 'undefined' && !window.electronAPI;
+    const hasBeenDismissed = sessionStorage.getItem(SESSION_STORAGE_KEY) === 'true';
+
+    if (isBrowser && !hasBeenDismissed) {
+      // Ouvre le dialogue après un court délai pour ne pas être trop intrusif
+      const timer = setTimeout(() => {
+        setIsInstallPromptOpen(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleDismissPrompt = () => {
+    sessionStorage.setItem(SESSION_STORAGE_KEY, 'true');
+    setIsInstallPromptOpen(false);
+  };
+  
+  const handleConfirmPrompt = () => {
+    // Logique pour rediriger vers la page de téléchargement (à implémenter)
+    handleDismissPrompt();
+    // Par exemple:
+    // window.location.href = '/download'; 
+    alert("Redirection vers la page de téléchargement (à implémenter).");
+  };
+
 
   return (
+    <>
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center">
@@ -172,5 +205,12 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
+    <InstallPromptDialog 
+      isOpen={isInstallPromptOpen}
+      onOpenChange={setIsInstallPromptOpen}
+      onConfirm={handleConfirmPrompt}
+      onDismiss={handleDismissPrompt}
+    />
+    </>
   );
 }
