@@ -34,7 +34,7 @@ function SubmitButton() {
 }
 
 export function SignupForm() {
-    const [state, formAction] = useActionState(signupAction, { data: null, error: null });
+    const [state, formAction] = useActionState(signupAction, { data: null, error: "" });
     const router = useRouter();
     const { toast } = useToast();
 
