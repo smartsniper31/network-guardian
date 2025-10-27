@@ -1,6 +1,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
+import arpscan from 'arpscan';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -37,10 +38,31 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
 
-// Example IPC handler - This is where future native functions will be exposed
+// IPC handler for network scanning
 ipcMain.handle('perform-scan', async () => {
-  // In Chantier 2, this will call the native scan script.
-  // For now, it returns a placeholder.
-  console.log('[Electron Main] IPC "perform-scan" received.');
-  return [{ ip: '192.168.1.254', mac: 'NATIVE-SCAN-SIM', name: 'Scanned from Electron' }];
+  console.log('[Electron Main] IPC "perform-scan" received. Starting native ARP scan...');
+  
+  return new Promise((resolve, reject) => {
+    arpscan({ command: 'arp-scan', args: ['-l', '--plain'] }, (err, data) => {
+      if (err) {
+        console.error('[Electron Main] Native scan failed:', err);
+        // On error (e.g., arp-scan not installed or permissions issue),
+        // we can either reject or return a specific error structure.
+        // For now, we resolve with an empty array to prevent the frontend from crashing.
+        resolve([]);
+        return;
+      }
+
+      console.log(`[Electron Main] Native scan successful. Found ${data.length} devices.`);
+      
+      const formattedData = data.map(device => ({
+        ip: device.ip,
+        mac: device.mac.toUpperCase(),
+        // Use vendor as name, or a placeholder if vendor is not available
+        name: device.vendor || `Appareil Inconnu (${device.ip})`,
+      }));
+
+      resolve(formattedData);
+    });
+  });
 });
