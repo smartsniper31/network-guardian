@@ -7,7 +7,7 @@ import { Icons } from "@/components/icons";
 import { AddDeviceDialog } from "@/components/dashboard/add-device-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { addDevice, saveStoredDevices } from "@/lib/services/network-service";
+import { addDevice } from "@/lib/services/network-service";
 import { performScan } from "@/lib/services/scan-service";
 import { useToast } from "@/hooks/use-toast";
 import type { Device } from "@/lib/types";
@@ -24,7 +24,7 @@ export default function SetupPage() {
         try {
             // 1. Add the router itself
             const newRouterData = { ...routerData, type: 'Router' as const };
-            const newRouter = await addDevice(newRouterData);
+            await addDevice(newRouterData);
             
             toast({
                 title: "Routeur ajouté",
@@ -32,11 +32,12 @@ export default function SetupPage() {
             });
 
             // 2. Perform the scan to discover other devices
-            const scannedDevices = await performScan(newRouter.ip);
+            const scannedDevices = await performScan(newRouterData.ip);
 
-            // 3. Save all devices (router + scanned)
-            const allDevices = [newRouter, ...scannedDevices];
-            saveStoredDevices(allDevices);
+            // 3. Add each scanned device to storage, which will assign it a unique ID
+            for (const device of scannedDevices) {
+               await addDevice(device);
+            }
             
             toast({
                 title: "Scan terminé !",
