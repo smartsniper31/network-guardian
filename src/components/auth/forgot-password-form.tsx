@@ -41,7 +41,7 @@ function SubmitButton() {
 }
 
 export function ForgotPasswordForm() {
-  const [state, formAction] = useActionState(forgotPasswordAction, { error: null, success: null });
+  const [state, formAction] = useActionState(forgotPasswordAction, { error: "", success: "" });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
