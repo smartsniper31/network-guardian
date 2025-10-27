@@ -80,13 +80,12 @@
     --sidebar-border: 231 20% 25%;
     --sidebar-ring: 231 48% 58%;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  * {
+    @apply border-border;
   }
 }
