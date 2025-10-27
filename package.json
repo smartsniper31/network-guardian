@@ -2,28 +2,27 @@
   "name": "network-guardian",
   "version": "1.0.0",
   "private": true,
-  "main": "electron/main.js",
+  "main": "dist-electron/main.js",
   "homepage": "./",
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
     "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
-    "build": "NODE_ENV=production next build",
+    "build": "npm run build:electron && NODE_ENV=production next build",
+    "build:electron": "tsc --project tsconfig.electron.json",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "electron:dev": "concurrently \"npm:dev\" \"electron .\"",
+    "electron:dev": "npm run build:electron && concurrently \"npm:dev\" \"electron .\"",
     "electron:build": "npm run build && electron-builder"
   },
   "build": {
     "appId": "com.network-guardian.app",
     "productName": "Network Guardian",
     "files": [
-      "electron/main.js",
-      "electron/preload.js",
-      "electron/build",
-      ".next",
-      "public",
+      "dist-electron/",
+      ".next/",
+      "public/",
       "package.json"
     ],
     "directories": {
