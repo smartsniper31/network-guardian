@@ -34,7 +34,7 @@ function SubmitButton() {
 }
 
 export function LoginForm() {
-  const [state, formAction] = useActionState(loginAction, { data: null, error: null });
+  const [state, formAction] = useActionState(loginAction, { data: null, error: "" });
   const [clientError, setClientError] = useState<string | null>(null);
   const router = useRouter();
   const { toast } = useToast();
