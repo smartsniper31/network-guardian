@@ -57,8 +57,8 @@ const statusBgColors: { [key: string]: string } = {
 };
 
 export function NetworkMap() {
-  const routerPosition = { x: 50, y: 50 }; // Center in percentage
-  const radius = 35; // Radius in percentage
+  const routerPosition = { x: 50, y: 50 };
+  const radius = 35;
   const [selectedDevice, setSelectedDevice] = React.useState<Device | null>(null);
   const [devices, setDevices] = React.useState<Device[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -90,7 +90,7 @@ export function NetworkMap() {
             <Skeleton className="h-96 w-full" />
           ) : (
             <TooltipProvider>
-              {/* Desktop View: Interactive Map */}
+              {/* Desktop View */}
               <div className="relative w-full h-96 rounded-lg bg-muted/30 overflow-hidden hidden md:block">
                 {routerDevice ? (
                   <>
@@ -123,14 +123,12 @@ export function NetworkMap() {
                     {/* Other Devices */}
                     {otherDevices.map((device, index) => {
                       const angle = (index / otherDevices.length) * 2 * Math.PI;
-                      const x =
-                        routerPosition.x + radius * Math.cos(angle);
-                      const y =
-                        routerPosition.y + radius * Math.sin(angle);
+                      const x = routerPosition.x + radius * Math.cos(angle);
+                      const y = routerPosition.y + radius * Math.sin(angle);
                       const Icon = deviceIcons[device.type] || HelpCircle;
 
                       return (
-                        <div key={device.id}>
+                        <React.Fragment key={device.id}>
                           {/* Connection Line */}
                           <svg
                             className="absolute top-0 left-0 w-full h-full"
@@ -161,7 +159,10 @@ export function NetworkMap() {
                                 style={{ left: `${x}%`, top: `${y}%` }}
                               >
                                 <div
-                                  className={`h-12 w-12 rounded-full bg-card border-2 flex items-center justify-center ${statusColors[device.status]}`}
+                                  className={cn(
+                                    "h-12 w-12 rounded-full bg-card border-2 flex items-center justify-center",
+                                    statusColors[device.status]
+                                  )}
                                 >
                                   <Icon className="h-6 w-6 text-foreground" />
                                 </div>
@@ -176,7 +177,7 @@ export function NetworkMap() {
                               <p>Statut: {device.status}</p>
                             </TooltipContent>
                           </Tooltip>
-                        </div>
+                        </React.Fragment>
                       );
                     })}
                   </>
@@ -194,7 +195,7 @@ export function NetworkMap() {
                 )}
               </div>
 
-              {/* Mobile View: List */}
+              {/* Mobile View */}
               <div className="space-y-2 md:hidden">
                 {devices.map((device) => {
                   const Icon = deviceIcons[device.type] || HelpCircle;
