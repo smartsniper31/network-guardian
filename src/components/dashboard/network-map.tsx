@@ -57,8 +57,8 @@ const statusBgColors: { [key: string]: string } = {
 };
 
 export function NetworkMap() {
-  const routerPosition = { x: 50, y: 50 };
-  const radius = 35;
+  const routerPosition = { x: 50, y: 50 }; // Center in percentage
+  const radius = 35; // Radius in percentage
   const [selectedDevice, setSelectedDevice] = React.useState<Device | null>(null);
   const [devices, setDevices] = React.useState<Device[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -90,12 +90,38 @@ export function NetworkMap() {
             <Skeleton className="h-96 w-full" />
           ) : (
             <TooltipProvider>
-              {/* Desktop View */}
+              {/* Desktop View: Interactive Map */}
               <div className="relative w-full h-96 rounded-lg bg-muted/30 overflow-hidden hidden md:block">
                 {routerDevice ? (
                   <>
+                    {/* Connection Lines */}
+                    <svg
+                      className="absolute top-0 left-0 w-full h-full"
+                      style={{ pointerEvents: "none" }}
+                    >
+                      {otherDevices.map((device, index) => {
+                        const angle = (index / otherDevices.length) * 2 * Math.PI;
+                        const x = routerPosition.x + radius * Math.cos(angle);
+                        const y = routerPosition.y + radius * Math.sin(angle);
+                        return (
+                          <line
+                            key={`line-${device.id}`}
+                            x1={`${routerPosition.x}%`}
+                            y1={`${routerPosition.y}%`}
+                            x2={`${x}%`}
+                            y2={`${y}%`}
+                            className="stroke-border"
+                            strokeWidth="1"
+                            strokeDasharray={
+                              device.status === "Online" ? "0" : "4 2"
+                            }
+                          />
+                        );
+                      })}
+                    </svg>
+                    
                     {/* Router */}
-                    <Tooltip>
+                    <Tooltip key={routerDevice.id}>
                       <TooltipTrigger asChild>
                         <div
                           className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer"
@@ -128,56 +154,35 @@ export function NetworkMap() {
                       const Icon = deviceIcons[device.type] || HelpCircle;
 
                       return (
-                        <React.Fragment key={device.id}>
-                          {/* Connection Line */}
-                          <svg
-                            className="absolute top-0 left-0 w-full h-full"
-                            style={{ pointerEvents: "none" }}
+                        <Tooltip key={device.id}>
+                          <TooltipTrigger
+                            asChild
+                            onClick={() => setSelectedDevice(device)}
+                            className="cursor-pointer"
                           >
-                            <line
-                              x1={`${routerPosition.x}%`}
-                              y1={`${routerPosition.y}%`}
-                              x2={`${x}%`}
-                              y2={`${y}%`}
-                              className="stroke-border"
-                              strokeWidth="1"
-                              strokeDasharray={
-                                device.status === "Online" ? "0" : "4 2"
-                              }
-                            />
-                          </svg>
-
-                          {/* Device Icon */}
-                          <Tooltip>
-                            <TooltipTrigger
-                              asChild
-                              onClick={() => setSelectedDevice(device)}
-                              className="cursor-pointer"
+                            <div
+                              className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+                              style={{ left: `${x}%`, top: `${y}%` }}
                             >
                               <div
-                                className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
-                                style={{ left: `${x}%`, top: `${y}%` }}
-                              >
-                                <div
-                                  className={cn(
+                                className={cn(
                                     "h-12 w-12 rounded-full bg-card border-2 flex items-center justify-center",
                                     statusColors[device.status]
-                                  )}
-                                >
-                                  <Icon className="h-6 w-6 text-foreground" />
-                                </div>
-                                <p className="text-xs text-center mt-1 w-20 truncate">
-                                  {device.name}
-                                </p>
+                                )}
+                              >
+                                <Icon className="h-6 w-6 text-foreground" />
                               </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="font-semibold">{device.name}</p>
-                              <p>{device.ip}</p>
-                              <p>Statut: {device.status}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </React.Fragment>
+                              <p className="text-xs text-center mt-1 w-20 truncate">
+                                {device.name}
+                              </p>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-semibold">{device.name}</p>
+                            <p>{device.ip}</p>
+                            <p>Statut: {device.status}</p>
+                          </TooltipContent>
+                        </Tooltip>
                       );
                     })}
                   </>
@@ -195,7 +200,7 @@ export function NetworkMap() {
                 )}
               </div>
 
-              {/* Mobile View */}
+              {/* Mobile View: List */}
               <div className="space-y-2 md:hidden">
                 {devices.map((device) => {
                   const Icon = deviceIcons[device.type] || HelpCircle;
