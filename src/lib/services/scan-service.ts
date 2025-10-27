@@ -69,10 +69,10 @@ export async function performScan(routerIp: string): Promise<Omit<Device, 'id'>[
 
     const deviceTypes: Device['type'][] = ['Smartphone', 'TV', 'Camera', 'Laptop', 'IoT', 'Tablet'];
 
-    const discoveredDevices = mockData.mockDevices.map((device, index): Omit<Device, 'id'> => ({
+    const discoveredDevices: Omit<Device, 'id'>[] = mockData.mockDevices.map((device, index) => ({
       ...device,
       type: deviceTypes[index % deviceTypes.length],
-    }));
+    })) as Omit<Device, 'id'>[];
 
     console.log(`[Scan Service] Scan simulé terminé. ${discoveredDevices.length} appareils découverts.`);
     return discoveredDevices;
