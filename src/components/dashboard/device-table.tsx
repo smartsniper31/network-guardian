@@ -179,10 +179,10 @@ export function DeviceTable() {
           {isLoading ? (
             [...Array(3)].map((_, i) => <Skeleton key={i} className="h-24 w-full" />)
           ) : (
-            devices.map((device, index) => {
+            devices.map((device) => {
               const Icon = deviceIcons[device.type] || HelpCircle;
               return (
-                <div key={`${device.id}-${index}`} className="flex items-center gap-4 rounded-lg border p-3">
+                <div key={device.id} className="flex items-center gap-4 rounded-lg border p-3">
                   <Icon className="h-5 w-5 text-muted-foreground" />
                   <div className="flex-1 space-y-1">
                     <p className="font-medium truncate">{device.name}</p>
@@ -290,5 +290,7 @@ export function DeviceTable() {
     </>
   );
 }
+
+    
 
     
