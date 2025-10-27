@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import {
@@ -73,15 +73,17 @@ export function NetworkMap() {
     fetchData();
   }, []);
 
-  const routerDevice = devices.find(d => d.type === 'Router');
-  const otherDevices = devices.filter(d => d.type !== 'Router');
+  const routerDevice = devices.find((d) => d.type === "Router");
+  const otherDevices = devices.filter((d) => d.type !== "Router");
 
   return (
     <>
       <Card id="network-map">
         <CardHeader>
           <CardTitle>Topologie du réseau</CardTitle>
-          <CardDescription>Visualisation interactive de vos appareils connectés.</CardDescription>
+          <CardDescription>
+            Visualisation interactive de vos appareils connectés.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -97,13 +99,18 @@ export function NetworkMap() {
                       <TooltipTrigger asChild>
                         <div
                           className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center cursor-pointer"
-                          style={{ left: `${routerPosition.x}%`, top: `${routerPosition.y}%` }}
-                           onClick={() => setSelectedDevice(routerDevice)}
+                          style={{
+                            left: `${routerPosition.x}%`,
+                            top: `${routerPosition.y}%`,
+                          }}
+                          onClick={() => setSelectedDevice(routerDevice)}
                         >
                           <div className="h-16 w-16 rounded-full bg-primary/10 border-2 border-dashed border-primary flex items-center justify-center">
                             <RouterIcon className="h-8 w-8 text-primary" />
                           </div>
-                          <p className="text-xs font-semibold mt-1 w-24 text-center truncate">{routerDevice.name}</p>
+                          <p className="text-xs font-semibold mt-1 w-24 text-center truncate">
+                            {routerDevice.name}
+                          </p>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -113,17 +120,22 @@ export function NetworkMap() {
                       </TooltipContent>
                     </Tooltip>
 
-                    {/* Devices */}
+                    {/* Other Devices */}
                     {otherDevices.map((device, index) => {
                       const angle = (index / otherDevices.length) * 2 * Math.PI;
-                      const x = routerPosition.x + radius * Math.cos(angle);
-                      const y = routerPosition.y + radius * Math.sin(angle);
+                      const x =
+                        routerPosition.x + radius * Math.cos(angle);
+                      const y =
+                        routerPosition.y + radius * Math.sin(angle);
                       const Icon = deviceIcons[device.type] || HelpCircle;
 
                       return (
-                        <React.Fragment key={device.id}>
+                        <div key={device.id}>
                           {/* Connection Line */}
-                          <svg className="absolute top-0 left-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+                          <svg
+                            className="absolute top-0 left-0 w-full h-full"
+                            style={{ pointerEvents: "none" }}
+                          >
                             <line
                               x1={`${routerPosition.x}%`}
                               y1={`${routerPosition.y}%`}
@@ -131,7 +143,9 @@ export function NetworkMap() {
                               y2={`${y}%`}
                               className="stroke-border"
                               strokeWidth="1"
-                              strokeDasharray={device.status === 'Online' ? "0" : "4 2"}
+                              strokeDasharray={
+                                device.status === "Online" ? "0" : "4 2"
+                              }
                             />
                           </svg>
 
@@ -146,10 +160,14 @@ export function NetworkMap() {
                                 className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
                                 style={{ left: `${x}%`, top: `${y}%` }}
                               >
-                                <div className={`h-12 w-12 rounded-full bg-card border-2 flex items-center justify-center ${statusColors[device.status]}`}>
-                                    <Icon className="h-6 w-6 text-foreground" />
+                                <div
+                                  className={`h-12 w-12 rounded-full bg-card border-2 flex items-center justify-center ${statusColors[device.status]}`}
+                                >
+                                  <Icon className="h-6 w-6 text-foreground" />
                                 </div>
-                                <p className="text-xs text-center mt-1 w-20 truncate">{device.name}</p>
+                                <p className="text-xs text-center mt-1 w-20 truncate">
+                                  {device.name}
+                                </p>
                               </div>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -158,25 +176,30 @@ export function NetworkMap() {
                               <p>Statut: {device.status}</p>
                             </TooltipContent>
                           </Tooltip>
-                        </React.Fragment>
+                        </div>
                       );
                     })}
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                     <Network className="h-12 w-12 mb-4" />
-                    <p className="font-semibold">Routeur principal introuvable</p>
-                    <p className="text-sm">Impossible de visualiser la topologie sans appareil de type 'Routeur'.</p>
+                    <p className="font-semibold">
+                      Routeur principal introuvable
+                    </p>
+                    <p className="text-sm">
+                      Impossible de visualiser la topologie sans appareil de type
+                      'Routeur'.
+                    </p>
                   </div>
                 )}
               </div>
 
               {/* Mobile View: List */}
               <div className="space-y-2 md:hidden">
-                {devices.map(device => {
+                {devices.map((device) => {
                   const Icon = deviceIcons[device.type] || HelpCircle;
                   return (
-                     <div
+                    <div
                       key={device.id}
                       onClick={() => setSelectedDevice(device)}
                       className="flex items-center gap-4 rounded-lg border p-3 cursor-pointer hover:bg-muted/50"
@@ -184,26 +207,33 @@ export function NetworkMap() {
                       <Icon className="h-6 w-6 text-muted-foreground" />
                       <div className="flex-1">
                         <p className="font-semibold">{device.name}</p>
-                        <p className="text-sm text-muted-foreground">{device.ip}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {device.ip}
+                        </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm">{device.status}</span>
-                        <div className={cn("h-3 w-3 rounded-full", statusBgColors[device.status])} />
+                        <div
+                          className={cn(
+                            "h-3 w-3 rounded-full",
+                            statusBgColors[device.status]
+                          )}
+                        />
                       </div>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </TooltipProvider>
           )}
         </CardContent>
       </Card>
-      
+
       {selectedDevice && (
         <NetworkMapDialog
-            isOpen={!!selectedDevice}
-            onOpenChange={(open) => !open && setSelectedDevice(null)}
-            device={selectedDevice}
+          isOpen={!!selectedDevice}
+          onOpenChange={(open) => !open && setSelectedDevice(null)}
+          device={selectedDevice}
         />
       )}
     </>
