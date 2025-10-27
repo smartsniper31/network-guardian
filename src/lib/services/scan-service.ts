@@ -15,7 +15,7 @@ import type { Device } from '@/lib/types';
 declare global {
   interface Window {
     electronAPI?: {
-      scanNetwork: () => Promise<{ ip: string; mac: string; name: string }[]>;
+      scanNetwork: (routerIp: string) => Promise<{ ip: string; mac: string; name: string }[]>;
     };
   }
 }
@@ -23,7 +23,7 @@ declare global {
 /**
  * Exécute un scan du réseau pour découvrir les appareils.
  * - En mode Electron, il appelle la fonction native exposée via le script de pré-chargement.
- * @param routerIp L'adresse IP du routeur (utilisée potentiellement par le scan natif).
+ * @param routerIp L'adresse IP du routeur, nécessaire pour déterminer le sous-réseau à scanner.
  * @returns Une promesse qui se résout avec une liste d'appareils découverts.
  */
 export async function performScan(routerIp: string): Promise<Omit<Device, 'id'>[]> {
@@ -31,7 +31,8 @@ export async function performScan(routerIp: string): Promise<Omit<Device, 'id'>[
   if (window.electronAPI && typeof window.electronAPI.scanNetwork === 'function') {
     console.log("[Scan Service] Détection de l'environnement Electron. Appel du scan natif...");
     try {
-      const nativeDevices = await window.electronAPI.scanNetwork();
+      // On passe l'IP du routeur au processus principal
+      const nativeDevices = await window.electronAPI.scanNetwork(routerIp);
       console.log(`[Scan Service] Scan natif terminé. ${nativeDevices.length} appareils reçus.`);
       
       // Nous devons mapper les données brutes du scan natif vers le type complet `Device`.

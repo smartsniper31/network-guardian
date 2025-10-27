@@ -1,7 +1,9 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
-import arpscan from 'arpscan';
+
+// Use require for node-nmap as it may not have up-to-date type definitions.
+const nmap = require('node-nmap');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -38,31 +40,40 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
 
-// IPC handler for network scanning
-ipcMain.handle('perform-scan', async () => {
-  console.log('[Electron Main] IPC "perform-scan" received. Starting native ARP scan...');
+// IPC handler for network scanning using Nmap
+ipcMain.handle('perform-scan', async (event, routerIp: string) => {
+  console.log(`[Electron Main] IPC "perform-scan" received for router IP: ${routerIp}. Starting Nmap scan...`);
   
+  // This requires Nmap to be installed on the system and available in the PATH.
+  nmap.nmapLocation = 'nmap'; // Use 'nmap' from PATH
+
   return new Promise((resolve, reject) => {
-    arpscan({ command: 'arp-scan', args: ['-l', '--plain'] }, (err, data) => {
-      if (err) {
-        console.error('[Electron Main] Native scan failed:', err);
-        // On error (e.g., arp-scan not installed or permissions issue),
-        // we can either reject or return a specific error structure.
-        // For now, we resolve with an empty array to prevent the frontend from crashing.
-        resolve([]);
-        return;
-      }
+    // We derive the subnet from the router's IP. e.g., 192.168.1.1 -> 192.168.1.0/24
+    const subnet = routerIp.substring(0, routerIp.lastIndexOf('.')) + '.0/24';
+    console.log(`[Electron Main] Scanning subnet: ${subnet}`);
+    
+    const quickscan = new nmap.OsScan(subnet);
 
-      console.log(`[Electron Main] Native scan successful. Found ${data.length} devices.`);
+    quickscan.on('complete', (data: any[]) => {
+      console.log(`[Electron Main] Nmap scan successful. Found ${data.length} devices.`);
+      const formattedData = data
+        .filter(device => device.mac && device.ip) // Ensure we have the essential data
+        .map(device => ({
+          ip: device.ip,
+          mac: device.mac.toUpperCase(),
+          name: device.vendor || `Appareil Inconnu (${device.ip})`,
+        }));
       
-      const formattedData = data.map(device => ({
-        ip: device.ip,
-        mac: device.mac.toUpperCase(),
-        // Use vendor as name, or a placeholder if vendor is not available
-        name: device.vendor || `Appareil Inconnu (${device.ip})`,
-      }));
-
       resolve(formattedData);
     });
+
+    quickscan.on('error', (error: any) => {
+      console.error('[Electron Main] Nmap scan failed:', error);
+      // It's crucial to resolve, even with an empty array, to not crash the frontend.
+      // This can happen if Nmap is not installed or permissions are insufficient.
+      resolve([]);
+    });
+
+    quickscan.startScan();
   });
 });
