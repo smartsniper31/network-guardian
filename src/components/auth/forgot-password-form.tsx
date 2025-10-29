@@ -1,9 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { useFormStatus } from "react-dom";
-import { forgotPasswordAction } from "@/actions/auth";
+import { FormEvent, useState } from "react";
 import { getStoredUserPassword } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,63 +18,44 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Envoi en cours...
-        </>
-      ) : (
-        <>
-          <Send />
-          Récupérer le mot de passe
-        </>
-      )}
-    </Button>
-  );
-}
-
 export function ForgotPasswordForm() {
-  const [state, formAction] = useActionState(forgotPasswordAction, { error: null, success: "" });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    async function handleRecovery() {
-      if (state.success && !state.error) {
-        try {
-          const recoveredPassword = await getStoredUserPassword(email);
-          if (recoveredPassword) {
-            setPassword(recoveredPassword);
-            setIsDialogOpen(true);
-          } else {
-             toast({
-                variant: "destructive",
-                title: "Aucun compte trouvé",
-                description: "Aucun compte n'est associé à cette adresse email.",
-            });
-          }
-        } catch (error: any) {
-          toast({
-            variant: "destructive",
-            title: "Erreur",
-            description: error.message,
-          });
-        }
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    
+    // Simulate a network call, as per the original action
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    try {
+      const recoveredPassword = await getStoredUserPassword(email);
+      if (recoveredPassword) {
+        setPassword(recoveredPassword);
+        setIsDialogOpen(true);
+        toast({
+          title: "Récupération initiée",
+          description: "Si un compte existe, une fenêtre va apparaître."
+        });
+      } else {
+        setError("Aucun compte n'est associé à cette adresse email.");
       }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
-    handleRecovery();
-  }, [state, email, toast]);
+  };
   
   return (
     <>
-      <form action={formAction} className="w-full space-y-6">
+      <form onSubmit={handleSubmit} className="w-full space-y-6">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -87,14 +66,27 @@ export function ForgotPasswordForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
           />
         </div>
-         {state.error && (
+         {error && (
           <Alert variant="destructive">
-              <AlertDescription>{state.error}</AlertDescription>
+              <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        <SubmitButton />
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Recherche...
+            </>
+          ) : (
+            <>
+              <Send />
+              Récupérer le mot de passe
+            </>
+          )}
+        </Button>
       </form>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>

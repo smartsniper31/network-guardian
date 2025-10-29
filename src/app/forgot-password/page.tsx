@@ -2,13 +2,8 @@
 import { Icons } from "@/components/icons";
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 import Link from "next/link";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function ForgotPasswordPage({
-  searchParams,
-}: {
-  searchParams: { error?: string };
-}) {
+export default function ForgotPasswordPage() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-background"></div>
@@ -22,12 +17,6 @@ export default function ForgotPasswordPage({
         <p className="text-center text-muted-foreground">
           Saisissez votre email et nous vous aiderons à récupérer votre compte.
         </p>
-
-        {searchParams.error && (
-          <Alert variant="destructive">
-            <AlertDescription>{searchParams.error}</AlertDescription>
-          </Alert>
-        )}
 
         <ForgotPasswordForm />
         

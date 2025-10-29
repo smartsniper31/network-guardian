@@ -1,10 +1,8 @@
 
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { useFormStatus } from "react-dom";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { signupAction } from "@/actions/auth";
 import { signupUser } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,58 +11,47 @@ import { UserPlus, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "../ui/alert";
 import { useToast } from "@/hooks/use-toast";
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Inscription en cours...
-        </>
-      ) : (
-        <>
-          <UserPlus />
-          S'inscrire
-        </>
-      )}
-    </Button>
-  );
-}
-
 export function SignupForm() {
-    const [state, formAction] = useActionState(signupAction, { data: null, error: "" });
-    const router = useRouter();
-    const { toast } = useToast();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
 
-    useEffect(() => {
-        async function handleSignup() {
-            if (state.data && !state.error) {
-                try {
-                    const user = await signupUser(state.data.name, state.data.email, state.data.password);
-                    toast({
-                        title: "Compte créé avec succès !",
-                        description: `Bienvenue, ${user.name}! Prochaine étape : configurer votre routeur.`,
-                    });
-                    router.push("/setup");
-                } catch (error: any) {
-                     toast({
-                        variant: "destructive",
-                        title: "Erreur d'inscription",
-                        description: error.message,
-                    });
-                }
-            }
-        }
-        handleSignup();
-    }, [state, router, toast]);
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setError(null);
 
-    const displayError = state.error;
+    if (password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    if (password.length < 6) {
+        setError("Le mot de passe doit contenir au moins 6 caractères.");
+        return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const user = await signupUser(name, email, password);
+      toast({
+        title: "Compte créé avec succès !",
+        description: `Bienvenue, ${user.name}! Prochaine étape : configurer votre routeur.`,
+      });
+      router.push("/setup");
+    } catch (err: any) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <form action={formAction} className="w-full space-y-6">
-       <div className="space-y-2">
+    <form onSubmit={handleSubmit} className="w-full space-y-6">
+      <div className="space-y-2">
         <Label htmlFor="name">Nom complet</Label>
         <Input
           id="name"
@@ -72,6 +59,9 @@ export function SignupForm() {
           type="text"
           placeholder="ex: Jean Dupont"
           required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
@@ -82,34 +72,55 @@ export function SignupForm() {
           type="email"
           placeholder="ex: jean.dupont@email.com"
           required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Mot de passe</Label>        
+        <Label htmlFor="password">Mot de passe</Label>
         <Input
           id="password"
           name="password"
           type="password"
           placeholder="••••••••"
           required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>        
+        <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
         <Input
           id="confirmPassword"
           name="confirmPassword"
           type="password"
           placeholder="••••••••"
           required
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          disabled={isLoading}
         />
       </div>
-      {displayError && (
+      {error && (
         <Alert variant="destructive">
-          <AlertDescription>{displayError}</AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <SubmitButton />
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Inscription en cours...
+          </>
+        ) : (
+          <>
+            <UserPlus />
+            S'inscrire
+          </>
+        )}
+      </Button>
     </form>
   );
 }

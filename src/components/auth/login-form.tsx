@@ -1,10 +1,8 @@
 
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { useFormStatus } from "react-dom";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { loginAction } from "@/actions/auth";
 import { loginUser, hasConfiguredRouter } from "@/lib/services/network-service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,61 +11,40 @@ import { LogIn, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "../ui/alert";
 import { useToast } from "@/hooks/use-toast";
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-       {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Connexion...
-        </>
-      ) : (
-        <>
-          <LogIn />
-          Se connecter
-        </>
-      )}
-    </Button>
-  );
-}
-
 export function LoginForm() {
-  const [state, formAction] = useActionState(loginAction, { data: null, error: "" });
-  const [clientError, setClientError] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
-  useEffect(() => {
-    async function handleLogin() {
-      if (state.data && !state.error) {
-        try {
-          const user = await loginUser(state.data.email, state.data.password);
-          toast({
-            title: `Bienvenue, ${user.name}!`,
-            description: "Vous êtes maintenant connecté.",
-          })
-          
-          const isConfigured = await hasConfiguredRouter();
-          if (isConfigured) {
-            router.push("/dashboard");
-          } else {
-            router.push("/setup");
-          }
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
-        } catch (error: any) {
-          setClientError(error.message);
-        }
+    try {
+      const user = await loginUser(email, password);
+      toast({
+        title: `Bienvenue, ${user.name}!`,
+        description: "Vous êtes maintenant connecté.",
+      });
+
+      const isConfigured = await hasConfiguredRouter();
+      if (isConfigured) {
+        router.push("/dashboard");
+      } else {
+        router.push("/setup");
       }
+    } catch (err: any) {
+      setError(err.message);
+      setIsLoading(false);
     }
-    handleLogin();
-  }, [state, router, toast]);
-
-  const displayError = clientError || state.error;
+  };
 
   return (
-    <form action={formAction} className="w-full space-y-6">
+    <form onSubmit={handleSubmit} className="w-full space-y-6">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -76,24 +53,42 @@ export function LoginForm() {
           type="email"
           placeholder="votre@email.com"
           required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Mot de passe</Label>        
+        <Label htmlFor="password">Mot de passe</Label>
         <Input
           id="password"
           name="password"
           type="password"
           placeholder="••••••••"
           required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
         />
       </div>
-       {displayError && (
+      {error && (
         <Alert variant="destructive">
-            <AlertDescription>{displayError}</AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <SubmitButton />
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Connexion...
+          </>
+        ) : (
+          <>
+            <LogIn />
+            Se connecter
+          </>
+        )}
+      </Button>
     </form>
   );
 }

@@ -1,13 +1,9 @@
+
 import { Icons } from "@/components/icons";
 import { SignupForm } from "@/components/auth/signup-form";
 import Link from "next/link";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function SignupPage({
-  searchParams,
-}: {
-  searchParams: { error?: string };
-}) {
+export default function SignupPage() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-background"></div>
@@ -21,12 +17,6 @@ export default function SignupPage({
         <p className="text-center text-muted-foreground">
           Rejoignez Network Guardian et prenez le contrôle de votre réseau dès aujourd'hui.
         </p>
-
-        {searchParams.error && (
-          <Alert variant="destructive">
-            <AlertDescription>{searchParams.error}</AlertDescription>
-          </Alert>
-        )}
 
         <SignupForm />
         
