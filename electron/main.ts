@@ -3,6 +3,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
 
 // Use require for node-nmap as it may not have up-to-date type definitions.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nmap = require('node-nmap');
 
 const isDev = process.env.NODE_ENV !== 'production';
