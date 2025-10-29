@@ -1,7 +1,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
-import { OsScan } from 'node-nmap';
+const { OsScan } = require('node-nmap');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
