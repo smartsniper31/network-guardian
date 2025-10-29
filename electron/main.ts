@@ -1,10 +1,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from 'path';
-
-// Use require for node-nmap as it may not have up-to-date type definitions.
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const nmap = require('node-nmap');
+import { OsScan } from 'node-nmap';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -46,14 +43,14 @@ ipcMain.handle('perform-scan', async (event, routerIp: string) => {
   console.log(`[Electron Main] IPC "perform-scan" received for router IP: ${routerIp}. Starting Nmap scan...`);
   
   // This requires Nmap to be installed on the system and available in the PATH.
-  nmap.nmapLocation = 'nmap'; // Use 'nmap' from PATH
+  OsScan.nmapLocation = 'nmap'; // Use 'nmap' from PATH
 
   return new Promise((resolve, reject) => {
     // We derive the subnet from the router's IP. e.g., 192.168.1.1 -> 192.168.1.0/24
     const subnet = routerIp.substring(0, routerIp.lastIndexOf('.')) + '.0/24';
     console.log(`[Electron Main] Scanning subnet: ${subnet}`);
     
-    const quickscan = new nmap.OsScan(subnet);
+    const quickscan = new OsScan(subnet);
 
     quickscan.on('complete', (data: any[]) => {
       console.log(`[Electron Main] Nmap scan successful. Found ${data.length} devices.`);
